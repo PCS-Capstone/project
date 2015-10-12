@@ -40,15 +40,13 @@ NOT
 
 
 **group functions and variables in readable ways**: routes grouped together not methods grouped together  
-    `app.get('/')  
-    app.post('/')  
-    app.delete('/')  
-    `  
+    `app.get('/')`  
+    `app.post('/')`  
+    `app.delete('/')`  
     NOT  
-    `app.get('/')  
-    app.get('/user')  
-    app.get('/login')  
-    `  
+    `app.get('/')`  
+    `app.get('/user')`  
+    `app.get('/login')`  
 
 **spaces not tabs**:  
     2 spaces indents, rather than 4  
