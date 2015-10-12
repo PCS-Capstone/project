@@ -28,6 +28,17 @@ jQuery : `var $likeThis = $(‘likethis’)`
 
 ##Spacing Conventions / General Formatting
 
+**tick marks**  
+single ticks first in javascript.  
+`var string = 'string' `  
+NOT  
+`var string = "string"`  
+always double ticks in HTML attr  
+`<tag class="this">`  
+NOT
+`<tag class='this'>`  
+
+
 **group functions and variables in readable ways**: routes grouped together not methods grouped together  
     `app.get('/')
     app.post('/')
@@ -46,9 +57,9 @@ jQuery : `var $likeThis = $(‘likethis’)`
 
 `// expected result type`  
 
-`/* block comments outside of `
-`*  or before a function, `
-`*  not inline comments all  over the function`
+`/* block comments outside of `  
+`*  or before a function, `  
+`*  not inline comments all  over the function`  
 `*/`  
 
 `// TO DO COMMENTS IN ALL CAPS LIKE THIS`  
