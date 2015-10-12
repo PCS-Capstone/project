@@ -46,7 +46,10 @@ jQuery : `var $likeThis = $(‘likethis’)`
 
 `// expected result type`  
 
-block comments outside of or before a function, not inline comments all  over the function  
+`/* block comments outside of `
+`*  or before a function, `
+`*  not inline comments all  over the function`
+`*/`  
 
 `// TO DO COMMENTS IN ALL CAPS LIKE THIS`  
 
