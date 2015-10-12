@@ -2,44 +2,56 @@
 
 ##Variable Naming Conventions
 
-general javascript variables camel cased : var likeThisExample = value
-jQuery : var $likeThis = $(‘likethis’)
+general javascript variables camel cased : ```var likeThisExample = value```
+jQuery : ```var $likeThis = $(‘likethis’)```
 
 HTML attribute names: all lower-case, hyphenated multi words
+    ```<tag class="like-this">```
+    NOT
+    ```<tag class="likeThis OR likethis OR LikeThis OR like_this">```
 
 function declaration: 
-    function name () {} 
+    ```function name () {}```
     NOT 
-    var name = function() {}
+    ```var name = function() {}```
 
 constructor functions title cased : 
-function LikeThis () {}
-NOT
-function likeThis(){}
+    ```function LikeThis () {}```
+    NOT
+    ```function likeThis(){}```
 
 very explicit argument names:
     no abbreviations that aren’t useful or necessary
-
+    ```function server ( clientRequest, serverResponse ) {}```
+    NOT
+    ```function server ( req, res ){}```
 
 
 ##Spacing Conventions / General Formatting
 
-group functions and variables in readable ways: 
-routes grouped together not methods grouped together
+group functions and variables in readable ways: routes grouped together not methods grouped together
+    ```app.get('/')
+    app.post('/')
+    app.delete('/')
+    ```
+    NOT
+    ```app.get('/')
+    app.get('/user')
+    app.get('/login')
+    ```
 
-spaces not tabs
-
-2 spaces indents, rather than 4
+spaces not tabs:
+    2 spaces indents, rather than 4
 
 
 
 ##Comment Conventions
 
-// expected result type
+```// expected result type```
 
 block comments outside of or before a function, not inline comments all  over the function
 
-// TO DO COMMENTS IN ALL CAPS LIKE THIS
+```// TO DO COMMENTS IN ALL CAPS LIKE THIS```
 
 in Trello tasks include line number of to do comment
 
@@ -48,8 +60,8 @@ in Trello tasks include line number of to do comment
 ##File Name Convention
 
 no spaces, no hyphens : 
-NOT like this.html 
-NOT like-this.html
+    NOT like this.html 
+    NOT like-this.html
 
 separate multiple words with underscores: like_this_example.html
 
@@ -68,18 +80,22 @@ make directory and filenames as semantic as possible
 ##HTML Structure Conventions
 
 type attr for links and scripts should be ommitted
-    NOT <script type=”text/javascript”>
-    THIS <script>
+    NOT ```<script type=”text/javascript”>```
+    THIS ```<script>```
 
-    NOT <link rel=”stylesheet”>
-    THIS <link>
+    NOT ```<link rel=”stylesheet”>```
+    THIS ```<link>```
 
 ALWAYS include alt=”” on img tags
     should be minimally descriptive
 
 semantic tag names
-    <section> NOT <div>
-    <footer> NOT <div id=”footer”>
+    ```<section>``` 
+    NOT 
+    ```<div>```
+    ```<footer>``` 
+    NOT 
+    ```<div id=”footer”>```
 
 id should only be used when necessary
 class names 
