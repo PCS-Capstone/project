@@ -99,17 +99,17 @@ modular javascript files ( no scripts in html if avoidable )
 
 ##Git Circle Convention
 
-pull from working master to your local master
-create a new local working branch (should now match local master)
-to be sure, you can merge from local master to local working
-make changes to local working, making frequent commits
-when ready to push, first make a pull request from working master to local master and fix any merge conflicts, then switch to local working and merge with local master, fix any merge conflicts
-when an issue is finished, or reach a stopping point(finished for the day), and merge conflicts are completed, push a copy of local working branch to the branch of the same name on GitHub ** NOT MASTER ** 
-pull request from working branch on GitHub to “working master” or “fake master”
-if you make a pull request, delete branch you made pull request from *unless issue isn’t finished
-pull from working master to local master
-merge local master into new local working branch 
-repeat
+1. pull from working master to your local master  
+2. create a new local working branch (should now match local master)  
+4. to be sure, you can merge from local master to local working  
+5. make changes to local working, making frequent commits  
+6. when ready to push, first make a pull request from working master to local master and fix any merge conflicts, then switch to local working and merge with local master, fix any merge conflicts  
+7. when an issue is finished, or reach a stopping point(finished for the day), and merge conflicts are completed, push a copy of local working branch to the branch of the same name on GitHub ** NOT MASTER **   
+8. pull request from working branch on GitHub to “working master” or “fake master”  
+9. if you make a pull request, delete branch you made pull request from *unless issue isn’t finished  
+10. pull from working master to local master  
+11. merge local master into new local working branch   
+12. repeat  
 ** At set intervals, pull request from working master to Papa Master **
 
 ##Git Commit Message Convention
