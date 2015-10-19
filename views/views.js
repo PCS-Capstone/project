@@ -47,16 +47,34 @@ var UploadSightingView = Backbone.View.extend({
 var SearchFormView = Backbone.View.extend({
   tagName: 'section',
   className: 'search',
-  //template: Handlebars.compile( $('#hbs2').html() ),
+
+  template: Handlebars.compile( $('#template-searchform').html() ),
+
   render: function(){
-    console.log( 'lost a pet button works!' );
+
+    this.$el.html( this.template({name: "Testing"}) );
+
+    $('#master').html(this.$el);
   },
   initialize: function( options ){
     _.extend( options );
     this.render();
   },
   events: {
+    'submit form' : 'renderSearchResults'
+  },
 
+  renderSearchResults: function(){
+    var searchValues = {
+         date : $('input[name=date]').val(),
+      address : $('input[name=address]').val(),
+       radius : $('input[name=radius]').val(),
+   animalType : $('input[name=animal-type]:selected').val(),
+       colors : $('input[name=color-group]:checked').map( function(){ return this.value } ),
+         size : $('input[name=size-group]:checked').val()
+    }
+    this.remove();
+    var searchResultsPage = new SearchResultsListView( { searchValues: searchValues } );
   }
 });
 
