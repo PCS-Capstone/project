@@ -77,3 +77,52 @@ var SearchFormView = Backbone.View.extend({
     var searchResultsPage = new SearchResultsListView( { searchValues: searchValues } );
   }
 });
+
+var SearchResultsListView = Backbone.View.extend({
+  tagName: 'section',
+  className: 'list-view',
+  template: Handlebars.compile( $ (#template-listview).html({this.searchValues}))
+  render: function() {
+    var lostPetView = new LostPetView({
+      model: lostPet
+    })
+  },
+  initialize: function( options ) {
+    _.extend( options )
+  }, 
+  events: {
+    "click #edit" : "editSearch",
+    "click #map" : "mapView"
+  },
+  editSearch: function() {
+    this.remove();
+    SearchFormView.render();
+  },
+  mapView: function() {
+    this.remove();
+    SearchResultsMapView.render();
+  }
+
+})
+
+var SearchResultsMapView = Backbone.View.extend({
+  
+})
+
+var LostPetView = Backbone.View.extend({
+  tagName: 'div',
+  className: 'lost-pet',
+  template: Handlebars.compile($ (#template-lostpetview).html())
+  render: function() {
+    
+  }
+})
+
+// searchValues:
+
+// date = string
+// address = string
+// radius = string
+// animal-type = string 
+// color-group = array of strings
+// size-group = string
