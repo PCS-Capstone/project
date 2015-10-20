@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-var db = require('orchestrate')(config.dbkey);
+// var db = require('orchestrate')(config.dbkey);
 
 var app = express();
 
@@ -11,7 +11,12 @@ app.use(bodyParser.urlencoded({ extended : false}));
 app.use(express.static(__dirname));
 
 app.get('/pet', function(request, response) {
-	console.log('server get', request)
+	console.log('server get', request.query.size)
+})
+
+app.post('/pet', function(request, response) {
+	console.log(request.body)
+})
 	// db.search('pets', req.params.data) // params?  data?  body?
 	// .then(function(result){
 	// 	var data = (result.body.results);
@@ -35,6 +40,6 @@ app.get('/pet', function(request, response) {
 	// .fail(function(err){
 	// 	console.log(err);
 	// });
-})
+
 
 app.listen(3000)

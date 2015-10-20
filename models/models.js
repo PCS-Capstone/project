@@ -16,8 +16,8 @@ var lostPet = Backbone.Model.extend({
 
 var lostPetsCollection = Backbone.Collection.extend({
   model: lostPet,
-  url: '/pet',
+  url : '/pet',
   initialize: function(){
-    this.fetch();
+    // this.fetch();
   }
 });

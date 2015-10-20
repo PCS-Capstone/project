@@ -73,12 +73,19 @@ var SearchFormView = Backbone.View.extend({
          size : $('input[name="size-group"]:checked').val()
     }
 
+    // $.ajax({
+    //   method: 'POST',
+    //   url: '/pet',
+    //   data: searchValues,
+    //   dataType: "JSON"
+    // })
     this.remove();
-    // var coll = app.collection.fetch({data: {filter : searchValues}});
+    var coll = app.collection.fetch({data : searchValues});
     var searchResultsPage = new ListView({ 
-      collection : new lostPetsCollection({data:searchValues}),
+      collection : coll,
       searchValues : searchValues
     });
+  // $.get('/pet', searchValues)
     
   }
 });
