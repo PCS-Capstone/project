@@ -51,13 +51,11 @@ var SearchFormView = Backbone.View.extend({
   template: Handlebars.compile( $('#template-searchform').html() ),
 
   render: function(){
-
-    this.$el.html( this.template({name: "Testing"}) );
-
+    this.$el.html( this.template() );
     $('#master').html(this.$el);
   },
   initialize: function( options ){
-    _.extend( options );
+    _.extend( this, options );
     this.render();
   },
   events: {
@@ -75,35 +73,43 @@ var SearchFormView = Backbone.View.extend({
          size : $('input[name="size-group"]:checked').val()
     }
 
-    //take the serach form values an
-    //var collection = new collection({ search values })
-    
-
+    // $.ajax({
+    //   method: 'POST',
+    //   url: '/pet',
+    //   data: searchValues,
+    //   dataType: "JSON"
+    // })
     this.remove();
-    var searchResultsPage = new SearchResultsListView( { searchValues: searchValues } );
+    var coll = app.collection.fetch({data : searchValues});
+    var searchResultsPage = new ListView({ 
+      collection : coll,
+      searchValues : searchValues
+    });
+  // $.get('/pet', searchValues)
+    
   }
 });
 
-var SearchResultsListView = Backbone.View.extend({
+var ListView = Backbone.View.extend({
   tagName: 'div',
   className: 'list-view',
-
   template: Handlebars.compile( $('#template-listview').html() ),
 
   render: function() {
+    // console.log(this.collection)
     var self = this;
-
-    var lostPetView = new LostPetView({
-      model: lostPet
+    this.collection.forEach(function(pet) {
+      var lostPetView = new LostPetView({
+          model: pet
+      });
+      self.$el.append(lostPetView.$el);
     });
+
     this.$el.html( this.template(this.searchValues) )
     this.$el.appendTo('#master');
   },
   initialize: function( options ) {
-    
     _.extend( this, options );
-    
-
     this.render();
   }, 
   events: {
@@ -116,13 +122,9 @@ var SearchResultsListView = Backbone.View.extend({
   },
   mapView: function() {
     this.remove();
-    SearchResultsMapView.render();
+    MapView.render();
   }
 
-})
-
-var SearchResultsMapView = Backbone.View.extend({
-  
 })
 
 var LostPetView = Backbone.View.extend({
@@ -130,7 +132,7 @@ var LostPetView = Backbone.View.extend({
   className: 'lost-pet',
   template: Handlebars.compile($ ('#template-lostpetview').html()),
   render: function() {
-    
+
   }
 })
 
@@ -139,12 +141,10 @@ var MapView = Backbone.View.extend({
   id: 'map',
   template: Handlebars.compile( $('#template-map').html() ),
   render: function(){
-    console.log('render running', this);
     // this.initMap(); // How do I call the cdn at will?
     this.$el.appendTo('#master');
   },
   initialize: function(){
-    console.log('init running');
     this.render();
   },
   events: {
