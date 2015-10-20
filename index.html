@@ -15,6 +15,7 @@
 </head>
 
 <body>
+
   <header>
     <h1>Fetch!</h1>
   </header>
@@ -24,11 +25,14 @@
   <footer>
     <p>&copy; Info 2015</p>
   </footer>
+
+
+  <!-- TEMPLATES -->
   <script type="template-x-handlebars" id="template-listview">
 
     <header>
       <h3>Search Results For: </h3>
-      <h4>{{size}} {{animalType}} including: {{colors}}</h4>
+      <h4>{{size}} {{animalType}} including: {{#each colors}} {{this}} {{/each}}</h4>
       <button id="edit">Edit</button>
       <button id="map">Map View</button>
     </header>
@@ -46,16 +50,16 @@
 
   <script type="template-x-handlebars" id="template-searchform">
     <h1>{{ name }}</h1>
-    <h2>*required fields</h2>
+    <h2> fields</h2>
     <form>
-      <input type="date" name="date" placeholder="date" required>
+      <input type="date" name="date" placeholder="date">
 
       <br>
-      *<input type="text" name="address" placeholder="Address" required>
+      *<input type="text" name="address" placeholder="Address">
       <input type="text" name="radius" placeholder="Radius">
 
       <br>
-      *<select name="animal-type" required>
+      *<select name="animal-type">
         <option value="" disabled selected>"What kind of animal are you looking for?"</option>
         <option value="Dog">Dog</option>
         <option value="Cat">Cat</option>
@@ -74,22 +78,30 @@
       <input type="checkbox" name="color-group" value="yellow">Yellow</input>
 
       <br>
-      <input type="radio" name="size-group" value="small">Small</input>
-      <input type="radio" name="size-group" value="medium">Medium</input>
-      <input type="radio" name="size-group" value="large">Large</input>
+      <input type="radio" name="size-group" value="Small">Small</input>
+      <input type="radio" name="size-group" value="Medium">Medium</input>
+      <input type="radio" name="size-group" value="Large">Large</input>
 
       <br>
       <button type="submit">Submit</button>
     </form>
 
-    <p>We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.
-    </p>
+    <p>We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</p>
 
   </script>
 
+  <script type="template-x-handlebars" id="template-map">
+
+  </script>
+
+  <!-- MAIN SCRIPTS -->
   <script src="models/models.js"></script>
   <script src="views/views.js"></script>
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&callback=initMap">
+    </script> <!-- how do i call this at will? -->
   <script src="public/js/main.js"></script>
+
 
 </body>
 

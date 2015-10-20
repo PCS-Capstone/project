@@ -1,3 +1,4 @@
 $(document).ready( function(){
-  new HomePageView();
+  // new HomePageView();
+  new MapView();
 });
