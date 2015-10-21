@@ -41,5 +41,7 @@ app.post('/pet', function(request, response) {
 	// 	console.log(err);
 	// });
 
+//results.path.key
+//results.value["propName"]
 
 app.listen(3000)
