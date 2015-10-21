@@ -34,3 +34,27 @@ footer {
 .required {
   color: red;
 }
+
+.search-header {
+  width: 100%;
+}
+
+.search-header .panel {
+  width: 100%;
+}
+
+.search-header .panel-body > span {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+span span {
+  font-weight: initial;
+}
+
+.lost-pet {
+  border: 1px solid #ddd;
+  border-radius: 1%;
+  margin: 5px 0;
+  padding: 10px;
+}

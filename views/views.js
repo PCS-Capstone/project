@@ -1,6 +1,12 @@
+/*========================================
+                HOMEPAGE
+========================================*/
+
 var HomePageView = Backbone.View.extend({
-  tagName: 'div',
+    
+    tagName: 'div',
   className: 'home',
+  
   render: function(){
     
     // var $title       = $('<h1>').html('Lost a Pet?');
@@ -14,6 +20,7 @@ var HomePageView = Backbone.View.extend({
     _.extend( options );
     this.render();
   },
+ 
   events: {
     'click #found-button' : 'renderUploadPage',
     'click #lost-button'  : 'renderSearchForm'
@@ -28,27 +35,42 @@ var HomePageView = Backbone.View.extend({
   }
 });
 
+
+
+/*========================================
+           Found a Pet Views
+========================================*/
+
+/*  Photo Prompt
+--------------------*/
 var UploadSightingView = Backbone.View.extend({
-  tagName: 'section',
+    tagName: 'section',
   className: 'upload',
-  //template: Handlebars.compile( $('#hbs1').html() ),
+   //template: Handlebars.compile( $('#hbs1').html() ),
+  
   render: function(){
     console.log( 'found a pet button works!' );
   },
   initialize: function( options ){
     _.extend( options );
     this.render();
-  },
-  events: {
-
   }
+
 });
 
-var SearchFormView = Backbone.View.extend({
-  tagName: 'section',
-  className: 'search',
 
-  template: Handlebars.compile( $('#template-searchform').html() ),
+
+/*========================================
+            Lost a Pet Views
+=========================================*/
+
+/*  Search Form
+--------------------*/
+var SearchFormView = Backbone.View.extend({
+   
+    tagName: 'section',
+  className: 'search',
+   template: Handlebars.compile( $('#template-searchform').html() ),
 
   render: function(){
     this.$el.html( this.template() );
@@ -58,13 +80,14 @@ var SearchFormView = Backbone.View.extend({
     _.extend( this, options );
     this.render();
   },
+
   events: {
     'submit form' : 'renderSearchResults'
   },
 
   renderSearchResults: function(event){
     event.preventDefault();
-    var searchValues = {
+    var searchParameters = {
          date : $('input[name="date"]').val(),
       address : $('input[name="address"]').val(),
        radius : $('input[name="radius"]').val(),
@@ -72,23 +95,28 @@ var SearchFormView = Backbone.View.extend({
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray(),
          size : $('input[name="size-group"]:checked').val()
     }
-    console.log( searchValues );
+    console.log( searchParameters );
     
     this.remove();
 
-    app.collection.fetch({data : searchValues, success: function() 
+    app.collection.fetch({data : searchParameters, success: function() 
       { new ListView ({
         collection : app.collection, 
-        searchValues : searchValues
+        searchParameters : searchParameters
         });
       }});
   }
 });
 
+
+
+/*  Search Results
+--------------------*/
 var ListView = Backbone.View.extend({
-  tagName: 'div',
+
+    tagName: 'div',
   className: 'search-header',
-  template: Handlebars.compile( $('#template-listview').html() ),
+   template: Handlebars.compile( $('#template-results-list').html() ),
 
   render: function() {
     var self = this;
@@ -98,16 +126,17 @@ var ListView = Backbone.View.extend({
       });
     });
 
-    this.$el.html( this.template(this.searchValues) )
-    this.$el.appendTo('#master');
+    this.$el.html( this.template(this.searchParameters) )
+    this.$el.prependTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
     this.render();
   }, 
+
   events: {
     "click #edit" : "editSearch",
-    "click #map" : "mapView"
+    "click #map"  : "mapView"
   },
   editSearch: function() {
     this.remove();
@@ -117,14 +146,15 @@ var ListView = Backbone.View.extend({
     this.remove();
     MapView.render();
   }
-
-})
+});
 
 
 var LostPetView = Backbone.View.extend({
-  tagName: 'div',
+    
+    tagName: 'div',
   className: 'lost-pet',
-  template: Handlebars.compile($ ('#template-lostpetview').html()),
+   template: Handlebars.compile($ ('#template-lostpetview').html()),
+
   render: function() {
     console.log('lpv render', this.model)
     this.$el.html( this.template(this.model.get('value')) );
@@ -134,16 +164,19 @@ var LostPetView = Backbone.View.extend({
     _.extend( this, options );
     this.render();
   }, 
+
   events: {
     "click #edit" : "editSearch",
-    "click #map" : "mapView"
-  },
-})
+    "click #map"  : "mapView"
+  }
+});
 
 var MapView = Backbone.View.extend({
-  tagName: 'div',
-  id: 'map',
+        
+        id: 'map',
+   tagName: 'div',
   template: Handlebars.compile( $('#template-map').html() ),
+  
   render: function(){
     // this.initMap(); // How do I call the cdn at will?
     this.$el.appendTo('#master');
@@ -151,6 +184,7 @@ var MapView = Backbone.View.extend({
   initialize: function(){
     this.render();
   },
+
   events: {
 
   },
@@ -160,9 +194,9 @@ var MapView = Backbone.View.extend({
       zoom: 8
     });
   }
-})
+});
 
-// searchValues:
+// searchParameters:
 
 // date = string
 // address = string

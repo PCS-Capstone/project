@@ -24,14 +24,23 @@
   <section id="master" class="container"></section>
 
   <!-- TEMPLATES -->
-  <script type="template-x-handlebars" id="template-listview">
+  <script type="template-x-handlebars" id="template-results-list">
 
-    <header>
-      <h3>Search Results For: </h3>
-      <h4>{{size}} {{animalType}} including: {{#each colors}} {{this}} {{/each}}</h4>
-      <button id="edit">Edit</button>
-      <button id="map">Map View</button>
-    </header>
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <span class="pull-left">
+        Search Results For: 
+        <br>
+          <span>
+            {{size}} {{animalType}} that might be {{#each colors}} {{this}} {{/each}}
+          </span>
+        </span>
+        <div class="btn-group pull-right">
+          <button id="edit" class="btn btn-default">Edit</button>
+          <button id="map" class="btn btn-default">Map View</button>
+        </div>
+      </div>
+    </div>
 
   </script>
 
