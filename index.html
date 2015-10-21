@@ -36,11 +36,13 @@
   </script>
 
   <script type="template-x-handlebars" id="template-lostpetview">
-    <h4>"Type"</h4>
-    <h4>"Color"</h4>
-    <h4>"Size"</h4>
-    <h4>"Loc"</h4>
-    <h4>"Date/Time"</h4>
+    <h4>Image: {{imageUrl}}</h4>
+    <h4>Type: {{animalType}}</h4>
+    <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
+    <h4>Size: {{size}}</h4>
+    <h4>Location: {{address}}</h4>
+    <h4>Date/Time: {{date}}</h4>
+    <h4>Description: {{description}}</h4>
   </script>
 
   <script type="template-x-handlebars" id="template-searchform">

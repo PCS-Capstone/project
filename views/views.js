@@ -87,24 +87,21 @@ var SearchFormView = Backbone.View.extend({
 
 var ListView = Backbone.View.extend({
   tagName: 'div',
-  className: 'list-view',
+  className: 'search-header',
   template: Handlebars.compile( $('#template-listview').html() ),
 
   render: function() {
-    console.log('ListView Render', this.collection)
     var self = this;
     this.collection.forEach(function(pet) {
       var lostPetView = new LostPetView({
           model: pet
       });
-      self.$el.append(lostPetView.$el);
     });
 
     this.$el.html( this.template(this.searchValues) )
     this.$el.appendTo('#master');
   },
   initialize: function( options ) {
-    console.log('ListView initialize', this.collection)
     _.extend( this, options );
     this.render();
   }, 
@@ -123,13 +120,24 @@ var ListView = Backbone.View.extend({
 
 })
 
+
 var LostPetView = Backbone.View.extend({
   tagName: 'div',
   className: 'lost-pet',
   template: Handlebars.compile($ ('#template-lostpetview').html()),
   render: function() {
-
-  }
+    console.log('lpv render', this.model)
+    this.$el.html( this.template(this.model.get('value')) );
+    this.$el.appendTo('#master');
+  },
+  initialize: function( options ) {
+    _.extend( this, options );
+    this.render();
+  }, 
+  events: {
+    "click #edit" : "editSearch",
+    "click #map" : "mapView"
+  },
 })
 
 var MapView = Backbone.View.extend({
