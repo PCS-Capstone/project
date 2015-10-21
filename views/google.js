@@ -21,14 +21,16 @@ var MapView = Backbone.View.extend({
   populateMap: function(){
     console.log( 'making pins' );
     var self = this;
-
+    //var image = 'public/images/binoculars.png'
     //loop through the collection
     //make a marker for each model in the collection
     this.collection.forEach( function( location ){
 
       var marker = new google.maps.Marker({
         position: location.get( 'position' ),
+        //icon: image,
         map: self.map
+        // animation: google.maps.Animation.DROP
       });
 
       var infowindow = new google.maps.InfoWindow({

@@ -1,0 +1,36 @@
+header {
+  background: #000;
+  color: white;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+}
+
+footer {
+  background: #000;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+.home {
+  min-height: 80 vh;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.home .btn {
+  width: 150px;
+  margin: 50px;
+}
+
+#master {
+  padding-top: 69px;
+}
+
+.required {
+  color: red;
+}
