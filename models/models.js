@@ -6,7 +6,7 @@ var lostPet = Backbone.Model.extend({
   //   description: "",
   //            id: 0, //required
   //      location: {       //required
-  //          lat: 0, 
+  //          lat: 0,
   //         lng: 0
   //      },
   //         date: Date.now(), //required
