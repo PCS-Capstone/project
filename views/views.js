@@ -34,7 +34,7 @@ var UploadSightingView = Backbone.View.extend({
   render: function(){
 
     var $uploadForm = $('<form id="upload-form">');
-    var $uploadPhoto = $('<input id="upload-photo" type="file"> </input>');
+    var $uploadPhoto = $('<input id="upload-photo" name="photo" type="file"> </input>');
 
     $uploadForm.append($uploadPhoto);
     $(this.$el).append($uploadForm);
@@ -46,7 +46,36 @@ var UploadSightingView = Backbone.View.extend({
     this.render();
   },
   events: {
-    'change #upload-photo' : 'uploadPhoto'
+    'change #upload-photo' : 'uploadPhoto',
+    'submit #upload-form' : 'submitForm'
+  },
+  submitForm: function(event) {
+    event.preventDefault();
+
+    var finalData = {};
+    var formData = $('#upload-form').serializeArray();
+    formData.forEach(function(val, index, array) {
+      for (var key in val) {
+        finalData[val.name] = val.value ;
+      }
+    });
+    finalData.photoUrl = $('#upload-photo').val();
+
+    finalData = JSON.stringify(finalData);
+    finalData.location = Number(finalData.location);
+    console.log(finalData);
+
+
+      $.ajax({
+        method: "POST",
+        url: "/pet",
+        data: finalData,
+        success: function(data) {
+          console.log(data);
+        }
+      })
+      .done(function( msg ) {
+      });
   },
   uploadPhoto: function() {
   //Sighting Form
@@ -80,7 +109,7 @@ var UploadSightingView = Backbone.View.extend({
     var $uploadColor = $('<fieldset>');
     var $uploadColorLegend = $('<legend> Please select color: </legend>');
 
-    var $uploadBrown = $('<input id="uploadBrown" type="checkbox" name="color">');
+    var $uploadBrown = $('<input id="uploadBrown" type="checkbox" name="color" value="brown">');
     var $uploadBrownLabel = $('<label for="uploadBrown">').html('Brown');
 
     $uploadColorLegend.append($uploadBrown, $uploadBrownLabel);
