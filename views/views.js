@@ -73,20 +73,14 @@ var SearchFormView = Backbone.View.extend({
          size : $('input[name="size-group"]:checked').val()
     }
 
-    // $.ajax({
-    //   method: 'POST',
-    //   url: '/pet',
-    //   data: searchValues,
-    //   dataType: "JSON"
-    // })
     this.remove();
-    var coll = app.collection.fetch({data : searchValues});
-    var searchResultsPage = new ListView({ 
-      collection : coll,
-      searchValues : searchValues
-    });
-  // $.get('/pet', searchValues)
-    
+
+    app.collection.fetch({data : searchValues, success: function() 
+      { new ListView ({
+        collection : app.collection, 
+        searchValues : searchValues
+        });
+      }});
   }
 });
 
@@ -96,7 +90,7 @@ var ListView = Backbone.View.extend({
   template: Handlebars.compile( $('#template-listview').html() ),
 
   render: function() {
-    // console.log(this.collection)
+    console.log('ListView Render', this.collection)
     var self = this;
     this.collection.forEach(function(pet) {
       var lostPetView = new LostPetView({
@@ -109,6 +103,7 @@ var ListView = Backbone.View.extend({
     this.$el.appendTo('#master');
   },
   initialize: function( options ) {
+    console.log('ListView initialize', this.collection)
     _.extend( this, options );
     this.render();
   }, 
