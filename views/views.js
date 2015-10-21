@@ -1,19 +1,23 @@
+/*========================================
+                HOMEPAGE
+========================================*/
+
 var HomePageView = Backbone.View.extend({
-  tagName: 'div',
+    tagName: 'div',
   className: 'home',
   render: function(){
+    // var $title       = $('<h1>').html('Lost a Pet?');
+    var $foundButton = $('<button id="found-button" class="btn btn-default btn-lg">').html( 'Found a Pet' );
+    var $lostButton  = $('<button id="lost-button" class="btn btn-default btn-lg">').html( 'Lost a Pet' );
 
-    var $title       = $('<h1>').html('Lost a Pet?');
-    var $foundButton = $('<button id="found-button">').html( 'Found a Pet' );
-    var $lostButton  = $('<button id="lost-button">').html( 'Lost a Pet' );
-
-    this.$el.append( [$title, $foundButton, $lostButton] );
+    this.$el.append( [ $foundButton, $lostButton] );
     this.$el.appendTo( '#master' );
   },
   initialize: function( options ){
     _.extend( options );
     this.render();
   },
+ 
   events: {
     'click #found-button' : 'renderUploadPage',
     'click #lost-button'  : 'renderSearchForm'
@@ -28,11 +32,18 @@ var HomePageView = Backbone.View.extend({
   }
 });
 
+
+
+/*========================================
+           Found a Pet Views
+========================================*/
+
+/*  Photo Prompt
+--------------------*/
 var UploadSightingView = Backbone.View.extend({
   tagName: 'div',
   className: 'upload',
   render: function(){
-
     var $uploadForm = $('<form id="upload-form">');
     var $uploadPhoto = $('<input id="upload-photo" name="photo" type="file"> </input>');
 
@@ -135,13 +146,22 @@ var UploadSightingView = Backbone.View.extend({
 
     $('#upload-form').append($uploadLocationLabel, $uploadLocation, $uploadDateLabel, $uploadDate, $uploadSpeciesLabel, $uploadSpecies, $uploadSize, $uploadColor, $uploadDescriptionLabel, $uploadDescription, $uploadSubmit );
   }
+
 });
 
-var SearchFormView = Backbone.View.extend({
-  tagName: 'section',
-  className: 'search',
 
-  template: Handlebars.compile( $('#template-searchform').html() ),
+
+/*========================================
+            Lost a Pet Views
+=========================================*/
+
+/*  Search Form
+--------------------*/
+var SearchFormView = Backbone.View.extend({
+
+    tagName: 'section',
+  className: 'search',
+   template: Handlebars.compile( $('#template-searchform').html() ),
 
   render: function(){
     this.$el.html( this.template() );
@@ -151,13 +171,14 @@ var SearchFormView = Backbone.View.extend({
     _.extend( this, options );
     this.render();
   },
+
   events: {
     'submit form' : 'renderSearchResults'
   },
 
   renderSearchResults: function(event){
     event.preventDefault();
-    var searchValues = {
+    var searchParameters = {
          date : $('input[name="date"]').val(),
       address : $('input[name="address"]').val(),
        radius : $('input[name="radius"]').val(),
@@ -165,42 +186,39 @@ var SearchFormView = Backbone.View.extend({
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray(),
          size : $('input[name="size-group"]:checked').val()
     }
+    console.log( searchParameters );
 
-    // $.ajax({
-    //   method: 'POST',
-    //   url: '/pet',
-    //   data: searchValues,
-    //   dataType: "JSON"
-    // })
     this.remove();
 
-    var coll = app.collection.fetch({data : searchValues});
-    var searchResultsPage = new ListView({
-      collection : coll,
-      searchValues : searchValues
-    });
-  // $.get('/pet', searchValues)
-
+    app.collection.fetch({data : searchParameters, success: function()
+      { new ListView ({
+        collection : app.collection,
+        searchParameters : searchParameters
+        });
+      }});
   }
 });
 
+
+
+/*  Search Results
+--------------------*/
 var ListView = Backbone.View.extend({
-  tagName: 'div',
-  className: 'list-view',
-  template: Handlebars.compile( $('#template-listview').html() ),
+
+    tagName: 'div',
+  className: 'search-header',
+   template: Handlebars.compile( $('#template-results-list').html() ),
 
   render: function() {
-    // console.log(this.collection)
     var self = this;
     this.collection.forEach(function(pet) {
       var lostPetView = new LostPetView({
           model: pet
       });
-      self.$el.append(lostPetView.$el);
     });
 
-    this.$el.html( this.template(this.searchValues) )
-    this.$el.appendTo('#master');
+    this.$el.html( this.template(this.searchParameters) )
+    this.$el.prependTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -208,7 +226,7 @@ var ListView = Backbone.View.extend({
   },
   events: {
     "click #edit" : "editSearch",
-    "click #map" : "mapView"
+    "click #map"  : "mapView"
   },
   editSearch: function() {
     this.remove();
@@ -218,22 +236,37 @@ var ListView = Backbone.View.extend({
     this.remove();
     MapView.render();
   }
+});
 
-})
 
 var LostPetView = Backbone.View.extend({
-  tagName: 'div',
-  className: 'lost-pet',
-  template: Handlebars.compile($ ('#template-lostpetview').html()),
-  render: function() {
 
+    tagName: 'div',
+  className: 'lost-pet',
+   template: Handlebars.compile($ ('#template-lostpetview').html()),
+
+  render: function() {
+    console.log('lpv render', this.model)
+    this.$el.html( this.template(this.model.get('value')) );
+    this.$el.appendTo('#master');
+  },
+  initialize: function( options ) {
+    _.extend( this, options );
+    this.render();
+  },
+
+  events: {
+    "click #edit" : "editSearch",
+    "click #map"  : "mapView"
   }
-})
+});
 
 var MapView = Backbone.View.extend({
-  tagName: 'div',
-  id: 'map',
+
+        id: 'map',
+   tagName: 'div',
   template: Handlebars.compile( $('#template-map').html() ),
+
   render: function(){
     // this.initMap(); // How do I call the cdn at will?
     this.$el.appendTo('#master');
@@ -241,6 +274,7 @@ var MapView = Backbone.View.extend({
   initialize: function(){
     this.render();
   },
+
   events: {
 
   },
@@ -250,9 +284,9 @@ var MapView = Backbone.View.extend({
       zoom: 8
     });
   }
-})
+});
 
-// searchValues:
+// searchParameters:
 
 // date = string
 // address = string

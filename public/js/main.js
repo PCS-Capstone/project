@@ -2,6 +2,6 @@ var app = {};
 
 $(document).ready( function(){
   new HomePageView();
-  new MapView();
-  app.collection = new lostPetsCollection('type');
+  // new MapView();
+  app.collection = new lostPetsCollection();
 });
