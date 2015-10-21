@@ -115,19 +115,24 @@ var SearchFormView = Backbone.View.extend({
 var ListView = Backbone.View.extend({
 
     tagName: 'div',
-  className: 'search-header',
+  className: 'list-view',
    template: Handlebars.compile( $('#template-results-list').html() ),
 
   render: function() {
+
+    this.$el.html( this.template(this.searchParameters) )
+    this.$el.prependTo('#master');
+
     var self = this;
+
     this.collection.forEach(function(pet) {
       var lostPetView = new LostPetView({
           model: pet
       });
+
+      self.$el.append(lostPetView.$el)
     });
 
-    this.$el.html( this.template(this.searchParameters) )
-    this.$el.prependTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -156,9 +161,7 @@ var LostPetView = Backbone.View.extend({
    template: Handlebars.compile($ ('#template-lostpetview').html()),
 
   render: function() {
-    console.log('lpv render', this.model)
     this.$el.html( this.template(this.model.get('value')) );
-    this.$el.appendTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -166,8 +169,7 @@ var LostPetView = Backbone.View.extend({
   }, 
 
   events: {
-    "click #edit" : "editSearch",
-    "click #map"  : "mapView"
+
   }
 });
 
@@ -195,12 +197,3 @@ var MapView = Backbone.View.extend({
     });
   }
 });
-
-// searchParameters:
-
-// date = string
-// address = string
-// radius = string
-// animal-type = string 
-// color-group = array of strings
-// size-group = string
