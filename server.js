@@ -16,32 +16,17 @@ app.get('/pet', function(request, response) {
 });
 
 app.post('/pet', function(request, response) {
-	console.log("request received ");
-  response.send(request.body);
-});
-	// db.search('pets', req.params.data) // params?  data?  body?
-	// .then(function(result){
-	// 	var data = (result.body.results);
-	// 	var allData = data.map(function(element, index, array) {
-	// 		return({
-	// 			animalType: element.value.animalType, //required
- //          		colors: element.value.colors,
- //           		size: element.value.size,
- //    			description: element.value.description,
- //             	id: element.value.id, //required
- //       			location: {       //required
- //           			lat: element.value.location.lat,
- //          			long: element.value.location.lat
- //       			},
- //          		date: element.value.date, //required
- //      			imageUrl: element.value.imageURL    //require
-	// 		});
-	// 	});
-	// 	res.send(allData);
-	// })
-	// .fail(function(err){
-	// 	console.log(err);
-	// });
+  console.log(request.body.data);
+  var data = JSON.parse(request.body.data);
 
+  db.post('lostPet', data)
+    .then(function (result) {
+      response.end("sighting uploaded in db");
+    }).fail(function(err){
+		    console.log(err);
+	});
+
+
+});
 
 app.listen(3000)

@@ -51,31 +51,41 @@ var UploadSightingView = Backbone.View.extend({
   },
   submitForm: function(event) {
     event.preventDefault();
+    // var finalData = {};
+    // var formData = $('#upload-form').serializeArray();
+    // formData.forEach(function(val, index, array) {
+    //   for (var key in val) {
+    //     finalData[val.name] = val.value ;
+    //   }
+    // });
+    // finalData.photoUrl = $('#upload-photo').val();
+    // finalData = JSON.stringify(finalData);
+    // finalData.location = Number(finalData.location);
+    // console.log(finalData);
 
-    var finalData = {};
-    var formData = $('#upload-form').serializeArray();
-    formData.forEach(function(val, index, array) {
-      for (var key in val) {
-        finalData[val.name] = val.value ;
+    var formData = {};
+    formData.photoURL = $('#upload-photo').val();
+    formData.location = $('#uploadLocation').val();
+    formData.date = $('#uploadDate').val();
+    formData.species = $('#uploadSpecies').val();
+    formData.size = $('input[name="size"]:checked').val();
+
+     var xColors = $('input[name="color"]:checked').map(function() {
+       return this.value;
+     }).toArray();
+
+    formData.colors = xColors;
+
+    $.ajax({
+      method: "POST",
+      url: "/pet",
+      data: { data : JSON.stringify(formData) },
+      success: function(data) {
+        console.log(data);
       }
+    })
+    .done(function( msg ) {
     });
-    finalData.photoUrl = $('#upload-photo').val();
-
-    finalData = JSON.stringify(finalData);
-    finalData.location = Number(finalData.location);
-    console.log(finalData);
-
-
-      $.ajax({
-        method: "POST",
-        url: "/pet",
-        data: finalData,
-        success: function(data) {
-          console.log(data);
-        }
-      })
-      .done(function( msg ) {
-      });
   },
   uploadPhoto: function() {
   //Sighting Form
@@ -87,7 +97,7 @@ var UploadSightingView = Backbone.View.extend({
     var $uploadDate = $('<input id="uploadDate" type="text" name="date">');
     //Species
     var $uploadSpeciesLabel = $('<label for="uploadSpecies">').html('<p> Species </p>');
-    var $uploadSpecies = $('<select id="uploadSpecies name="species">').html(
+    var $uploadSpecies = $('<select id="uploadSpecies" name="species">').html(
       '<option value=""> </option> <option value="dog"> Dog </option>   <option value="cat"> Cat </option>'
     );
     //Size
@@ -112,7 +122,10 @@ var UploadSightingView = Backbone.View.extend({
     var $uploadBrown = $('<input id="uploadBrown" type="checkbox" name="color" value="brown">');
     var $uploadBrownLabel = $('<label for="uploadBrown">').html('Brown');
 
-    $uploadColorLegend.append($uploadBrown, $uploadBrownLabel);
+    var $uploadBlack = $('<input id="uploadBlack" type="checkbox" name="color" value="black">');
+    var $uploadBlackLabel = $('<label for="uploadBlack">').html('Black');
+
+    $uploadColorLegend.append($uploadBrown, $uploadBrownLabel, $uploadBlack, $uploadBlackLabel);
     $uploadColor.html($uploadColorLegend);
     //Description
     var $uploadDescription = $('<textarea id="uploadDescription" name="description">');
