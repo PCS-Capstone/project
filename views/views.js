@@ -17,7 +17,7 @@ var HomePageView = Backbone.View.extend({
     _.extend( options );
     this.render();
   },
- 
+
   events: {
     'click #found-button' : 'renderUploadPage',
     'click #lost-button'  : 'renderSearchForm'
@@ -43,12 +43,10 @@ var HomePageView = Backbone.View.extend({
 var UploadSightingView = Backbone.View.extend({
   tagName: 'div',
   className: 'upload',
+  template: Handlebars.compile( $('#template-upload-sighting').html() ),
   render: function(){
-    var $uploadForm = $('<form id="upload-form">');
-    var $uploadPhoto = $('<input id="upload-photo" name="photo" type="file"> </input>');
 
-    $uploadForm.append($uploadPhoto);
-    $(this.$el).append($uploadForm);
+    this.$el.html( this.template() );
     $('#master').append(this.$el);
 
   },
@@ -57,22 +55,13 @@ var UploadSightingView = Backbone.View.extend({
     this.render();
   },
   events: {
-    'change #upload-photo' : 'uploadPhoto',
+    // 'change #upload-photo' : 'uploadPhoto',
     'submit #upload-form' : 'submitForm'
   },
   submitForm: function(event) {
     event.preventDefault();
-    // var finalData = {};
-    // var formData = $('#upload-form').serializeArray();
-    // formData.forEach(function(val, index, array) {
-    //   for (var key in val) {
-    //     finalData[val.name] = val.value ;
-    //   }
-    // });
-    // finalData.photoUrl = $('#upload-photo').val();
-    // finalData = JSON.stringify(finalData);
-    // finalData.location = Number(finalData.location);
-    // console.log(finalData);
+
+    console.log("hello");
 
     var formData = {};
     formData.photoURL = $('#upload-photo').val();
@@ -80,6 +69,7 @@ var UploadSightingView = Backbone.View.extend({
     formData.date = $('#uploadDate').val();
     formData.species = $('#uploadSpecies').val();
     formData.size = $('input[name="size"]:checked').val();
+    formData.description = $('uploadDescription').val();
 
      var xColors = $('input[name="color"]:checked').map(function() {
        return this.value;
@@ -98,53 +88,7 @@ var UploadSightingView = Backbone.View.extend({
     .done(function( msg ) {
     });
   },
-  uploadPhoto: function() {
-  //Sighting Form
-    //Location
-    var $uploadLocationLabel = $('<label for="uploadLocation">').html("<p> Location: </p>");
-    var $uploadLocation = $('<input id="uploadLocation" type="text" name="location">');
-    //Date
-    var $uploadDateLabel = $('<label for="uploadDate">').html('<p> Date: </p>');
-    var $uploadDate = $('<input id="uploadDate" type="text" name="date">');
-    //Species
-    var $uploadSpeciesLabel = $('<label for="uploadSpecies">').html('<p> Species </p>');
-    var $uploadSpecies = $('<select id="uploadSpecies" name="species">').html(
-      '<option value=""> </option> <option value="dog"> Dog </option>   <option value="cat"> Cat </option>'
-    );
-    //Size
-    var $uploadSize = $('<fieldset>');
-    var $uploadSizeLegend = $('<legend> Please select size: </legend>');
-
-    var $uploadSmall = $('<input id="uploadSmall" type="radio" name="size" value="small">');
-    var $uploadSmallLabel = $('<label for="uploadSmall">').html('Small');
-
-    var $uploadMedium = $('<input id="uploadMedium" type="radio" name="size" value="medium">');
-    var $uploadMediumLabel = $('<label for="uploadMedium">').html('Medium');
-
-    var $uploadLarge = $('<input id="uploadMedium" type="radio" name="size" value="Large">');
-    var $uploadLargeLabel = $('<label for="uploadLarge">').html('Large');
-
-    $uploadSizeLegend.append($uploadSmall, $uploadSmallLabel, $uploadMedium, $uploadMediumLabel, $uploadLarge, $uploadLargeLabel);
-    $uploadSize.html($uploadSizeLegend);
-    //Color
-    var $uploadColor = $('<fieldset>');
-    var $uploadColorLegend = $('<legend> Please select color: </legend>');
-
-    var $uploadBrown = $('<input id="uploadBrown" type="checkbox" name="color" value="brown">');
-    var $uploadBrownLabel = $('<label for="uploadBrown">').html('Brown');
-
-    var $uploadBlack = $('<input id="uploadBlack" type="checkbox" name="color" value="black">');
-    var $uploadBlackLabel = $('<label for="uploadBlack">').html('Black');
-
-    $uploadColorLegend.append($uploadBrown, $uploadBrownLabel, $uploadBlack, $uploadBlackLabel);
-    $uploadColor.html($uploadColorLegend);
-    //Description
-    var $uploadDescription = $('<textarea id="uploadDescription" name="description">');
-    var $uploadDescriptionLabel = $('<label for="uploadDescription">').html('Enter description:');
-    //Submit and Append Form
-    var $uploadSubmit = $('<input type="submit" value="submit">');
-
-    $('#upload-form').append($uploadLocationLabel, $uploadLocation, $uploadDateLabel, $uploadDate, $uploadSpeciesLabel, $uploadSpecies, $uploadSize, $uploadColor, $uploadDescriptionLabel, $uploadDescription, $uploadSubmit );
+  uploadPhoto: function(event) {
   }
 
 });
