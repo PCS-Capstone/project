@@ -64,10 +64,10 @@ var UploadSightingView = Backbone.View.extend({
     console.log("hello");
 
     var formData = {};
-    formData.photoURL = $('#upload-photo').val();
+    formData.imageUrl = $('#upload-photo').val();
     formData.location = $('#uploadLocation').val();
     formData.date = $('#uploadDate').val();
-    formData.species = $('#uploadSpecies').val();
+    formData.animalType = $('#uploadSpecies').val();
     formData.size = $('input[name="size"]:checked').val();
     formData.description = $('uploadDescription').val();
 
@@ -90,7 +90,6 @@ var UploadSightingView = Backbone.View.extend({
   },
   uploadPhoto: function(event) {
   }
-
 });
 
 
@@ -107,9 +106,31 @@ var SearchFormView = Backbone.View.extend({
   className: 'search',
    template: Handlebars.compile( $('#template-searchform').html() ),
 
-  render: function(){
-    this.$el.html( this.template() );
+  prePopulate : function(){
+    console.log('prepopulate $el', $(this.$el));
+    console.log('animal-type from template - before temp', $("select[name='animal-type']"));
+    console.log('prepopulate', this.searchParameters.address);
+
+    this.$el.html( this.template());
     $('#master').html(this.$el);
+
+    $("[name=animal-type]").val(this.searchParameters.animalType);
+    $("[name=address]").val(this.searchParameters.address);
+    $("[name=radius]").val(this.searchParameters.radius);
+    $("[name=date]").val(this.searchParameters.date);
+    $("[name=color-group]").val(this.searchParameters.colors);
+    $("[value="+this.searchParameters.size+"]").prop("checked", true);
+  },
+  render: function(){
+    if (this.searchParameters !== undefined) {
+      console.log('edited search')
+      this.prePopulate();
+    } else {
+      console.log('new search')
+      this.$el.html( this.template() );
+      $('#master').html(this.$el);
+    }
+
   },
   initialize: function( options ){
     _.extend( this, options );
@@ -130,7 +151,6 @@ var SearchFormView = Backbone.View.extend({
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray(),
          size : $('input[name="size-group"]:checked').val()
     }
-    console.log( searchParameters );
 
     this.remove();
 
@@ -150,19 +170,24 @@ var SearchFormView = Backbone.View.extend({
 var ListView = Backbone.View.extend({
 
     tagName: 'div',
-  className: 'search-header',
+  className: 'list-view',
    template: Handlebars.compile( $('#template-results-list').html() ),
 
   render: function() {
+
+    this.$el.html( this.template(this.searchParameters) )
+    this.$el.prependTo('#master');
+
     var self = this;
+
     this.collection.forEach(function(pet) {
       var lostPetView = new LostPetView({
           model: pet
       });
+
+      self.$el.append(lostPetView.$el)
     });
 
-    this.$el.html( this.template(this.searchParameters) )
-    this.$el.prependTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -173,12 +198,17 @@ var ListView = Backbone.View.extend({
     "click #map"  : "mapView"
   },
   editSearch: function() {
+    var self = this;
     this.remove();
-    SearchFormView.render();
+    console.log('listview', this.searchParameters)
+    var editSearch = new SearchFormView({
+      searchParameters : self.searchParameters
+    })
+    // SearchFormView.render();
   },
   mapView: function() {
     this.remove();
-    MapView.render();
+    var mapView = new MapView({});
   }
 });
 
@@ -190,9 +220,7 @@ var LostPetView = Backbone.View.extend({
    template: Handlebars.compile($ ('#template-lostpetview').html()),
 
   render: function() {
-    console.log('lpv render', this.model)
     this.$el.html( this.template(this.model.get('value')) );
-    this.$el.appendTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -200,8 +228,7 @@ var LostPetView = Backbone.View.extend({
   },
 
   events: {
-    "click #edit" : "editSearch",
-    "click #map"  : "mapView"
+
   }
 });
 
@@ -228,6 +255,7 @@ var MapView = Backbone.View.extend({
       zoom: 8
     });
   }
+
 });
 
 // searchParameters:
