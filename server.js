@@ -37,10 +37,10 @@ cloudinary.config({
 
 app.get('/pet', function(request, response) {
 
-  console.log("animalType", request.query.animalType)
   var query = "value.location:NEAR:{latitude:"+request.query.lat+" longitude: "+request.query.lng+
     " radius: "+request.query.radius+"mi} AND value.animalType: (" + request.query.animalType + ") AND
-    value.colors: (" + request.query.colors + ")"
+    value.colors: (" + request.query.colors + ") AND value.date: [" +request.query.startDate +" TO " + 
+    request.query.endDate + "]"
 
 	db.search('shelter', query)
 	.then(function(result) {
@@ -55,7 +55,7 @@ app.get('/pet', function(request, response) {
 app.post('/pet', function(request, response) {
   console.log(request.body.data);
   var data = JSON.parse(request.body.data);
-  db.post('sighting', data)
+  db.post('shelter', data)
     .then(function (result) {
       response.end("sighting uploaded in db");
     }).fail(function(err){

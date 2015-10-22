@@ -71,10 +71,11 @@ var UploadSightingView = Backbone.View.extend({
     formData.size = $('input[name="size"]:checked').val();
     formData.description = $('uploadDescription').val();
 
-     var xColors = $('input[name="color"]:checked').map(function() {
+     var xColors = $('input[name="color-group"]:checked').map(function() {
        return this.value;
      }).toArray();
 
+    console.log('xcolors', xColors)
     formData.colors = xColors;
 
     $.ajax({
@@ -149,8 +150,8 @@ var SearchFormView = Backbone.View.extend({
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
       address : $('input[name="address"]').val(),
-          lat : $('input[name="lat"]').val(),
-          lng : $('input[name="lng"]').val(),
+          // lat : $('input[name="lat"]').val(), // obtain from googlePlaces API from search form
+          // lng : $('input[name="lng"]').val(),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()

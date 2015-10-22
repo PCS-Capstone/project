@@ -48,7 +48,6 @@
     <h4>Image: {{imageUrl}}</h4>
     <h4>Type: {{animalType}}</h4>
     <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
-    // <h4>Size: {{size}}</h4>
     <h4>Location: {{address}}</h4>
     <h4>Date/Time: {{date}}</h4>
     <h4>Description: {{description}}</h4>
@@ -80,9 +79,6 @@
         <label for="address" class="control-label col-xs-2">*Starting Address</label>
         <div class="col-xs-10">
           <input type="text" name="address" placeholder="Address">
-
-          <input type="text" name="lat" placeholder="Address">
-          <input type="text" name="lng" placeholder="Address">
           <input type="text" name="radius" placeholder="Radius ( in miles )">
         </div>
       </div>
@@ -107,25 +103,25 @@
 
           <div class="input-group">
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="white"> White </input>
+              <input type="checkbox" name="color-group" value="White"> White </input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="black"> Black </input>
+              <input type="checkbox" name="color-group" value="Black"> Black </input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="brown"> Brown</input>
+              <input type="checkbox" name="color-group" value="Brown"> Brown</input>
             </div>
           </div>
 
           <div class="input-group">
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="orange"> Orange</input>
+              <input type="checkbox" name="color-group" value="Orange"> Orange</input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="yellow"> Yellow</input>
+              <input type="checkbox" name="color-group" value="Yellow"> Yellow</input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="gray"> Gray</input>
+              <input type="checkbox" name="color-group" value="Gray"> Gray</input>
             </div>
 
           </div>
@@ -160,8 +156,9 @@
       <input id="uploadDate" type="text" name="date">
 
       <label for="uploadSpecies">
-        <p> Species </p>
+        <p> Type of Animal </p>
       <select id="uploadSpecies" name="animal-type">
+        <option value=""></option>
         <option value="Dog"> Dog </option>
         <option value="Cat"> Cat </option>
         <option value="Rodent">Rodent</option>
@@ -172,32 +169,32 @@
 
       <fieldset>
         <legend> Please select color:
-          <input id="uploadWhite" type="checkbox" name="color" value="White">
+          <input id="uploadWhite" type="checkbox" name="color-group" value="White">
           <label for="uploadWhite">
             White
           </label>
 
-          <input id="uploadBlack" type="checkbox" name="color" value="Black">
+          <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
           <label for="uploadBlack">
             Black
           </label>
 
-          <input id="uploadBrown" type="checkbox" name="color" value="Brown">
+          <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
           <label for="uploadBrown">
             Brown
           </label>
 
-          <input id="uploadOrange" type="checkbox" name="color" value="Orange">
+          <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
           <label for="uploadOrange">
             Orange
           </label>
 
-          <input id="uploadYellow" type="checkbox" name="color" value="Yellow">
+          <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
           <label for="uploadYellow">
             Yellow
           </label>
 
-          <input id="uploadGray" type="checkbox" name="color" value="Gray">
+          <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
           <label for="uploadGray">
             Gray
           </label>
