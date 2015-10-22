@@ -85,9 +85,16 @@
       </div>
 
       <div class="form-group">
-        <label for="date" class="control-label col-xs-2">Date Range</label>
+        <label for="date" class="control-label col-xs-2">Search From: </label>
         <div class="col-xs-10">
-          <input type="date" name="date" placeholder="date">
+          <input type="date" name="start-date" placeholder="Start Date">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="date" class="control-label col-xs-2">Search To: </label>
+        <div class="col-xs-10">
+          <input type="date" name="end-date" placeholder="End Date">
         </div>
       </div>
 
@@ -122,20 +129,20 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="size-group" class="control-label col-xs-2">Size</label>
-        <div class="col-xs-10">
-          <div class="radio-inline">
-            <input type="radio" name="size-group" value="Small"> Small</input>
-          </div>
-          <div class="radio-inline">
-            <input type="radio" name="size-group" value="Medium"> Medium</input>
-          </div>
-          <div class="radio-inline">
-            <input type="radio" name="size-group" value="Large"> Large</input>
-          </div>
-        </div>
-      </div>
+      // <div class="form-group">
+      //   <label for="size-group" class="control-label col-xs-2">Size</label>
+      //   <div class="col-xs-10">
+      //     <div class="radio-inline">
+      //       <input type="radio" name="size-group" value="Small"> Small</input>
+      //     </div>
+      //     <div class="radio-inline">
+      //       <input type="radio" name="size-group" value="Medium"> Medium</input>
+      //     </div>
+      //     <div class="radio-inline">
+      //       <input type="radio" name="size-group" value="Large"> Large</input>
+      //     </div>
+      //   </div>
+      // </div>
 
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
