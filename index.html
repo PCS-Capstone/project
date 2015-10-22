@@ -45,13 +45,25 @@
   </script>
 
   <script type="template-x-handlebars" id="template-lostpetview">
-    <img src={{imageUrl}} style="width:250px"></img>
-    <h4>Type: {{animalType}}</h4>
-    <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
-    // <h4>Size: {{size}}</h4>
-    <h4>Location: {{address}}</h4>
-    <h4>Date/Time: {{date}}</h4>
-    <h4>Description: {{description}}</h4>
+    <div class="row">
+      <img src={{imageUrl}} style="width:250px" class="col-sm-6"></img>
+      <div class="col-sm-6">
+        <h4>Type: {{animalType}}</h4>
+        <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
+      </div>
+    </div>
+
+    <div class="row flex-row">
+      <button class="btn btn-info btn-lg">Location: {{address}}</button>
+      <h4>Date/Time: {{date}}</h4>
+    </div>
+    {{#if description}}
+      <button class="btn btn-default">+</button>
+      <div class="row">
+        <h4>Description:</h4>
+        <p>{{description}}</p>
+      </div>
+    {{#/if }}
   </script>
 
   <script type="template-x-handlebars" id="template-searchform">
