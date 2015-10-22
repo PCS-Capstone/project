@@ -75,10 +75,10 @@ var UploadSightingView = Backbone.View.extend({
     // console.log(finalData);
 
     var formData = {};
-    formData.photoURL = $('#upload-photo').val();
+    formData.imageUrl = $('#upload-photo').val();
     formData.location = $('#uploadLocation').val();
     formData.date = $('#uploadDate').val();
-    formData.species = $('#uploadSpecies').val();
+    formData.animalType = $('#uploadSpecies').val();
     formData.size = $('input[name="size"]:checked').val();
 
      var xColors = $('input[name="color"]:checked').map(function() {
@@ -107,18 +107,18 @@ var UploadSightingView = Backbone.View.extend({
     var $uploadDateLabel = $('<label for="uploadDate">').html('<p> Date: </p>');
     var $uploadDate = $('<input id="uploadDate" type="text" name="date">');
     //Species
-    var $uploadSpeciesLabel = $('<label for="uploadSpecies">').html('<p> Species </p>');
-    var $uploadSpecies = $('<select id="uploadSpecies" name="species">').html(
-      '<option value=""> </option> <option value="dog"> Dog </option>   <option value="cat"> Cat </option>'
+    var $uploadSpeciesLabel = $('<label for="uploadSpecies">').html('<p> Type of Animal </p>');
+    var $uploadSpecies = $('<select id="uploadSpecies" name="animalType">').html(
+      '<option value=""> </option> <option value="Dog"> Dog </option>   <option value="Cat"> Cat </option>'
     );
     //Size
     var $uploadSize = $('<fieldset>');
     var $uploadSizeLegend = $('<legend> Please select size: </legend>');
 
-    var $uploadSmall = $('<input id="uploadSmall" type="radio" name="size" value="small">');
+    var $uploadSmall = $('<input id="uploadSmall" type="radio" name="size" value="Small">');
     var $uploadSmallLabel = $('<label for="uploadSmall">').html('Small');
 
-    var $uploadMedium = $('<input id="uploadMedium" type="radio" name="size" value="medium">');
+    var $uploadMedium = $('<input id="uploadMedium" type="radio" name="size" value="Medium">');
     var $uploadMediumLabel = $('<label for="uploadMedium">').html('Medium');
 
     var $uploadLarge = $('<input id="uploadMedium" type="radio" name="size" value="Large">');
@@ -163,9 +163,31 @@ var SearchFormView = Backbone.View.extend({
   className: 'search',
    template: Handlebars.compile( $('#template-searchform').html() ),
 
+  prePopulate : function(){
+    console.log('prepopulate $el', $(this.$el));
+    console.log('animal-type from template - before temp', $("select[name='animal-type']"));
+    console.log('prepopulate', this.searchParameters.address);
+    
+    this.$el.html( this.template());
+    $('#master').html(this.$el); 
+
+    $("[name=animal-type]").val(this.searchParameters.animalType);
+    $("[name=address]").val(this.searchParameters.address);
+    $("[name=radius]").val(this.searchParameters.radius);
+    $("[name=date]").val(this.searchParameters.date);
+    $("[name=color-group]").val(this.searchParameters.colors);
+    $("[value="+this.searchParameters.size+"]").prop("checked", true);  
+  },
   render: function(){
-    this.$el.html( this.template() );
-    $('#master').html(this.$el);
+    if (this.searchParameters !== undefined) {
+      console.log('edited search')
+      this.prePopulate();
+    } else {
+      console.log('new search')
+      this.$el.html( this.template() );
+      $('#master').html(this.$el);
+    }
+
   },
   initialize: function( options ){
     _.extend( this, options );
@@ -186,7 +208,6 @@ var SearchFormView = Backbone.View.extend({
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray(),
          size : $('input[name="size-group"]:checked').val()
     }
-    console.log( searchParameters );
 
     this.remove();
 
@@ -206,19 +227,24 @@ var SearchFormView = Backbone.View.extend({
 var ListView = Backbone.View.extend({
 
     tagName: 'div',
-  className: 'search-header',
+  className: 'list-view',
    template: Handlebars.compile( $('#template-results-list').html() ),
 
   render: function() {
+
+    this.$el.html( this.template(this.searchParameters) )
+    this.$el.prependTo('#master');
+
     var self = this;
+
     this.collection.forEach(function(pet) {
       var lostPetView = new LostPetView({
           model: pet
       });
+
+      self.$el.append(lostPetView.$el)
     });
 
-    this.$el.html( this.template(this.searchParameters) )
-    this.$el.prependTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -229,12 +255,17 @@ var ListView = Backbone.View.extend({
     "click #map"  : "mapView"
   },
   editSearch: function() {
+    var self = this;
     this.remove();
-    SearchFormView.render();
+    console.log('listview', this.searchParameters)
+    var editSearch = new SearchFormView({
+      searchParameters : self.searchParameters
+    })
+    // SearchFormView.render();
   },
   mapView: function() {
     this.remove();
-    MapView.render();
+    var mapView = new MapView({});
   }
 });
 
@@ -246,9 +277,7 @@ var LostPetView = Backbone.View.extend({
    template: Handlebars.compile($ ('#template-lostpetview').html()),
 
   render: function() {
-    console.log('lpv render', this.model)
     this.$el.html( this.template(this.model.get('value')) );
-    this.$el.appendTo('#master');
   },
   initialize: function( options ) {
     _.extend( this, options );
@@ -256,8 +285,7 @@ var LostPetView = Backbone.View.extend({
   },
 
   events: {
-    "click #edit" : "editSearch",
-    "click #map"  : "mapView"
+
   }
 });
 
@@ -284,6 +312,7 @@ var MapView = Backbone.View.extend({
       zoom: 8
     });
   }
+
 });
 
 // searchParameters:
@@ -294,3 +323,4 @@ var MapView = Backbone.View.extend({
 // animal-type = string
 // color-group = array of strings
 // size-group = string
+
