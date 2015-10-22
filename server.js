@@ -35,7 +35,8 @@ cloudinary.config({
 
 
 app.get('/pet', function(request, response) {
-	var query = "value.animalType: (" + request.query.animalType + ") AND value.size: (" + request.query.size + ")";
+	var query = "value.animalType: (" + request.query.animalType + ")";
+  console.log('db query=', query);
 	db.search('sighting', query) // params?  data?  body?
 	.then(function(result) {
 		//console.log(result.body.results);

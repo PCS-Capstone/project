@@ -46,24 +46,25 @@
 
   <script type="template-x-handlebars" id="template-lostpetview">
     <div class="row">
-      <img src={{imageUrl}} style="width:250px" class="col-sm-6"></img>
-      <div class="col-sm-6">
+      <img src={{imageUrl}} style="width:250px" class="col-xs-5"></img>
+      <div class="col-xs-6">
         <h4>Type: {{animalType}}</h4>
         <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
       </div>
     </div>
 
-    <div class="row flex-row">
+    <div class="flex-row">
       <button class="btn btn-info btn-lg">Location: {{address}}</button>
       <h4>Date/Time: {{date}}</h4>
     </div>
+  
     {{#if description}}
-      <button class="btn btn-default">+</button>
-      <div class="row">
+      <button class="btn btn-default btn-description">+</button>
+      <div class="row description" style="display: none">
         <h4>Description:</h4>
         <p>{{description}}</p>
       </div>
-    {{#/if }}
+    {{/if }}
   </script>
 
   <script type="template-x-handlebars" id="template-searchform">
@@ -141,6 +142,7 @@
         </div>
       </div>
 
+      {{!--
       // <div class="form-group">
       //   <label for="size-group" class="control-label col-xs-2">Size</label>
       //   <div class="col-xs-10">
@@ -155,6 +157,7 @@
       //     </div>
       //   </div>
       // </div>
+      --}}
 
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
@@ -191,6 +194,7 @@
         <option value="Fish">Fish</option>
       </select>
 
+      {{!-- 
       // <fieldset>
       //   <legend> Please select size:
       //     <input id="uploadSmall" type="radio" name="size" value="Small">
@@ -209,6 +213,7 @@
       //     </label>
       //   </legend>
       // </fieldset>
+      --}}
 
       <fieldset>
         <legend> Please select color:

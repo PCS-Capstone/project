@@ -60,24 +60,14 @@ var UploadSightingView = Backbone.View.extend({
   },
   submitForm: function(event) {
     event.preventDefault();
-
-    console.log("hello");
-
     var formData = {};
-
     // var reader = new FileReader();
     // console.log( 'reader=', reader );
-    
     // var file = document.getElementsByName('photo')[0].files[0];
     // console.log( 'file=', file );
-    
-
     // reader.readAsDataURL( file )
     // console.log( 'reader.result=', reader.result );
-
-
     // formData.file = reader.result;
-
 
     formData.imageUrl = $('#previewHolder').attr('src');
     // console.log( formData.imageUrl );
@@ -85,7 +75,7 @@ var UploadSightingView = Backbone.View.extend({
     formData.date = $('#uploadDate').val();
     formData.animalType = $('#uploadSpecies').val();
     formData.size = $('input[name="size"]:checked').val();
-    formData.description = $('uploadDescription').val();
+    formData.description = $('#uploadDescription').val();
     formData.colors = $('input[name="color"]:checked').map(function() {
        return this.value;
      }).toArray();
@@ -244,9 +234,27 @@ var LostPetView = Backbone.View.extend({
   },
 
   events: {
+    "click .btn-description" : "showDescription"
+  },
 
+  showDescription : function(event){
+    var $button = $(event.target);
+    $button.closest('.lost-pet').find('.description').slideToggle();
+    if ( $button.html() === '+' ){
+      $button.html( '-' );
+    }
+    else {
+      $button.html( '+' );
+    }
   }
+
+
 });
+
+
+
+
+
 
 var MapView = Backbone.View.extend({
 
