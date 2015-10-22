@@ -15,7 +15,7 @@ app.use(express.static(__dirname));
 
 app.get('/pet', function(request, response) {
 	var query = "value.animalType: (" + request.query.animalType + ") AND value.size: (" + request.query.size + ")";
-	db.search('lostPet', query) // params?  data?  body?
+	db.search('sighting', query) // params?  data?  body?
 	.then(function(result) {
 		console.log(result.body.results);
 		response.send(result.body.results);
@@ -28,7 +28,7 @@ app.get('/pet', function(request, response) {
 app.post('/pet', function(request, response) {
   console.log(request.body.data);
   var data = JSON.parse(request.body.data);
-  db.post('lostPet', data)
+  db.post('sighting', data)
     .then(function (result) {
       response.end("sighting uploaded in db");
     }).fail(function(err){
