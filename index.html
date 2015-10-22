@@ -144,6 +144,106 @@
 
   </script>
 
+
+  <script type="template-x-handlebars" id="template-upload-sighting">
+
+  <img id="previewHolder" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+
+    <form id="upload-form">
+      <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg">
+      </input>
+
+      <label for="uploadLocation">
+        <p> Location: </p>
+      </label>
+      <input id="uploadLocation" type="text" name="address">
+
+      <label for="uploadDate">
+        <p> Date: </p>
+      </label>
+      <input id="uploadDate" type="text" name="date">
+
+      <label for="uploadSpecies">
+        <p> Species </p>
+      <select id="uploadSpecies" name="animal-type">
+        <option value="Dog"> Dog </option>
+        <option value="Cat"> Cat </option>
+        <option value="Rodent">Rodent</option>
+        <option value="Fish">Fish</option>
+      </select>
+
+      <fieldset>
+        <legend> Please select size:
+          <input id="uploadSmall" type="radio" name="size" value="Small">
+          <label for="uploadSmall">
+            Small
+          </label>
+
+          <input id="uploadMedium" type="radio" name="size" value="Medium">
+          <label for="uploadMedium">
+            Medium
+          </label>
+
+          <input id="uploadLarge" type="radio" name="size" value="Large">
+          <label for="uploadLarge">
+            Large
+          </label>
+        </legend>
+      </fieldset>
+
+      <fieldset>
+        <legend> Please select color:
+          <input id="uploadWhite" type="checkbox" name="color" value="white">
+          <label for="uploadWhite">
+            White
+          </label>
+
+          <input id="uploadBlack" type="checkbox" name="color" value="black">
+          <label for="uploadBlack">
+            Black
+          </label>
+
+          <input id="uploadBrown" type="checkbox" name="color" value="brown">
+          <label for="uploadBrown">
+            Brown
+          </label>
+
+          <input id="uploadOrange" type="checkbox" name="color" value="orange">
+          <label for="uploadOrange">
+            Orange
+          </label>
+
+          <input id="uploadYellow" type="checkbox" name="color" value="yellow">
+          <label for="uploadYellow">
+            Yellow
+          </label>
+
+          <input id="uploadGray" type="checkbox" name="color" value="gray">
+          <label for="uploadGray">
+            Gray
+          </label>
+        </legend>
+
+        <label for="uploadDescription">
+          Enter description:
+        </label>
+        <textarea id="uploadDescription" name="description">
+        </textarea>
+
+        <input type="submit" value="submit">
+      </fieldset>
+    </form>
+  </script>
+
+
+
+  <script>
+
+
+
+  </script>
+
+
   <!-- MAIN SCRIPTS -->
   <script src="models/models.js"></script>
   <script src="views/views.js"></script>
@@ -151,6 +251,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&callback=initMap">
     </script> <!-- how do i call this at will? -->
   <script src="public/js/main.js"></script>
+  <script src="public/js/preview.js"></script>
 
 
 </body>
