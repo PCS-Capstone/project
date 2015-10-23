@@ -41,70 +41,134 @@ var HomePageView = Backbone.View.extend({
 /*  Photo Prompt
 --------------------*/
 var UploadSightingView = Backbone.View.extend({
-  tagName: 'div',
-  className: 'upload',
-  template: Handlebars.compile( $('#template-upload-sighting').html() ),
-  render: function(){
 
+    tagName: 'div',
+  className: 'upload',
+
+   template: Handlebars.compile( $('#template-upload-sighting').html() ),
+
+  render: function(){
     this.$el.html( this.template() );
     $('#master').append(this.$el);
-
   },
+
   initialize: function( options ){
     _.extend( options );
     this.render();
   },
+
   events: {
-    // 'change #upload-photo' : 'uploadPhoto',
-    'submit #upload-form' : 'submitForm'
+    'change #upload-photo' : 'populateFields',
+    'submit #upload-form'  : 'submitForm'
   },
-  submitForm: function(event) {
+
+  populateFields : function() {
+
+      var $locationField = $('#uploadLocation');
+          var $dateField = $('#uploadDate');
+    var $animalTypeField = $('#uploadSpecies');
+         var $imageField = $('#upload-photo');
+       var $imagePreview = $('#previewHolder');
+
+    function readFromExif ( exifData ) {
+      var address;//= googlePlacesMethod( exifData.GPSLatitude + exifData.GPSLongtitude )
+      var date = exifData.DateTime;
+      var animalType;// = justVisualMethod( image )
+
+      $locationField.val( address );
+      $dateField.val( date );
+      $animalTypeField.val( animalType );
+    }
+
+    function previewImage ( inputElement ) {
+      var image  = inputElement[0].files[0];
+      var reader = new FileReader();
+
+      reader.onload = function(event) {
+        $imagePreview.attr('src', event.target.result);
+      };
+
+      reader.readAsDataURL( image );
+    }
+
+    function getExifData ( ){
+      var image = $imageField[0].files[0];
+
+      EXIF.getData(image, function() {
+        var xf = EXIF( this ).EXIFwrapped.exifdata;
+        readFromExif(xf);
+      });
+    }
+
+    previewImage( $imageField );
+    getExifData();
+
+  },
+
+  submitForm : function(event) {
+
     event.preventDefault();
-    var formData = {};
+    var requestObject = {};
 
-    var reader = new FileReader();
-    console.log( 'reader=', reader );
+    //get the file from the input field
+    //run EXIF with the file
+    //expose the result to a callback (async)
+    function getExifData ( makeObjectFunction, shipObjectFunction ){
+      console.log( 'running addExif' )
+      var image = document.getElementsByName('photo')[0].files[0];
 
-    var file = document.getElementsByName('photo')[0].files[0];
-    console.log( 'file=', file );
+      EXIF.getData(image, function() {
+        var xf = EXIF( this ).EXIFwrapped.exifdata;
+        console.log( 'xf=', xf );
+        makeObjectFunction( { exifData : xf }, shipObjectFunction );
+      });
+    }
 
-    // reader.readAsDataURL( file )
-    // console.log( 'reader.result=', reader.result );
+    // get all the values from the search form
+    // save them as properties on the requestObject
+    function buildDataForServer ( asyncParams, callback ) {
+      requestObject.imageUrl = 
+        $('#previewHolder')
+          .attr('src');
+      requestObject.location = 
+        $('#uploadLocation')
+          .val();
+      requestObject.date = 
+        $('#uploadDate')
+          .val();
+      requestObject.animalType = 
+        $('#uploadSpecies')
+          .val();
+      requestObject.size = 
+        $('input[name="size"]:checked')
+          .val();
+      requestObject.description = 
+        $('uploadDescription')
+          .val();
+      requestObject.colors = 
+        $('input[name="color-group"]:checked')
+          .map(function() {
+            return this.value;
+          })
+          .toArray();
+      requestObject.exifData = 
+        asyncParams.exifData
+      console.log( 'ready to send:', requestObject );
+    } 
 
-    formData.file = reader.result;
+    //send it off
+    function sendToServer () {
+      $.ajax({
+        method: "POST",
+        url: "/pet",
+        data: { data : JSON.stringify(requestObject) },
+        success: function(data) {
+          console.log(data);
+        }
+      });
+    }
 
-    formData.imageUrl = $('#previewHolder').attr('src');
-
-    var xf;
-    EXIF.getData(file, function() {
-      xf = EXIF.pretty( this ) );
-    });
-
-
-    // console.log( formData.imageUrl );
-    formData.location   = $('#uploadLocation').val();
-    formData.date       = $('#uploadDate').val();
-    formData.animalType = $('#uploadSpecies').val();
-
-    formData.size = $('input[name="size"]:checked').val();
-    formData.description = $('uploadDescription').val();
-
-     formData.colors = $('input[name="color-group"]:checked').map(function() {
-       return this.value;
-     }).toArray();
-
-    $.ajax({
-      method: "POST",
-      url: "/pet",
-      data: { data : JSON.stringify(formData) },
-      success: function(data) {
-        console.log(data);
-      }
-    })
-    .done(function( msg ) {
-    });
-  },
-  uploadPhoto: function(event) {
+    getExifData( buildDataForServer, sendToServer );
   }
 });
 
