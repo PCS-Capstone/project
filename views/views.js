@@ -92,7 +92,6 @@ var UploadSightingView = Backbone.View.extend({
     var map;
     var request;
     var place;
-
     var infoWindow;
     var placeLoc;
     var marker;

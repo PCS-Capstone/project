@@ -3,20 +3,19 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 
 var config = require('./config');
-
 var db = require('orchestrate')(config.dbkey);
 
 var app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended : false}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(__dirname));
 
 //==================================
 // MULTIPART FORM ENCODER CODE HERE
-var multer = require('multer');
-var upload = multer({dest:'./uploads/'});
+// var multer = require('multer');
+// var upload = multer({dest:'./uploads/'})
 // var upload = multer({});
 //==================================
 
@@ -33,37 +32,59 @@ cloudinary.config({
 //==================================
 
 
+app.get('/', function (request, response){
+  response.sendFile( __dirname + 'index.html' );
+});
 
+app.get('/pet', function (request, response) {
 
-app.get('/pet', function(request, response) {
-	var query = "value.animalType: (" + request.query.animalType + ") AND value.size: (" + request.query.size + ")";
-	db.search('sighting', query) // params?  data?  body?
+  var search = request.query;
+
+  var query =
+  "value.location:NEAR:" +
+  "{"+
+    "latitude: "  + search.lat +
+    "longitude: " + search.lng +
+    " radius: "   + search.radius +
+    "mi"+
+  "} " +
+  "AND value.animalType: (" + search.animalType + ") "   +
+  "AND value.colors: ("     + search.colors     + ") "   +
+  "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
+
+	db.search('shelter', query)
+
 	.then(function(result) {
-		console.log(result.body.results);
+		//console.log(result.body.results);
 		response.send(result.body.results);
 	})
 	.fail(function(err){
-		console.log(err);
+		console.log('error');
 	});
 });
 
 app.post('/pet', function(request, response) {
-  console.log(request.body.data);
+  // console.log(upload)
+  // console.log(request.body.data);
+  // console.log('request.file =', request.file);
+  // console.log('data.file =', request.body.data.file )
+
   var data = JSON.parse(request.body.data);
-  db.post('sighting', data)
-    .then(function (result) {
-      response.end("sighting uploaded in db");
-    }).fail(function(err){
-		    console.log(err);
-	});
+  // console.log( typeof data)
+  // console.log( 'image url=', data.imageUrl );
+  uploader.upload( data.imageUrl, function (result)  {
+    //console.log('return after upload: ', result);
 
-});
+    data.imageUrl = result.url;
+    // console.log( data )
+    // console.log( data.imageUrl );
 
-app.post('/photoUpload', upload.single('image'), function (req,res){
-  console.log('req.file =', req.file);
-
-  uploader.upload( req.file.path, function (result)  {
-    console.log('return after upload: ', result);
+    db.post('sighting', data)
+      .then(function (result) {
+        console.log( result.body.results );
+      }).fail(function(err){
+        console.log(err);
+    });
   });
 });
 
