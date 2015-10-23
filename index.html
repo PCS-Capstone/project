@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.min.js"></script>
+  <script src="public/js/plugins/exif-js/exif.js"></script>
 </head>
 
 <body>
@@ -41,16 +42,29 @@
         </div>
       </div>
     </div>
-
   </script>
 
   <script type="template-x-handlebars" id="template-lostpetview">
-    <img src={{imageUrl}} style="width:250px"></img>
-    <h4>Type: {{animalType}}</h4>
-    <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
-    <h4>Location: {{address}}</h4>
-    <h4>Date/Time: {{date}}</h4>
-    <h4>Description: {{description}}</h4>
+    <div class="row">
+      <img src={{imageUrl}} style="width:250px" class="col-xs-5"></img>
+      <div class="col-xs-6">
+        <h4>Type: {{animalType}}</h4>
+        <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
+      </div>
+    </div>
+
+    <div class="flex-row">
+      <button class="btn btn-info btn-lg">Location: {{address}}</button>
+      <h4>Last seen: {{date}}</h4>
+    </div>
+  
+    {{#if description}}
+      <button class="btn btn-default btn-description">+</button>
+      <div class="row description" style="display: none">
+        <h4 class="col-xs-12">Description:</h4>
+        <p class="col-xs-12">{{description}}</p>
+      </div>
+    {{/if }}
   </script>
 
   <script type="template-x-handlebars" id="template-searchform">
@@ -127,8 +141,6 @@
           </div>
         </div>
       </div>
-
-
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
     </form>
@@ -165,7 +177,6 @@
         <option value="Fish">Fish</option>
       </select>
 
- 
 
       <fieldset>
         <legend> Please select color:

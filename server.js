@@ -32,16 +32,28 @@ cloudinary.config({
 //==================================
 
 
+app.get('/', function (request, response){
+  response.sendFile( __dirname + 'index.html' );
+});
 
+app.get('/pet', function (request, response) {
 
-app.get('/pet', function(request, response) {
+  var search = request.query;
 
-  var query = "value.location:NEAR:{latitude:"+request.query.lat+" longitude: "+request.query.lng+
-    " radius: "+request.query.radius+"mi} AND value.animalType: (" + request.query.animalType + ") AND
-    value.colors: (" + request.query.colors + ") AND value.date: [" +request.query.startDate +" TO " + 
-    request.query.endDate + "]"
+  var query = 
+  "value.location:NEAR:" + 
+  "{"+
+    "latitude: "  + search.lat + 
+    "longitude: " + search.lng + 
+    " radius: "   + search.radius + 
+    "mi"+
+  "} " + 
+  "AND value.animalType: (" + search.animalType + ") "   +
+  "AND value.colors: ("     + search.colors     + ") "   + 
+  "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
 	db.search('shelter', query)
+
 	.then(function(result) {
 		//console.log(result.body.results);
 		response.send(result.body.results);
@@ -69,7 +81,7 @@ app.post('/pet', function(request, response) {
     
     db.post('sighting', data)
       .then(function (result) {
-        console.log( result );
+        console.log( result.body.results );
       }).fail(function(err){
         console.log(err);
     });
