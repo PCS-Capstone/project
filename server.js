@@ -39,7 +39,6 @@ app.get('/', function (request, response){
 app.get('/pet', function (request, response) {
 
   var search = request.query;
-
   var query = 
   "value.location:NEAR:" + 
   "{"+
@@ -52,14 +51,16 @@ app.get('/pet', function (request, response) {
   "AND value.colors: ("     + search.colors     + ") "   + 
   "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
-	db.search('shelter', query)
+  var simpleQuery = "value.animalType: (" + search.animalType + ") "; 
 
+  // console.log( query );
+	db.search('sighting', simpleQuery)
 	.then(function(result) {
-		//console.log(result.body.results);
+		console.log('checking db')
 		response.send(result.body.results);
 	})
 	.fail(function(err){
-		console.log('error');
+		console.log('error', err);
 	});
 });
 
@@ -73,11 +74,11 @@ app.post('/pet', function(request, response) {
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
   uploader.upload( data.imageUrl, function (result)  {
-    //console.log('return after upload: ', result);
+    console.log('return after upload: ', result);
 
     data.imageUrl = result.url;
-    // console.log( data )
-    // console.log( data.imageUrl );
+    console.log( data )
+    console.log( data.imageUrl );
     
     db.post('sighting', data)
       .then(function (result) {
