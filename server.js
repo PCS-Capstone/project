@@ -50,7 +50,6 @@ app.get('/pet', function (request, response) {
   "} " +
   "AND value.animalType: (" + search.animalType + ") "   +
   "AND value.colors: ("     + search.colors     + ") "   +
-
   "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
 	db.search('shelter', query)

@@ -1,3 +1,4 @@
+
 // $(document).on('change', '#upload-photo', function() {
 //   readURL(this);
 // });
