@@ -41,54 +41,31 @@ var HomePageView = Backbone.View.extend({
 /*  Photo Prompt
 --------------------*/
 var UploadSightingView = Backbone.View.extend({
-  tagName: 'div',
+
+    tagName: 'div',
   className: 'upload',
+<<<<<<< HEAD
   template: Handlebars.compile( $('#template-upload-sighting').html() ),
+=======
+
+   template: Handlebars.compile( $('#template-upload-sighting').html() ),
+
+>>>>>>> 55be01d... Merge pull request #20 from PCS-Capstone/exif
   render: function(){
     this.$el.html( this.template() );
     $('#master').append(this.$el);
-
   },
+
   initialize: function( options ){
     _.extend( options );
     this.render();
   },
+
   events: {
-    // 'change #upload-photo' : 'uploadPhoto',
-    'submit #upload-form' : 'submitForm'
+    'change #upload-photo' : 'populateFields',
+    'submit #upload-form'  : 'submitForm'
   },
-  submitForm: function(event) {
-    event.preventDefault();
 
-    var formData = {};
-    formData.imageUrl = $('#upload-photo').val();
-    formData.location = $('#uploadLocation').val();
-    formData.date = $('#uploadDate').val();
-    formData.animalType = $('#uploadSpecies').val();
-    formData.size = $('input[name="size"]:checked').val();
-    formData.description = $('uploadDescription').val();
-
-     var xColors = $('input[name="color"]:checked').map(function() {
-       return this.value;
-     }).toArray();
-
-    formData.colors = xColors;
-
-    var self = this;
-
-
-    reader.onload = function(event) {
-      $imagePreview.attr('src', event.target.result);
-
-    $.ajax({
-      method: "POST",
-      url: "/pet",
-      data: { data : JSON.stringify(formData) }
-    })
-    .done(function( msg ) {
-      self.google();
-    });
-  },
   google: function() {
     $('#upload-form').remove();
     $('#map').removeClass('display-none');
@@ -142,6 +119,119 @@ var UploadSightingView = Backbone.View.extend({
     }
   },
   uploadPhoto: function(event) {
+
+  },
+  populateFields : function() {
+
+      var $locationField = $('#uploadLocation');
+          var $dateField = $('#uploadDate');
+    var $animalTypeField = $('#uploadSpecies');
+         var $imageField = $('#upload-photo');
+       var $imagePreview = $('#previewHolder');
+
+    function readFromExif ( exifData ) {
+      var address;//= googlePlacesMethod( exifData.GPSLatitude + exifData.GPSLongtitude )
+      var date = exifData.DateTime;
+      var animalType;// = justVisualMethod( image )
+
+      $locationField.val( address );
+      $dateField.val( date );
+      $animalTypeField.val( animalType );
+    }
+
+    function previewImage ( inputElement ) {
+      var image  = inputElement[0].files[0];
+      var reader = new FileReader();
+
+      reader.onload = function(event) {
+        $imagePreview.attr('src', event.target.result);
+      };
+
+      reader.readAsDataURL( image );
+    }
+
+    function getExifData ( ){
+      var image = $imageField[0].files[0];
+
+      EXIF.getData(image, function() {
+        var xf = EXIF( this ).EXIFwrapped.exifdata;
+        readFromExif(xf);
+      });
+    }
+
+    previewImage( $imageField );
+    getExifData();
+
+  },
+
+  submitForm : function(event) {
+
+    event.preventDefault();
+    var requestObject = {};
+
+    //get the file from the input field
+    //run EXIF with the file
+    //expose the result to a callback (async)
+    function getExifData ( makeObjectFunction, shipObjectFunction ){
+      console.log( 'running addExif' )
+      var image = document.getElementsByName('photo')[0].files[0];
+
+      EXIF.getData(image, function() {
+        var xf = EXIF( this ).EXIFwrapped.exifdata;
+        console.log( 'xf=', xf );
+        makeObjectFunction( { exifData : xf }, shipObjectFunction );
+      });
+    }
+
+    // get all the values from the search form
+    // save them as properties on the requestObject
+    function buildDataForServer ( asyncParams, callback ) {
+      requestObject.imageUrl = 
+        $('#previewHolder')
+          .attr('src');
+      requestObject.location = 
+        $('#uploadLocation')
+          .val();
+      requestObject.date = 
+        $('#uploadDate')
+          .val();
+      requestObject.animalType = 
+        $('#uploadSpecies')
+          .val();
+      requestObject.size = 
+        $('input[name="size"]:checked')
+          .val();
+      requestObject.description = 
+        $('uploadDescription')
+          .val();
+      requestObject.colors = 
+        $('input[name="color-group"]:checked')
+          .map(function() {
+            return this.value;
+          })
+          .toArray();
+      requestObject.exifData = 
+        asyncParams.exifData
+      console.log( 'ready to send:', requestObject );
+    } 
+
+    //send it off
+    function sendToServer () {
+      $.ajax({
+        method: "POST",
+        url: "/pet",
+        data: { data : JSON.stringify(requestObject) },
+        success: function(data) {
+          self.google();
+          console.log(data);
+
+        }
+      });
+    }
+
+
+
+    getExifData( buildDataForServer, sendToServer );
   }
 });
 
@@ -224,7 +314,7 @@ var ListView = Backbone.View.extend({
 
     tagName: 'div',
   className: 'list-view',
-   template: Handlebars.compile( $('#template-results-list').html() ),
+   template: Handlebars.compile( $('#template-results-list').html(),
 
   render: function() {
 
@@ -281,8 +371,21 @@ var LostPetView = Backbone.View.extend({
   },
 
   events: {
+    "click .btn-description" : "showDescription"
+  },
 
+  showDescription : function(event){
+    var $button = $(event.target);
+    $button.closest('.lost-pet').find('.description').slideToggle();
+    if ( $button.html() === '+' ){
+      $button.html( '-' );
+    }
+    else {
+      $button.html( '+' );
+    }
   }
+
+
 });
 
 var MapView = Backbone.View.extend({
@@ -311,11 +414,3 @@ var MapView = Backbone.View.extend({
 
 });
 
-// searchParameters:
-
-// date = string
-// address = string
-// radius = string
-// animal-type = string
-// color-group = array of strings
-// size-group = string
