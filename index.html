@@ -48,7 +48,6 @@
     <img src={{imageUrl}} style="width:250px"></img>
     <h4>Type: {{animalType}}</h4>
     <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
-    // <h4>Size: {{size}}</h4>
     <h4>Location: {{address}}</h4>
     <h4>Date/Time: {{date}}</h4>
     <h4>Description: {{description}}</h4>
@@ -104,45 +103,31 @@
 
           <div class="input-group">
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="white"> White </input>
+              <input type="checkbox" name="color-group" value="White"> White </input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="black"> Black </input>
+              <input type="checkbox" name="color-group" value="Black"> Black </input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="brown"> Brown</input>
+              <input type="checkbox" name="color-group" value="Brown"> Brown</input>
             </div>
           </div>
 
           <div class="input-group">
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="orange"> Orange</input>
+              <input type="checkbox" name="color-group" value="Orange"> Orange</input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="yellow"> Yellow</input>
+              <input type="checkbox" name="color-group" value="Yellow"> Yellow</input>
             </div>
             <div class="checkbox-inline">
-              <input type="checkbox" name="color-group" value="gray"> Gray</input>
+              <input type="checkbox" name="color-group" value="Gray"> Gray</input>
             </div>
 
           </div>
         </div>
       </div>
 
-      // <div class="form-group">
-      //   <label for="size-group" class="control-label col-xs-2">Size</label>
-      //   <div class="col-xs-10">
-      //     <div class="radio-inline">
-      //       <input type="radio" name="size-group" value="Small"> Small</input>
-      //     </div>
-      //     <div class="radio-inline">
-      //       <input type="radio" name="size-group" value="Medium"> Medium</input>
-      //     </div>
-      //     <div class="radio-inline">
-      //       <input type="radio" name="size-group" value="Large"> Large</input>
-      //     </div>
-      //   </div>
-      // </div>
 
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
@@ -171,61 +156,45 @@
       <input id="uploadDate" type="text" name="date">
 
       <label for="uploadSpecies">
-        <p> Species </p>
+        <p> Type of Animal </p>
       <select id="uploadSpecies" name="animal-type">
+        <option value=""></option>
         <option value="Dog"> Dog </option>
         <option value="Cat"> Cat </option>
         <option value="Rodent">Rodent</option>
         <option value="Fish">Fish</option>
       </select>
 
-      // <fieldset>
-      //   <legend> Please select size:
-      //     <input id="uploadSmall" type="radio" name="size" value="Small">
-      //     <label for="uploadSmall">
-      //       Small
-      //     </label>
-
-      //     <input id="uploadMedium" type="radio" name="size" value="Medium">
-      //     <label for="uploadMedium">
-      //       Medium
-      //     </label>
-
-      //     <input id="uploadLarge" type="radio" name="size" value="Large">
-      //     <label for="uploadLarge">
-      //       Large
-      //     </label>
-      //   </legend>
-      // </fieldset>
+ 
 
       <fieldset>
         <legend> Please select color:
-          <input id="uploadWhite" type="checkbox" name="color" value="White">
+          <input id="uploadWhite" type="checkbox" name="color-group" value="White">
           <label for="uploadWhite">
             White
           </label>
 
-          <input id="uploadBlack" type="checkbox" name="color" value="Black">
+          <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
           <label for="uploadBlack">
             Black
           </label>
 
-          <input id="uploadBrown" type="checkbox" name="color" value="Brown">
+          <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
           <label for="uploadBrown">
             Brown
           </label>
 
-          <input id="uploadOrange" type="checkbox" name="color" value="Orange">
+          <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
           <label for="uploadOrange">
             Orange
           </label>
 
-          <input id="uploadYellow" type="checkbox" name="color" value="Yellow">
+          <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
           <label for="uploadYellow">
             Yellow
           </label>
 
-          <input id="uploadGray" type="checkbox" name="color" value="Gray">
+          <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
           <label for="uploadGray">
             Gray
           </label>

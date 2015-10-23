@@ -35,14 +35,19 @@ cloudinary.config({
 
 
 app.get('/pet', function(request, response) {
-	var query = "value.animalType: (" + request.query.animalType + ") AND value.size: (" + request.query.size + ")";
-	db.search('sighting', query) // params?  data?  body?
+
+  var query = "value.location:NEAR:{latitude:"+request.query.lat+" longitude: "+request.query.lng+
+    " radius: "+request.query.radius+"mi} AND value.animalType: (" + request.query.animalType + ") AND
+    value.colors: (" + request.query.colors + ") AND value.date: [" +request.query.startDate +" TO " + 
+    request.query.endDate + "]"
+
+	db.search('shelter', query)
 	.then(function(result) {
 		//console.log(result.body.results);
 		response.send(result.body.results);
 	})
 	.fail(function(err){
-		console.log(err);
+		console.log('error');
 	});
 });
 
