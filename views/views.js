@@ -86,6 +86,42 @@ var UploadSightingView = Backbone.View.extend({
 
       reader.onload = function(event) {
         $imagePreview.attr('src', event.target.result);
+
+    $.ajax({
+      method: "POST",
+      url: "/pet",
+      data: { data : JSON.stringify(formData) }
+    })
+    .done(function( msg ) {
+      self.google();
+    });
+  },
+  google: function() {
+    $('#upload-form').remove();
+    $('#map').removeClass('display-none');
+
+    var map;
+    var request;
+    var place;
+    var infoWindow;
+    var placeLoc;
+    var marker;
+
+    (function () {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 45.522337, lng: -122.676865},
+        zoom: 12
+      });
+      infowindow = new google.maps.InfoWindow();
+      callback();
+    })();
+
+    function callback() {
+      console.log('callback');
+      request = {
+        location: new google.maps.LatLng(45.522337,-122.676865),
+        radius: '1000',
+        keyword: ['animal shelter']
       };
 
       reader.readAsDataURL( image );
