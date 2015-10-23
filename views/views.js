@@ -44,13 +44,8 @@ var UploadSightingView = Backbone.View.extend({
 
     tagName: 'div',
   className: 'upload',
-<<<<<<< HEAD
-  template: Handlebars.compile( $('#template-upload-sighting').html() ),
-=======
 
    template: Handlebars.compile( $('#template-upload-sighting').html() ),
-
->>>>>>> 55be01d... Merge pull request #20 from PCS-Capstone/exif
   render: function(){
     this.$el.html( this.template() );
     $('#master').append(this.$el);
