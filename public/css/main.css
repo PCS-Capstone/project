@@ -1,3 +1,8 @@
+.display-none {
+  display: none;
+}
+
+
 header {
   background: #000;
   color: white;
@@ -57,4 +62,11 @@ span span {
   border-radius: 1%;
   margin: 5px 0;
   padding: 10px;
+}
+
+
+
+#map {
+  height: 500px;
+  width: 100%;
 }

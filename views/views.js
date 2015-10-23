@@ -45,7 +45,6 @@ var UploadSightingView = Backbone.View.extend({
   className: 'upload',
   template: Handlebars.compile( $('#template-upload-sighting').html() ),
   render: function(){
-
     this.$el.html( this.template() );
     $('#master').append(this.$el);
 
@@ -61,8 +60,6 @@ var UploadSightingView = Backbone.View.extend({
   submitForm: function(event) {
     event.preventDefault();
 
-    console.log("hello");
-
     var formData = {};
     formData.imageUrl = $('#upload-photo').val();
     formData.location = $('#uploadLocation').val();
@@ -77,16 +74,69 @@ var UploadSightingView = Backbone.View.extend({
 
     formData.colors = xColors;
 
+    var self = this;
+
     $.ajax({
       method: "POST",
       url: "/pet",
-      data: { data : JSON.stringify(formData) },
-      success: function(data) {
-        console.log(data);
-      }
+      data: { data : JSON.stringify(formData) }
     })
     .done(function( msg ) {
+      self.google();
     });
+  },
+  google: function() {
+    $('#upload-form').remove();
+    $('#map').removeClass('display-none');
+
+    var map;
+    var request;
+    var place;
+
+    var infoWindow;
+    var placeLoc;
+    var marker;
+
+    (function () {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 45.522337, lng: -122.676865},
+        zoom: 12
+      });
+      infowindow = new google.maps.InfoWindow();
+      callback();
+    })();
+
+    function callback() {
+      console.log('callback');
+      request = {
+        location: new google.maps.LatLng(45.522337,-122.676865),
+        radius: '1000',
+        keyword: ['animal shelter']
+      };
+
+    function createMarker(place) {
+      placeLoc = place.geometry.location;
+      marker = new google.maps.Marker({
+        map: map,
+        position: place.geometry.location
+      });
+
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(place.name);
+        infowindow.open(map, this);
+      });
+    }
+
+    function hello(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i]);
+        }
+      }
+    }
+    service = new google.maps.places.PlacesService(map);
+    service.nearbySearch(request, hello);
+    }
   },
   uploadPhoto: function(event) {
   }

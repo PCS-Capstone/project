@@ -1,4 +1,6 @@
 $(document).on('change', '#upload-photo', function() {
+
+  $('#previewHolder').removeClass('display-none');
   readURL(this);
 });
 

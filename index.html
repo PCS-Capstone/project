@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.min.js"></script>
+
 </head>
 
 <body>
@@ -147,7 +148,10 @@
 
   <script type="template-x-handlebars" id="template-upload-sighting">
 
-  <img id="previewHolder" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+  <div id="map" class="display-none">
+  </div>
+
+  <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
 
     <form id="upload-form">
       <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg">
@@ -233,6 +237,8 @@
         <input type="submit" value="submit">
       </fieldset>
     </form>
+
+
   </script>
 
 
@@ -252,6 +258,10 @@
     </script> <!-- how do i call this at will? -->
   <script src="public/js/main.js"></script>
   <script src="public/js/preview.js"></script>
+
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">
+  </script>
 
 
 </body>
