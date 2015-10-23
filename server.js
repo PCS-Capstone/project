@@ -3,20 +3,19 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 
 var config = require('./config');
-
 var db = require('orchestrate')(config.dbkey);
 
 var app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended : false}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(__dirname));
 
 //==================================
 // MULTIPART FORM ENCODER CODE HERE
-var multer = require('multer');
-var upload = multer({dest:'./uploads/'})
+// var multer = require('multer');
+// var upload = multer({dest:'./uploads/'})
 // var upload = multer({});
 //==================================
 
@@ -44,7 +43,7 @@ app.get('/pet', function(request, response) {
 
 	db.search('shelter', query)
 	.then(function(result) {
-		console.log(result.body.results);
+		//console.log(result.body.results);
 		response.send(result.body.results);
 	})
 	.fail(function(err){
@@ -53,22 +52,27 @@ app.get('/pet', function(request, response) {
 });
 
 app.post('/pet', function(request, response) {
-  console.log(request.body.data);
-  var data = JSON.parse(request.body.data);
-  db.post('shelter', data)
-    .then(function (result) {
-      response.end("sighting uploaded in db");
-    }).fail(function(err){
-		    console.log(err);
-	});
-
-});
-
-app.post('/photoUpload', upload.single('image'), function (req,res){
-  console.log('req.file =', req.file);
+  // console.log(upload)
+  // console.log(request.body.data);
+  // console.log('request.file =', request.file);
+  // console.log('data.file =', request.body.data.file )
   
-  uploader.upload( req.file.path, function (result)  {
-    console.log('return after upload: ', result);
+  var data = JSON.parse(request.body.data);
+  // console.log( typeof data)
+  // console.log( 'image url=', data.imageUrl );
+  uploader.upload( data.imageUrl, function (result)  {
+    //console.log('return after upload: ', result);
+
+    data.imageUrl = result.url;
+    // console.log( data )
+    // console.log( data.imageUrl );
+    
+    db.post('sighting', data)
+      .then(function (result) {
+        console.log( result );
+      }).fail(function(err){
+        console.log(err);
+    });
   });
 });
 

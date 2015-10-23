@@ -64,19 +64,32 @@ var UploadSightingView = Backbone.View.extend({
     console.log("hello");
 
     var formData = {};
-    formData.imageUrl = $('#upload-photo').val();
+
+    // var reader = new FileReader();
+    // console.log( 'reader=', reader );
+    
+    // var file = document.getElementsByName('photo')[0].files[0];
+    // console.log( 'file=', file );
+    
+
+    // reader.readAsDataURL( file )
+    // console.log( 'reader.result=', reader.result );
+
+
+    // formData.file = reader.result;
+
+
+    formData.imageUrl = $('#previewHolder').attr('src');
+    // console.log( formData.imageUrl );
     formData.location = $('#uploadLocation').val();
     formData.date = $('#uploadDate').val();
     formData.animalType = $('#uploadSpecies').val();
     formData.size = $('input[name="size"]:checked').val();
     formData.description = $('uploadDescription').val();
 
-     var xColors = $('input[name="color-group"]:checked').map(function() {
+     formData.colors = $('input[name="color-group"]:checked').map(function() {
        return this.value;
      }).toArray();
-
-    console.log('xcolors', xColors)
-    formData.colors = xColors;
 
     $.ajax({
       method: "POST",

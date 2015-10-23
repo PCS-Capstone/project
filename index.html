@@ -45,7 +45,7 @@
   </script>
 
   <script type="template-x-handlebars" id="template-lostpetview">
-    <h4>Image: {{imageUrl}}</h4>
+    <img src={{imageUrl}} style="width:250px"></img>
     <h4>Type: {{animalType}}</h4>
     <h4>Color: {{#each colors}} {{this}} {{/each}}</h4>
     <h4>Location: {{address}}</h4>
@@ -142,7 +142,7 @@
   <img id="previewHolder" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
 
     <form id="upload-form">
-      <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg">
+      <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
       </input>
 
       <label for="uploadLocation">
