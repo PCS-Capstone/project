@@ -125,7 +125,15 @@ var UploadSightingView = Backbone.View.extend({
        var $imagePreview = $('#previewHolder');
 
     function readFromExif ( exifData ) {
-      var address;//= googlePlacesMethod( exifData.GPSLatitude + exifData.GPSLongtitude )
+      Decimal value = Degrees + (Minutes/60) + (Seconds/3600)
+       "GPSLatitude" : [ 45, 31, 50.22 ]
+
+       function degToDec (latLngArray) {
+        var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
+        return decimal
+       }
+
+      var address;
       var date = exifData.DateTime;
       var animalType;// = justVisualMethod( image )
 
@@ -208,6 +216,8 @@ var UploadSightingView = Backbone.View.extend({
       requestObject.exifData = 
         asyncParams.exifData
       console.log( 'ready to send:', requestObject );
+
+      callback();
     } 
 
     //send it off
@@ -219,7 +229,6 @@ var UploadSightingView = Backbone.View.extend({
         success: function(data) {
           self.google();
           console.log(data);
-
         }
       });
     }
@@ -309,7 +318,7 @@ var ListView = Backbone.View.extend({
 
     tagName: 'div',
   className: 'list-view',
-   template: Handlebars.compile( $('#template-results-list').html(),
+   template: Handlebars.compile( $('#template-results-list').html()),
 
   render: function() {
 
