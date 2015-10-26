@@ -1,3 +1,69 @@
+// <<<<<<< HEAD
+// var MapView = Backbone.View.extend({
+//        map: {},
+//         id: 'map',
+//    tagName: 'div',
+//   // template: Handlebars.compile( $('#template-map').html() ),
+
+//   render: function(){
+//     console.log('MapView $el', this.$el)
+//     this.$el.appendTo('.list-view');
+//     this.loadMap();
+//   },
+
+//   initialize: function( options ){
+//     _.extend( this, options )
+//     this.render();
+//   },
+
+//   events: {
+
+//   },
+
+//   loadMap: function(){
+//     var center = {lat: 45.542094, lng: -122.9346037}; //searchParams.address + math
+
+//     this.map = new google.maps.Map(document.getElementById('map'), {
+//       center: center,
+//       zoom: "",//searchParams.raidus + math,
+//       disableDefaultUI: true
+//     });
+
+//   },
+
+//   populateMap: function(){
+//     console.log( 'making pins' );
+//     var self = this;
+//     //var image = 'public/images/binoculars.png'
+//     //loop through the collection
+//     //make a marker for each model in the collection
+//     this.collection.forEach( function( sighting ){
+
+//       var marker = new google.maps.Marker({
+//         position: sighting.get( 'location' ),
+//         //icon: image,
+//         map: self.map
+//         // animation: google.maps.Animation.DROP
+//       });
+
+//       var infowindow = new google.maps.InfoWindow({
+//         content: sighting.get('animalType') + ' @' + sighting.get('date')
+//       });
+
+//       marker.addListener('mouseover', function() {
+//         infowindow.open(marker.get('map'), marker);
+//       });
+
+//       marker.addListener('mouseout', function(){
+//         infowindow.close(marker.get('map'), marker);
+//       })
+
+//     })
+//   }
+
+// });
+// =======
+// >>>>>>> 9907e179b2e51bca7cb0200412a9b6cc56f28541
 /*========================================
                 HOMEPAGE
 ========================================*/
@@ -295,6 +361,27 @@ var SearchFormView = Backbone.View.extend({
   initialize: function( options ){
     _.extend( this, options );
     this.render();
+
+    var options = {
+        types: 'geocode',
+        componentRestrictions: {
+          country: 'USA'
+        }
+      };
+
+    autocomplete = new google.maps.places.Autocomplete(
+      ( document.getElementById('address-bar') ), options);
+
+    autocomplete.addListener('place_changed', convertToLatLng);
+
+    function convertToLatLng (){
+      //console.log( 'changed place' );
+      place = autocomplete.getPlace();
+      var location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+      console.log( 'location:', location );
+      $('#latlng-storage').val( JSON.stringify( location ) );
+      console.log( 'latlng-storage.val() = ', $('#latlng-storage').val() );
+    }
   },
 
   events: {
@@ -302,11 +389,12 @@ var SearchFormView = Backbone.View.extend({
   },
 
   renderSearchResults: function(event){
+    console.log( 'doing it' );
     event.preventDefault();
     var searchParameters = {
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
-     location : $('input[name="address"]').val(),
+     location : $('#latlng-storage').val(),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
@@ -350,12 +438,13 @@ var ResultsView = Backbone.View.extend({
   },
 
   initialize: function( options ) {
+    console.log( 'running' );
     _.extend( this, options );
     this.render();
   },
 
   events: {
-    "click #edit" : "editSearch",
+           "click #edit" : "editSearch",
     "click #map-button"  : "mapView",
     "click #tile-button" : "listView"
   },
@@ -386,9 +475,7 @@ var ResultsView = Backbone.View.extend({
     var $tileButton = $('#tile-button');
     $tileButton.toggle();
 
-    var mapView = new MapView({
-      collection: app.collection
-    });
+    var mapView = new MapView({ collection : this.collection });
   },
 
   listView: function() {
@@ -491,6 +578,36 @@ var MapView = Backbone.View.extend({
       zoom: 8,
       disableDefaultUI: true
     });
+  },
+
+  populateMap: function(){
+    console.log( 'making pins' );
+    var self = this;
+    //var image = 'public/images/binoculars.png'
+    //loop through the collection
+    //make a marker for each model in the collection
+    this.collection.forEach( function( sighting ){
+
+      var marker = new google.maps.Marker({
+        position: sighting.get( 'location' ),
+        //icon: image,
+        map: self.map
+        // animation: google.maps.Animation.DROP
+      });
+
+      var infowindow = new google.maps.InfoWindow({
+        content: sighting.get('animalType') + ' @' + sighting.get('date')
+      });
+
+      marker.addListener('mouseover', function() {
+        infowindow.open(marker.get('map'), marker);
+      });
+
+      marker.addListener('mouseout', function(){
+        infowindow.close(marker.get('map'), marker);
+      })
+
+    })
   }
 
 });

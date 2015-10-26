@@ -93,7 +93,7 @@
       <div class="form-group">
         <label for="address" class="control-label col-xs-2">*Starting Address</label>
         <div class="col-xs-10">
-          <input type="text" name="address" placeholder="Address">
+          <input type="text" id="address-bar" name="address" placeholder="Address">
           <input type="text" name="radius" placeholder="Radius ( in miles )">
         </div>
       </div>
@@ -138,10 +138,10 @@
             <div class="checkbox-inline">
               <input type="checkbox" name="color-group" value="Gray"> Gray</input>
             </div>
-
           </div>
         </div>
       </div>
+      <input id="latlng-storage" style="display: none;"></div>
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
     </form>
