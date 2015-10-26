@@ -1,36 +1,3 @@
-var MapView = Backbone.View.extend({
-       map: {},
-        id: 'map',
-   tagName: 'div',
-  // template: Handlebars.compile( $('#template-map').html() ),
-
-  render: function(){
-    console.log('MapView $el', this.$el)
-    this.$el.appendTo('.list-view');
-    this.loadMap();
-  },
-
-  initialize: function( options ){
-    _.extend( this, options )
-    this.render();
-  },
-
-  events: {
-
-  },
-
-  loadMap: function(){
-    var center = {lat: 45.542094, lng: -122.9346037};
-
-    this.map = new google.maps.Map(document.getElementById('map'), {
-      center: center,
-      zoom: 8,
-      disableDefaultUI: true
-    });
-
-  }
-
-});
 /*========================================
                 HOMEPAGE
 ========================================*/
@@ -154,6 +121,7 @@ var UploadSightingView = Backbone.View.extend({
 
       var $locationField = $('#uploadLocation');
           var $dateField = $('#uploadDate');
+          var $timeField = $('#uploadTime');
     var $animalTypeField = $('#uploadSpecies');
          var $imageField = $('#upload-photo');
        var $imagePreview = $('#previewHolder');
@@ -169,13 +137,24 @@ var UploadSightingView = Backbone.View.extend({
       var lngDecimal = degToDec(exifData.GPSLongitude)
 
       // google places to fill out address based on latDecimal / lngDecimal
-      var address; 
+      var address = {lat: latDecimal, lng: lngDecimal}
 
-      var date = exifData.DateTime;
+      // var exifDateTime = exifData.DateTime
+
+      var displayDate = exifData.DateTime.split(' ')[0];
+      var displayTime = exifData.DateTime.split(' ')[1];
+
+      displayDate = (displayDate.split(':'))
+      displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
+
+      displayTime = (displayTime.split(':'))
+      displayTime = displayTime[0] + ":" + displayTime[1]
+
       var animalType;// = justVisualMethod( image )
 
       $locationField.val( address );
-      $dateField.val( date );
+      $dateField.val( displayDate );
+      $timeField.val( displayTime );
       $animalTypeField.val( animalType );
     }
 
@@ -232,14 +211,16 @@ var UploadSightingView = Backbone.View.extend({
       requestObject.location = 
         $('#uploadLocation')
           .val();
-      requestObject.date = 
+      requestObject.displayDate = 
         $('#uploadDate')
           .val();
+      requestObject.displayTime = 
+        $('#uploadTime')
+          .val();
+      requestObject.dateTime = 
+        asyncParams.exifData.DateTime;
       requestObject.animalType = 
         $('#uploadSpecies')
-          .val();
-      requestObject.size = 
-        $('input[name="size"]:checked')
           .val();
       requestObject.description = 
         $('uploadDescription')
@@ -274,8 +255,6 @@ var UploadSightingView = Backbone.View.extend({
   }
 });
 
-
-
 /*========================================
             Lost a Pet Views
 =========================================*/
@@ -289,17 +268,14 @@ var SearchFormView = Backbone.View.extend({
    template: Handlebars.compile( $('#template-searchform').html() ),
 
   prePopulate : function(){
-    console.log('prepopulate $el', $(this.$el));
-    console.log('animal-type from template - before temp', $("select[name='animal-type']"));
-    console.log('prepopulate', this.searchParameters.address);
-
     this.$el.html( this.template());
     $('#master').html(this.$el);
 
     $("[name=animal-type]").val(this.searchParameters.animalType);
     $("[name=address]").val(this.searchParameters.address);
     $("[name=radius]").val(this.searchParameters.radius);
-    $("[name=date]").val(this.searchParameters.date);
+    $("[name=start-date]").val(this.searchParameters.date);
+    $("[name=end-date]").val(this.searchParameters.date);
     $("[name=color-group]").val(this.searchParameters.colors);
     $("[value="+this.searchParameters.size+"]").prop("checked", true);
   },
@@ -328,12 +304,12 @@ var SearchFormView = Backbone.View.extend({
   renderSearchResults: function(event){
     event.preventDefault();
     var searchParameters = {
-         date : $('input[name="date"]').val(),
-      address : $('input[name="address"]').val(),
+    startDate : $('input[name="start-date"]').val(),
+      endDate : $('input[name="end-date"]').val(),
+     location : $('input[name="address"]').val(),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
-       colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray(),
-         size : $('input[name="size-group"]:checked').val()
+       colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
     }
 
     this.remove();
@@ -361,10 +337,11 @@ var ResultsView = Backbone.View.extend({
     this.$el.prependTo('#master');
 
     var self = this;
-    console.log('ListView this', self)
+
     this.collection.forEach(function(pet) {
       var tileView = new TileView({
-          model: pet
+          model: pet,
+          parent: self
       });
 
       self.$el.append(tileView.$el)
@@ -384,15 +361,22 @@ var ResultsView = Backbone.View.extend({
   },
 
   editSearch: function() {
-    this.remove();
+    var self = this
+    var model;
 
+    while(model = this.collection.first()){
+      this.collection.remove(model);
+    }
+
+    this.remove();
+    
     var editSearch = new SearchFormView({
       searchParameters : self.searchParameters
     })
+
   },
 
   mapView: function(event) {
-    // this.remove();
     var $tileView = $('.lost-pet')
     $tileView.remove();
 
@@ -402,12 +386,12 @@ var ResultsView = Backbone.View.extend({
     var $tileButton = $('#tile-button');
     $tileButton.toggle();
 
-    var mapView = new MapView({});
+    var mapView = new MapView({
+      collection: app.collection
+    });
   },
 
   listView: function() {
-    console.log('listView button pressed')
-
     var $mapView = $('#map')
     $mapView.remove();
 
@@ -421,7 +405,8 @@ var ResultsView = Backbone.View.extend({
 
     this.collection.forEach(function(pet) {
       var tileView = new TileView({
-          model: pet
+          model: pet,
+          parent: self
       });
 
       self.$el.append(tileView.$el)
@@ -441,14 +426,21 @@ var TileView = Backbone.View.extend({
   },
 
   initialize: function( options ) {
-
     _.extend( this, options );
+    this.listenTo(this.model, 'remove', this.selfDestruct)
+
     this.render();
   },
 
   events: {
     "click .btn-description" : "showDescription"
   },
+
+
+  selfDestruct: function() {
+    console.log('self destruct tile view')
+    this.remove();
+  }, 
 
   showDescription : function(event){
     var $button = $(event.target);
@@ -464,3 +456,41 @@ var TileView = Backbone.View.extend({
 
 });
 
+var MapView = Backbone.View.extend({
+       map: {},
+        id: 'map',
+   tagName: 'div',
+  // template: Handlebars.compile( $('#template-map').html() ),
+
+  render: function(){
+    console.log('MapView $el', this.$el)
+    this.$el.appendTo('.list-view');
+    this.loadMap();
+  },
+
+  initialize: function( options ){
+    _.extend( this, options );
+    this.listenTo(this.model, 'remove', this.selfDestruct);
+    this.render();
+  },
+
+  events: {
+
+  },
+
+  selfDestruct: function() {
+    console.log('self destruct map view')
+    this.remove();
+  }, 
+
+  loadMap: function(){
+    var center = {lat: 45.542094, lng: -122.9346037};
+
+    this.map = new google.maps.Map(document.getElementById('map'), {
+      center: center,
+      zoom: 8,
+      disableDefaultUI: true
+    });
+  }
+
+});
