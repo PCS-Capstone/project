@@ -20,14 +20,44 @@ var MapView = Backbone.View.extend({
   },
 
   loadMap: function(){
-    var center = {lat: 45.542094, lng: -122.9346037};
+    var center = {lat: 45.542094, lng: -122.9346037}; //searchParams.address + math
 
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: center,
-      zoom: 8,
+      zoom: "",//searchParams.raidus + math,
       disableDefaultUI: true
     });
 
+  },
+
+  populateMap: function(){
+    console.log( 'making pins' );
+    var self = this;
+    //var image = 'public/images/binoculars.png'
+    //loop through the collection
+    //make a marker for each model in the collection
+    this.collection.forEach( function( sighting ){
+
+      var marker = new google.maps.Marker({
+        position: sighting.get( 'location' ),
+        //icon: image,
+        map: self.map
+        // animation: google.maps.Animation.DROP
+      });
+
+      var infowindow = new google.maps.InfoWindow({
+        content: sighting.get('animalType') + ' @' + sighting.get('date')
+      });
+
+      marker.addListener('mouseover', function() {
+        infowindow.open(marker.get('map'), marker);
+      });
+
+      marker.addListener('mouseout', function(){
+        infowindow.close(marker.get('map'), marker);
+      })
+
+    })
   }
 
 });
@@ -319,6 +349,27 @@ var SearchFormView = Backbone.View.extend({
   initialize: function( options ){
     _.extend( this, options );
     this.render();
+
+    var options = {
+        types: 'geocode',
+        componentRestrictions: {
+          country: 'USA'
+        }
+      };
+
+    autocomplete = new google.maps.places.Autocomplete(
+      ( document.getElementById('address-bar') ), options);
+
+    autocomplete.addListener('place_changed', convertToLatLng);
+
+    function convertToLatLng (){
+      //console.log( 'changed place' );
+      place = autocomplete.getPlace();
+      var location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+      console.log( 'location:', location );
+      $('#latlng-storage').val( JSON.stringify( location ) );
+      console.log( 'latlng-storage.val() = ', $('#latlng-storage').val() );
+    }
   },
 
   events: {
@@ -326,14 +377,14 @@ var SearchFormView = Backbone.View.extend({
   },
 
   renderSearchResults: function(event){
+    console.log( 'doing it' );
     event.preventDefault();
     var searchParameters = {
          date : $('input[name="date"]').val(),
-      address : $('input[name="address"]').val(),
+     location : $('#latlng-storage').val(),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
-       colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray(),
-         size : $('input[name="size-group"]:checked').val()
+       colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
     }
 
     this.remove();
@@ -373,6 +424,7 @@ var ResultsView = Backbone.View.extend({
   },
 
   initialize: function( options ) {
+    console.log( 'running' );
     _.extend( this, options );
     this.render();
   },
@@ -402,7 +454,7 @@ var ResultsView = Backbone.View.extend({
     var $tileButton = $('#tile-button');
     $tileButton.toggle();
 
-    var mapView = new MapView({});
+    var mapView = new MapView({ collection : this.collection });
   },
 
   listView: function() {

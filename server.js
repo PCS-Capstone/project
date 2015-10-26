@@ -67,13 +67,13 @@ app.get('/pet', function (request, response) {
 
 app.post('/pet', function(request, response) {
   // console.log(upload)
-  // console.log(request.body.data);
+  console.log('location: ', request.body.data.location);
   // console.log('request.file =', request.file);
   // console.log('data.file =', request.body.data.file )
-
   var data = JSON.parse(request.body.data);
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
+
   uploader.upload( data.imageUrl, function (result)  {
     //console.log('return after upload: ', result);
 
