@@ -1,3 +1,36 @@
+var MapView = Backbone.View.extend({
+       map: {},
+        id: 'map',
+   tagName: 'div',
+  // template: Handlebars.compile( $('#template-map').html() ),
+
+  render: function(){
+    console.log('MapView $el', this.$el)
+    this.$el.appendTo('.list-view');
+    this.loadMap();
+  },
+
+  initialize: function( options ){
+    _.extend( this, options )
+    this.render();
+  },
+
+  events: {
+
+  },
+
+  loadMap: function(){
+    var center = {lat: 45.542094, lng: -122.9346037};
+
+    this.map = new google.maps.Map(document.getElementById('map'), {
+      center: center,
+      zoom: 8,
+      disableDefaultUI: true
+    });
+
+  }
+
+});
 /*========================================
                 HOMEPAGE
 ========================================*/
@@ -13,6 +46,7 @@ var HomePageView = Backbone.View.extend({
     this.$el.append( [ $foundButton, $lostButton] );
     this.$el.appendTo( '#master' );
   },
+
   initialize: function( options ){
     _.extend( options );
     this.render();
@@ -22,10 +56,12 @@ var HomePageView = Backbone.View.extend({
     'click #found-button' : 'renderUploadPage',
     'click #lost-button'  : 'renderSearchForm'
   },
+
   renderUploadPage: function(){
     this.remove();
     var uploadForm = new UploadSightingView({});
   },
+
   renderSearchForm: function(){
     this.remove();
     var searchForm = new SearchFormView({});
@@ -52,7 +88,7 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   initialize: function( options ){
-    _.extend( options );
+    _.extend( this, options );
     this.render();
   },
 
@@ -113,9 +149,7 @@ var UploadSightingView = Backbone.View.extend({
     service.nearbySearch(request, hello);
     }
   },
-  uploadPhoto: function(event) {
 
-  },
   populateFields : function() {
 
       var $locationField = $('#uploadLocation');
@@ -125,15 +159,18 @@ var UploadSightingView = Backbone.View.extend({
        var $imagePreview = $('#previewHolder');
 
     function readFromExif ( exifData ) {
-      Decimal value = Degrees + (Minutes/60) + (Seconds/3600)
-       "GPSLatitude" : [ 45, 31, 50.22 ]
 
        function degToDec (latLngArray) {
         var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
         return decimal
        }
 
-      var address;
+      var latDecimal = degToDec(exifData.GPSLatitude)
+      var lngDecimal = degToDec(exifData.GPSLongitude)
+
+      // google places to fill out address based on latDecimal / lngDecimal
+      var address; 
+
       var date = exifData.DateTime;
       var animalType;// = justVisualMethod( image )
 
@@ -233,8 +270,6 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
-
-
     getExifData( buildDataForServer, sendToServer );
   }
 });
@@ -268,6 +303,7 @@ var SearchFormView = Backbone.View.extend({
     $("[name=color-group]").val(this.searchParameters.colors);
     $("[value="+this.searchParameters.size+"]").prop("checked", true);
   },
+
   render: function(){
     if (this.searchParameters !== undefined) {
       console.log('edited search')
@@ -279,6 +315,7 @@ var SearchFormView = Backbone.View.extend({
     }
 
   },
+
   initialize: function( options ){
     _.extend( this, options );
     this.render();
@@ -302,7 +339,7 @@ var SearchFormView = Backbone.View.extend({
     this.remove();
 
     app.collection.fetch({data : searchParameters, success: function()
-      { new ListView ({
+      { new ResultsView ({
         collection : app.collection,
         searchParameters : searchParameters
         });
@@ -311,65 +348,100 @@ var SearchFormView = Backbone.View.extend({
 });
 
 
-
 /*  Search Results
 --------------------*/
-var ListView = Backbone.View.extend({
+var ResultsView = Backbone.View.extend({
 
     tagName: 'div',
   className: 'list-view',
    template: Handlebars.compile( $('#template-results-list').html()),
 
   render: function() {
-
     this.$el.html( this.template(this.searchParameters) )
     this.$el.prependTo('#master');
 
     var self = this;
-
+    console.log('ListView this', self)
     this.collection.forEach(function(pet) {
-      var lostPetView = new LostPetView({
+      var tileView = new TileView({
           model: pet
       });
 
-      self.$el.append(lostPetView.$el)
+      self.$el.append(tileView.$el)
     });
 
   },
+
   initialize: function( options ) {
     _.extend( this, options );
     this.render();
   },
+
   events: {
     "click #edit" : "editSearch",
-    "click #map"  : "mapView"
+    "click #map-button"  : "mapView",
+    "click #tile-button" : "listView"
   },
+
   editSearch: function() {
-    var self = this;
     this.remove();
-    console.log('listview', this.searchParameters)
+
     var editSearch = new SearchFormView({
       searchParameters : self.searchParameters
     })
-    // SearchFormView.render();
   },
-  mapView: function() {
-    this.remove();
+
+  mapView: function(event) {
+    // this.remove();
+    var $tileView = $('.lost-pet')
+    $tileView.remove();
+
+    var $mapButton = $(event.target);
+    $mapButton.toggle();
+
+    var $tileButton = $('#tile-button');
+    $tileButton.toggle();
+
     var mapView = new MapView({});
+  },
+
+  listView: function() {
+    console.log('listView button pressed')
+
+    var $mapView = $('#map')
+    $mapView.remove();
+
+    var $tileButton = $(event.target);
+    $tileButton.toggle();
+
+    var $mapButton = $('#map-button');
+    $mapButton.toggle();
+
+    var self = this;
+
+    this.collection.forEach(function(pet) {
+      var tileView = new TileView({
+          model: pet
+      });
+
+      self.$el.append(tileView.$el)
+    });
   }
+
 });
 
-
-var LostPetView = Backbone.View.extend({
+var TileView = Backbone.View.extend({
 
     tagName: 'div',
   className: 'lost-pet',
-   template: Handlebars.compile($ ('#template-lostpetview').html()),
+   template: Handlebars.compile($ ('#template-tile-view').html()),
 
   render: function() {
     this.$el.html( this.template(this.model.get('value')) );
   },
+
   initialize: function( options ) {
+
     _.extend( this, options );
     this.render();
   },
@@ -389,32 +461,6 @@ var LostPetView = Backbone.View.extend({
     }
   }
 
-
-});
-
-var MapView = Backbone.View.extend({
-
-        id: 'map',
-   tagName: 'div',
-  template: Handlebars.compile( $('#template-map').html() ),
-
-  render: function(){
-    // this.initMap(); // How do I call the cdn at will?
-    this.$el.appendTo('#master');
-  },
-  initialize: function(){
-    this.render();
-  },
-
-  events: {
-
-  },
-  initMap: function(){
-    map = new google.maps.Map(this.$el, {
-      center: {lat: -34.397, lng: 150.644},
-      zoom: 8
-    });
-  }
 
 });
 

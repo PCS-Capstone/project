@@ -40,19 +40,21 @@ app.get('/pet', function (request, response) {
 
   var search = request.query;
 
-  var query =
-  "value.location:NEAR:" +
-  "{"+
-    "latitude: "  + search.lat +
-    "longitude: " + search.lng +
-    " radius: "   + search.radius +
-    "mi"+
-  "} " +
-  "AND value.animalType: (" + search.animalType + ") "   +
-  "AND value.colors: ("     + search.colors     + ") "   +
-  "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
+  // var query =
+  // "value.location:NEAR:" +
+  // "{"+
+  //   "latitude: "  + search.lat +
+  //   "longitude: " + search.lng +
+  //   " radius: "   + search.radius +
+  //   "mi"+
+  // "} " +
+  // "AND value.animalType: (" + search.animalType + ") "   +
+  // "AND value.colors: ("     + search.colors     + ") "   +
+  // "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
-	db.search('shelter', query)
+  var query = "value.animalType: (" + search.animalType + ") "
+
+	db.search('sighting', query)
 
 	.then(function(result) {
 		//console.log(result.body.results);
