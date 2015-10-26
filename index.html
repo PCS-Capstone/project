@@ -38,13 +38,14 @@
         </span>
         <div class="btn-group pull-right">
           <button id="edit" class="btn btn-default">Edit</button>
-          <button id="map" class="btn btn-default">Map View</button>
+          <button id="map-button" class="btn btn-default">Map View</button>
+          <button id="tile-button" class="btn btn-default" style="display: none">List View</button>
         </div>
       </div>
     </div>
   </script>
 
-  <script type="template-x-handlebars" id="template-lostpetview">
+  <script type="template-x-handlebars" id="template-tile-view">
     <div class="row">
       <img src={{imageUrl}} style="width:250px" class="col-xs-5"></img>
       <div class="col-xs-6">
@@ -176,10 +177,10 @@
         <option value=""></option>
         <option value="Dog"> Dog </option>
         <option value="Cat"> Cat </option>
+        <option value="Reptile">Reptile</option>
         <option value="Rodent">Rodent</option>
         <option value="Fish">Fish</option>
       </select>
-
 
       <fieldset>
         <legend> Please select color:
