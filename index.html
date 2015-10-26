@@ -55,8 +55,8 @@
     </div>
 
     <div class="flex-row">
-      <button class="btn btn-info btn-lg">Location: {{address}}</button>
-      <h4>Last seen: {{date}}</h4>
+      <button class="btn btn-info btn-lg">Location: {{location}}</button>
+      <h4>Last seen: {{displayDate}} {{displayTime}}</h4>
     </div>
 
     {{#if description}}
@@ -171,6 +171,11 @@
       </label>
       <input id="uploadDate" type="text" name="date">
 
+      <label for="uploadTime">
+        <p> Time: </p>
+      </label>
+      <input id="uploadTime" type="text" name="time">
+
       <label for="uploadSpecies">
         <p> Type of Animal </p>
       <select id="uploadSpecies" name="animal-type">
@@ -234,7 +239,6 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&callback=initMap">
     </script> <!-- how do i call this at will? -->
   <script src="public/js/main.js"></script>
-  <script src="public/js/preview.js"></script>
 
   <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">

@@ -52,7 +52,7 @@ app.get('/pet', function (request, response) {
   // "AND value.colors: ("     + search.colors     + ") "   +
   // "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
-  var query = "value.animalType: (" + search.animalType + ") "
+  var query = "value.dateTime: [" + search.startDate  + " TO " + search.endDate + "]"
 
 	db.search('sighting', query)
 
