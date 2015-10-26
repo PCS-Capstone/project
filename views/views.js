@@ -54,6 +54,7 @@ var UploadSightingView = Backbone.View.extend({
   initialize: function( options ){
     _.extend( options );
     this.render();
+    this.googleAutocomplete();
   },
 
   events: {
@@ -78,22 +79,23 @@ var UploadSightingView = Backbone.View.extend({
         zoom: 12
       });
       infowindow = new google.maps.InfoWindow();
-      callback();
+      createObject();
     })();
 
-    function callback() {
-      console.log('callback');
+    function createObject() {
+      console.log('createObject');
       request = {
         location: new google.maps.LatLng(45.522337,-122.676865),
         radius: '1000',
         keyword: ['animal shelter']
       };
+    }
 
     function createMarker(place) {
       placeLoc = place.geometry.location;
       marker = new google.maps.Marker({
         map: map,
-        position: place.geometry.location
+        position: place.geometry.location,
       });
 
       google.maps.event.addListener(marker, 'click', function() {
@@ -102,141 +104,236 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
-    function hello(results, status) {
+    function locationResults(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
           createMarker(results[i]);
         }
       }
     }
+
     service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(request, hello);
-    }
+    service.nearbySearch(request, locationResults);
   },
-  uploadPhoto: function(event) {
+  // uploadPhoto: function(event) {
+  //
+  // },
+  // populateFields : function() {
+  //
+  //     var $locationField = $('#uploadLocation');
+  //         var $dateField = $('#uploadDate');
+  //   var $animalTypeField = $('#uploadSpecies');
+  //        var $imageField = $('#upload-photo');
+  //      var $imagePreview = $('#previewHolder');
+  //
+  //   function readFromExif ( exifData ) {
+  //     Decimal value = Degrees + (Minutes/60) + (Seconds/3600)
+  //      "GPSLatitude" : [ 45, 31, 50.22 ]
+  //
+  //      function degToDec (latLngArray) {
+  //       var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
+  //       return decimal
+  //      }
+  //
+  //     var address;
+  //     var date = exifData.DateTime;
+  //     var animalType;// = justVisualMethod( image )
+  //
+  //     $locationField.val( address );
+  //     $dateField.val( date );
+  //     $animalTypeField.val( animalType );
+  //   }
+  //
+  //   function previewImage ( inputElement ) {
+  //     var image  = inputElement[0].files[0];
+  //     var reader = new FileReader();
+  //
+  //     reader.onload = function(event) {
+  //       $imagePreview.attr('src', event.target.result);
+  //     };
+  //
+  //     reader.readAsDataURL( image );
+  //   }
+  //
+  //   function getExifData ( ){
+  //     var image = $imageField[0].files[0];
+  //
+  //     EXIF.getData(image, function() {
+  //       var xf = EXIF( this ).EXIFwrapped.exifdata;
+  //       readFromExif(xf);
+  //     });
+  //   }
+  //
+  //   previewImage( $imageField );
+  //   getExifData();
+  //
+  // },
+  //
+  // submitForm : function(event) {
+  //
+  //   event.preventDefault();
+  //   var requestObject = {};
+  //
+  //   //get the file from the input field
+  //   //run EXIF with the file
+  //   //expose the result to a callback (async)
+  //   function getExifData ( makeObjectFunction, shipObjectFunction ){
+  //     console.log( 'running addExif' )
+  //     var image = document.getElementsByName('photo')[0].files[0];
+  //
+  //     EXIF.getData(image, function() {
+  //       var xf = EXIF( this ).EXIFwrapped.exifdata;
+  //       console.log( 'xf=', xf );
+  //       makeObjectFunction( { exifData : xf }, shipObjectFunction );
+  //     });
+  //   }
+  //
+  //   // get all the values from the search form
+  //   // save them as properties on the requestObject
+  //   function buildDataForServer ( asyncParams, callback ) {
+  //     requestObject.imageUrl =
+  //       $('#previewHolder')
+  //         .attr('src');
+  //     requestObject.location =
+  //       $('#uploadLocation')
+  //         .val();
+  //     requestObject.date =
+  //       $('#uploadDate')
+  //         .val();
+  //     requestObject.animalType =
+  //       $('#uploadSpecies')
+  //         .val();
+  //     requestObject.size =
+  //       $('input[name="size"]:checked')
+  //         .val();
+  //     requestObject.description =
+  //       $('uploadDescription')
+  //         .val();
+  //     requestObject.colors =
+  //       $('input[name="color-group"]:checked')
+  //         .map(function() {
+  //           return this.value;
+  //         })
+  //         .toArray();
+  //     requestObject.exifData =
+  //       asyncParams.exifData
+  //     console.log( 'ready to send:', requestObject );
+  //
+  //     callback();
+  //   }
+  //
+  //   //send it off
+  //   function sendToServer () {
+  //     $.ajax({
+  //       method: "POST",
+  //       url: "/pet",
+  //       data: { data : JSON.stringify(requestObject) },
+  //       success: function(data) {
+  //         self.google();
+  //         console.log(data);
+  //       }
+  //     });
+  //   }
+  //   getExifData( buildDataForServer, sendToServer );
+  // }
+  googleAutocomplete: function() {
 
-  },
-  populateFields : function() {
+    $('<input id="locationAutocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text" class="col-xs-8 col-xs-offset-2"></input>').appendTo('body');
+    $('<div id="locationMap" class="col-xs-12 col-md-8 col-md-offset-2" style="height:300px"></div>').appendTo('body');
 
-      var $locationField = $('#uploadLocation');
-          var $dateField = $('#uploadDate');
-    var $animalTypeField = $('#uploadSpecies');
-         var $imageField = $('#upload-photo');
-       var $imagePreview = $('#previewHolder');
+    var autocomplete;
+    var map;
+    var request;
+    var place;
+    var infoWindow;
+    var placeLoc;
+    var marker;
+    var geocoder;
+    var location = {};
 
-    function readFromExif ( exifData ) {
-      Decimal value = Degrees + (Minutes/60) + (Seconds/3600)
-       "GPSLatitude" : [ 45, 31, 50.22 ]
-
-       function degToDec (latLngArray) {
-        var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
-        return decimal
-       }
-
-      var address;
-      var date = exifData.DateTime;
-      var animalType;// = justVisualMethod( image )
-
-      $locationField.val( address );
-      $dateField.val( date );
-      $animalTypeField.val( animalType );
-    }
-
-    function previewImage ( inputElement ) {
-      var image  = inputElement[0].files[0];
-      var reader = new FileReader();
-
-      reader.onload = function(event) {
-        $imagePreview.attr('src', event.target.result);
+    //Create Input Field
+    (function() {
+      var options = {
+        types: 'geocode',
+        componentRestrictions: {
+          country: 'USA'
+        }
       };
 
-      reader.readAsDataURL( image );
+      autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('locationAutocomplete')), options);
+
+    })();
+
+    function fillInAddress() {
+      place = autocomplete.getPlace();
+      location.lat = place.geometry.location.lat();
+      location.lng = place.geometry.location.lng();
+      console.log(location);
+      createMarker();
     }
 
-    function getExifData ( ){
-      var image = $imageField[0].files[0];
+    //Zoom map onto marker
+    //Create Marker on Map
+    //Get Lat/Long
 
-      EXIF.getData(image, function() {
-        var xf = EXIF( this ).EXIFwrapped.exifdata;
-        readFromExif(xf);
+    function createMarker(xMapClickEvent) {
+      console.log(location);
+
+      if (marker) {
+        marker.setMap(null);
+      }
+
+      marker = new google.maps.Marker({
+        map: map,
+        position: location,
+        animation: google.maps.Animation.DROP,
+        draggable:true
+      });
+
+      google.maps.event.addListener(marker,'dragend',function(event) {
+        location.lat = event.latLng.lat();
+        location.lng = event.latLng.lng();
+        console.log('dragging me');
+        codeAddress();
+      });
+      codeAddress();
+      map.setZoom(11);
+      map.setCenter(location);
+    }
+
+    function codeAddress() {
+      console.log('hello');
+
+      geocoder.geocode( { 'location': location}, function(results, status) {
+        console.log("drag event results: " + results);
+        console.log("location info: " + location);
+        $('#locationAutocomplete').val(results[0].formatted_address);
       });
     }
 
-    previewImage( $imageField );
-    getExifData();
+    autocomplete.addListener('place_changed', fillInAddress);
 
-  },
+    //Create Map
+    (function () {
 
-  submitForm : function(event) {
-
-    event.preventDefault();
-    var requestObject = {};
-
-    //get the file from the input field
-    //run EXIF with the file
-    //expose the result to a callback (async)
-    function getExifData ( makeObjectFunction, shipObjectFunction ){
-      console.log( 'running addExif' )
-      var image = document.getElementsByName('photo')[0].files[0];
-
-      EXIF.getData(image, function() {
-        var xf = EXIF( this ).EXIFwrapped.exifdata;
-        console.log( 'xf=', xf );
-        makeObjectFunction( { exifData : xf }, shipObjectFunction );
+      map = new google.maps.Map(document.getElementById('locationMap'), {
+        center: {lat: 45.522337, lng: -122.676865},
+        zoom: 12
       });
-    }
 
-    // get all the values from the search form
-    // save them as properties on the requestObject
-    function buildDataForServer ( asyncParams, callback ) {
-      requestObject.imageUrl = 
-        $('#previewHolder')
-          .attr('src');
-      requestObject.location = 
-        $('#uploadLocation')
-          .val();
-      requestObject.date = 
-        $('#uploadDate')
-          .val();
-      requestObject.animalType = 
-        $('#uploadSpecies')
-          .val();
-      requestObject.size = 
-        $('input[name="size"]:checked')
-          .val();
-      requestObject.description = 
-        $('uploadDescription')
-          .val();
-      requestObject.colors = 
-        $('input[name="color-group"]:checked')
-          .map(function() {
-            return this.value;
-          })
-          .toArray();
-      requestObject.exifData = 
-        asyncParams.exifData
-      console.log( 'ready to send:', requestObject );
-
-      callback();
-    } 
-
-    //send it off
-    function sendToServer () {
-      $.ajax({
-        method: "POST",
-        url: "/pet",
-        data: { data : JSON.stringify(requestObject) },
-        success: function(data) {
-          self.google();
-          console.log(data);
-        }
+      map.addListener('click', function(mapClickEvent) {
+        location.lat = mapClickEvent.latLng.lat();
+        location.lng = mapClickEvent.latLng.lng();
+        createMarker(mapClickEvent);
       });
-    }
 
+      geocoder = new google.maps.Geocoder;
+    })();
 
-
-    getExifData( buildDataForServer, sendToServer );
   }
+
+
 });
 
 
@@ -417,4 +514,3 @@ var MapView = Backbone.View.extend({
   }
 
 });
-
