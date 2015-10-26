@@ -237,7 +237,16 @@ var UploadSightingView = Backbone.View.extend({
   //   getExifData( buildDataForServer, sendToServer );
   // }
   googleAutocomplete: function() {
+    /*------------------------------------------------------------------------
+      In case the exif geolocation data is abset, this entire function adds a:
+        --Google Autocomplete Input Field and Map to the form's loation field.
+    ------------------------------------------------------------------------*/
 
+    /*
+      Builds new elements:
+        --Form Location field
+        --Location Map
+    */
     $('<input id="locationAutocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text" class="col-xs-8 col-xs-offset-2"></input>').appendTo('body');
     $('<div id="locationMap" class="col-xs-12 col-md-8 col-md-offset-2" style="height:300px"></div>').appendTo('body');
 
@@ -251,7 +260,11 @@ var UploadSightingView = Backbone.View.extend({
     var geocoder;
     var location = {};
 
-    //Create Input Field
+    /*
+      Builds Google Autocomplete Input field
+    */
+
+    //Sets options for Google Autocomplete
     (function() {
       var options = {
         types: 'geocode',
@@ -259,12 +272,13 @@ var UploadSightingView = Backbone.View.extend({
           country: 'USA'
         }
       };
-
+      //Creates instance of Google Autocomplete
       autocomplete = new google.maps.places.Autocomplete(
       /** @type {!HTMLInputElement} */(document.getElementById('locationAutocomplete')), options);
-
     })();
 
+    //When a Google Autcomplete Location is selected, captures lat/long and creates marker
+      //This function is triggered as a listener on the autcomplete (declared immediately after codeAddress function)
     function fillInAddress() {
       place = autocomplete.getPlace();
       location.lat = place.geometry.location.lat();
@@ -273,28 +287,25 @@ var UploadSightingView = Backbone.View.extend({
       createMarker();
     }
 
-    //Zoom map onto marker
-    //Create Marker on Map
-    //Get Lat/Long
-
+    //Creates new markers
     function createMarker(xMapClickEvent) {
       console.log(location);
-
+      //Clears existing marker when new marker is added
       if (marker) {
         marker.setMap(null);
       }
-
+      //Builds and Appends Marker
       marker = new google.maps.Marker({
         map: map,
         position: location,
         animation: google.maps.Animation.DROP,
         draggable:true
       });
-
+      //Provides drag functionality to marker;
+        //Sets marker creation and captures lat/long when drag is complete
       google.maps.event.addListener(marker,'dragend',function(event) {
         location.lat = event.latLng.lat();
         location.lng = event.latLng.lng();
-        console.log('dragging me');
         codeAddress();
       });
       codeAddress();
@@ -302,38 +313,38 @@ var UploadSightingView = Backbone.View.extend({
       map.setCenter(location);
     }
 
+    //Uses Geocoder to convert lat/long into Street Address to display in location input field
+      //Geocoder sends a request using lat/long;
+      //Takes first (formatted address) result and sets location input form field to value
     function codeAddress() {
-      console.log('hello');
-
       geocoder.geocode( { 'location': location}, function(results, status) {
         console.log("drag event results: " + results);
         console.log("location info: " + location);
         $('#locationAutocomplete').val(results[0].formatted_address);
       });
     }
-
     autocomplete.addListener('place_changed', fillInAddress);
 
-    //Create Map
+    /*
+      Creates Google Map
+    */
     (function () {
-
       map = new google.maps.Map(document.getElementById('locationMap'), {
         center: {lat: 45.522337, lng: -122.676865},
         zoom: 12
       });
-
+      //Adds click and drop pin capability to Google Map
+        //Saves value of lat/long to Location variable (at top)
       map.addListener('click', function(mapClickEvent) {
         location.lat = mapClickEvent.latLng.lat();
         location.lng = mapClickEvent.latLng.lng();
         createMarker(mapClickEvent);
       });
-
+      //Creates Google Geocoder, which is needed by the codeAddress() function:
+        //This is needed to convert lat/long into Street Address, to display in location's input field for user
       geocoder = new google.maps.Geocoder;
     })();
-
   }
-
-
 });
 
 
