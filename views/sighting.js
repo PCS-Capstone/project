@@ -99,17 +99,24 @@ var UploadSightingView = Backbone.View.extend({
 
     function readFromExif ( exifData ) {
 
-      if ( !(exifData.GPSLatitude) || !(exifData.GPSLatitude) ) {
+      if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
 
-       function degToDec (latLngArray) {
+      function degToDec (latLngArray) {
+
+        console.log('longitude negative? ', latLngArray[0])
         var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
         return decimal;
-       }
+      }
 
       var latDecimal = degToDec(exifData.GPSLatitude);
-      var lngDecimal = degToDec(exifData.GPSLongitude);
+
+      if (exifData.GPSLongitudeRef === "W"){  
+        var lngDecimal = (-(degToDec(exifData.GPSLongitude)));
+      } else {
+        var lngDecimal = degToDec(exifData.GPSLongitude)
+      }
 
       // google places to fill out address based on latDecimal / lngDecimal
       address = {lat: latDecimal, lng: lngDecimal};
