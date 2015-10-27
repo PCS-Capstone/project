@@ -205,6 +205,8 @@ var UploadSightingView = Backbone.View.extend({
     // get all the values from the search form
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
+      var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-')
+
       requestObject.imageUrl = 
         $('#previewHolder')
           .attr('src');
@@ -218,7 +220,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadTime')
           .val();
       requestObject.dateTime = 
-        asyncParams.exifData.DateTime;
+        dateTime 
       requestObject.animalType = 
         $('#uploadSpecies')
           .val();
