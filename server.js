@@ -40,19 +40,24 @@ app.get('/pet', function (request, response) {
 
   var search = request.query;
 
-  var query =
-  "value.location:NEAR:" +
-  "{"+
-    "latitude: "  + search.lat +
-    "longitude: " + search.lng +
-    " radius: "   + search.radius +
-    "mi"+
-  "} " +
-  "AND value.animalType: (" + search.animalType + ") "   +
-  "AND value.colors: ("     + search.colors     + ") "   +
-  "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
+  // var query =
+  // "value.location:NEAR:" +
+  // "{"+
+  //   "latitude: "  + search.location.lat +
+  //   " longitude: " + search.location.lng +
+  //   " radius: "   + search.radius +
+  //   "mi"+
+  // "} " +
+  // "AND value.animalType: (" + search.animalType + ") "   +
+  // "AND value.colors: ("     + search.colors     + ") "   +
+  // "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
-	db.search('shelter', query)
+  var query = "value.dateTime: [" + search.startDate  + " TO " + search.endDate + "]"
+
+  console.log('start date', search.startDate)
+  console.log('end date', search.endDate)
+
+	db.search('sighting', query)
 
 	.then(function(result) {
 		//console.log(result.body.results);
@@ -65,13 +70,13 @@ app.get('/pet', function (request, response) {
 
 app.post('/pet', function(request, response) {
   // console.log(upload)
-  // console.log(request.body.data);
+  console.log('location: ', request.body.data.location);
   // console.log('request.file =', request.file);
   // console.log('data.file =', request.body.data.file )
-
   var data = JSON.parse(request.body.data);
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
+
   uploader.upload( data.imageUrl, function (result)  {
     //console.log('return after upload: ', result);
 

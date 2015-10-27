@@ -41,13 +41,14 @@
         </span>
         <div class="btn-group pull-right">
           <button id="edit" class="btn btn-default">Edit</button>
-          <button id="map" class="btn btn-default">Map View</button>
+          <button id="map-button" class="btn btn-default">Map View</button>
+          <button id="tile-button" class="btn btn-default" style="display: none">List View</button>
         </div>
       </div>
     </div>
   </script>
 
-  <script type="template-x-handlebars" id="template-lostpetview">
+  <script type="template-x-handlebars" id="template-tile-view">
     <div class="row">
       <img src={{imageUrl}} style="width:250px" class="col-xs-5"></img>
       <div class="col-xs-6">
@@ -57,8 +58,8 @@
     </div>
 
     <div class="flex-row">
-      <button class="btn btn-info btn-lg">Location: {{address}}</button>
-      <h4>Last seen: {{date}}</h4>
+      <button class="btn btn-info btn-lg">Location: {{location}}</button>
+      <h4>Last seen: {{displayDate}} at {{displayTime}}</h4>
     </div>
 
     {{#if description}}
@@ -95,7 +96,7 @@
       <div class="form-group">
         <label for="address" class="control-label col-xs-2">*Starting Address</label>
         <div class="col-xs-10">
-          <input type="text" name="address" placeholder="Address">
+          <input type="text" id="address-bar" name="address" placeholder="Address">
           <input type="text" name="radius" placeholder="Radius ( in miles )">
         </div>
       </div>
@@ -140,10 +141,10 @@
             <div class="checkbox-inline">
               <input type="checkbox" name="color-group" value="Gray"> Gray</input>
             </div>
-
           </div>
         </div>
       </div>
+      <input id="latlng-storage" style="display: none;"></div>
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
     </form>
@@ -172,16 +173,21 @@
       </label>
       <input id="uploadDate" type="text" name="date">
 
+      <label for="uploadTime">
+        <p> Time: </p>
+      </label>
+      <input id="uploadTime" type="text" name="time">
+
       <label for="uploadSpecies">
         <p> Type of Animal </p>
       <select id="uploadSpecies" name="animal-type">
         <option value=""></option>
         <option value="Dog"> Dog </option>
         <option value="Cat"> Cat </option>
+        <option value="Reptile">Reptile</option>
         <option value="Rodent">Rodent</option>
         <option value="Fish">Fish</option>
       </select>
-
 
       <fieldset>
         <legend> Please select color:
@@ -235,7 +241,6 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&callback=initMap">
     </script> <!-- how do i call this at will? -->
   <script src="public/js/main.js"></script>
-  <script src="public/js/preview.js"></script>
 
   <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">
