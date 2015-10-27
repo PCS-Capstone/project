@@ -92,7 +92,10 @@ var HomePageView = Backbone.View.extend({
 
   renderUploadPage: function(){
     this.remove();
-    var uploadForm = new UploadSightingView({});
+    var uploadForm = new UploadSightingView({
+      lat: 0,
+      lng: 0
+    });
   },
 
   renderSearchForm: function(){
@@ -129,7 +132,6 @@ var UploadSightingView = Backbone.View.extend({
     'change #upload-photo' : 'populateFields',
     'submit #upload-form'  : 'submitForm'
   },
-
   google: function() {
     $('#upload-form').remove();
     $('#map').removeClass('display-none');
@@ -138,7 +140,6 @@ var UploadSightingView = Backbone.View.extend({
     var request;
     var place;
     var infoWindow;
-    var placeLoc;
     var marker;
 
     (function () {
@@ -159,7 +160,6 @@ var UploadSightingView = Backbone.View.extend({
       };
 
     function createMarker(place) {
-      placeLoc = place.geometry.location;
       marker = new google.maps.Marker({
         map: map,
         position: place.geometry.location
@@ -192,18 +192,37 @@ var UploadSightingView = Backbone.View.extend({
          var $imageField = $('#upload-photo');
        var $imagePreview = $('#previewHolder');
 
+       var self = this;
+       var address;
+       var geocoder;
+
+    //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
+    if ($('#locationMap')) {
+      $('#locationMap').remove();
+    }
+    //Clears data field each time new photo is uploaded
+    $('#uploadDate').val('');
+    //Shows image preview
+    $('#previewHolder').removeClass('display-none');
+
     function readFromExif ( exifData ) {
+
+      if ( !(exifData.GPSLatitude) || !(exifData.GPSLatitude) ) {
+        self.googleAutocomplete();
+      }
 
        function degToDec (latLngArray) {
         var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
-        return decimal
+        return decimal;
        }
 
-      var latDecimal = degToDec(exifData.GPSLatitude)
-      var lngDecimal = degToDec(exifData.GPSLongitude)
+      var latDecimal = degToDec(exifData.GPSLatitude);
+      var lngDecimal = degToDec(exifData.GPSLongitude);
 
       // google places to fill out address based on latDecimal / lngDecimal
-      var address = {lat: latDecimal, lng: lngDecimal}
+      address = {lat: latDecimal, lng: lngDecimal};
+      self.lat = address.lat;
+      self.lng = address.lng;
 
       // var exifDateTime = exifData.DateTime
 
@@ -229,6 +248,14 @@ var UploadSightingView = Backbone.View.extend({
       $dateField.val( displayDate );
       $timeField.val( displayTime );
       $animalTypeField.val( animalType );
+      codeAddress();
+    }
+
+    function codeAddress() {
+      geocoder = new google.maps.Geocoder;
+      geocoder.geocode( { 'location': {lat: self.lat, lng: self.lng } }, function(results, status) {
+        $('#uploadLocation').val(results[0].formatted_address);
+      });
     }
 
     function previewImage ( inputElement ) {
@@ -257,15 +284,16 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   submitForm : function(event) {
-
     event.preventDefault();
+
+    var self = this;
     var requestObject = {};
 
     //get the file from the input field
     //run EXIF with the file
     //expose the result to a callback (async)
     function getExifData ( makeObjectFunction, shipObjectFunction ){
-      console.log( 'running addExif' )
+      console.log( 'running addExif' );
       var image = document.getElementsByName('photo')[0].files[0];
 
       EXIF.getData(image, function() {
@@ -278,40 +306,44 @@ var UploadSightingView = Backbone.View.extend({
     // get all the values from the search form
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
+
       var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-')
 
-      requestObject.imageUrl = 
+      requestObject.imageUrl =
         $('#previewHolder')
           .attr('src');
-      requestObject.location = 
-        $('#uploadLocation')
-          .val();
-      requestObject.displayDate = 
+      requestObject.location = {
+            lat: self.lat,
+            lng: self.lng
+      };
+      requestObject.displayDate =
         $('#uploadDate')
           .val();
-      requestObject.displayTime = 
+      requestObject.displayTime =
         $('#uploadTime')
           .val();
-      requestObject.dateTime = 
-        dateTime 
-      requestObject.animalType = 
+      requestObject.dateTime =
+        dateTime
+      requestObject.animalType =
         $('#uploadSpecies')
           .val();
-      requestObject.description = 
+      requestObject.description =
         $('uploadDescription')
           .val();
-      requestObject.colors = 
+      requestObject.colors =
         $('input[name="color-group"]:checked')
           .map(function() {
             return this.value;
           })
           .toArray();
-      requestObject.exifData = 
-        asyncParams.exifData
+      requestObject.exifData =
+        asyncParams.exifData;
+      requestObject.address =
+        $('#uploadLocation').val();
       console.log( 'ready to send:', requestObject );
 
       callback();
-    } 
+    }
 
     //send it off
     function sendToServer () {
@@ -327,6 +359,116 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     getExifData( buildDataForServer, sendToServer );
+  },
+  googleAutocomplete: function() {
+    /*------------------------------------------------------------------------
+      In case the exif geolocation data is abset, this entire function adds a:
+        --Google Autocomplete Input Field and Map to the form's loation field.
+    ------------------------------------------------------------------------*/
+    /*
+      Builds new elements:
+        --Form Location field
+        --Location Map
+    */
+    $('#uploadLocation').val('');
+    $('<div id="locationMap" class="col-xs-12 col-md-8 col-md-offset-2" style="height:300px"></div>').insertAfter('#uploadLocation');
+
+    var autocomplete;
+    var map;
+    var request;
+    var place;
+    var infoWindow;
+    var marker;
+    var geocoder;
+    var location = {};
+
+    var self = this;
+    /*
+      Builds Google Autocomplete Input field
+    */
+    //Sets options for Google Autocomplete
+    (function() {
+      var options = {
+        types: 'geocode',
+        componentRestrictions: {
+          country: 'USA'
+        }
+      };
+      //Creates instance of Google Autocomplete
+      autocomplete = new google.maps.places.Autocomplete(
+      /** @type {!HTMLInputElement} */(document.getElementById('uploadLocation')), options);
+    })();
+
+    //When a Google Autcomplete Location is selected, captures lat/long and creates marker
+      //This function is triggered as a listener on the autcomplete (declared immediately after codeAddress function)
+    function fillInAddress() {
+      place = autocomplete.getPlace();
+      location.lat = place.geometry.location.lat();
+      location.lng = place.geometry.location.lng();
+      self.lat = place.geometry.location.lat();
+      self.lng = place.geometry.location.lng();
+      createMarker();
+    }
+
+    //Creates new markers
+    function createMarker(xMapClickEvent) {
+      console.log(location);
+      //Clears existing marker when new marker is added
+      if (marker) {
+        marker.setMap(null);
+      }
+      //Builds and Appends Marker
+      marker = new google.maps.Marker({
+        map: map,
+        position: location,
+        animation: google.maps.Animation.DROP,
+        draggable:true
+      });
+      //Provides drag functionality to marker;
+        //Sets marker creation and captures lat/long when drag is complete
+      google.maps.event.addListener(marker,'dragend',function(event) {
+        location.lat = event.latLng.lat();
+        location.lng = event.latLng.lng();
+        self.lat = event.latLng.lat();
+        self.lng = event.latLng.lng();
+        codeAddress();
+      });
+      codeAddress();
+      map.setZoom(11);
+      map.setCenter(location);
+    }
+
+    //Uses Geocoder to convert lat/long into Street Address to display in location input field
+      //Geocoder sends a request using lat/long;
+      //Takes first (formatted address) result and sets location input form field to value
+    function codeAddress() {
+      geocoder.geocode( { 'location': location}, function(results, status) {
+        $('#uploadLocation').val(results[0].formatted_address);
+      });
+    }
+    autocomplete.addListener('place_changed', fillInAddress);
+
+    /*
+      Creates Google Map
+    */
+    (function () {
+      map = new google.maps.Map(document.getElementById('locationMap'), {
+        center: {lat: 45.522337, lng: -122.676865},
+        zoom: 12
+      });
+      //Adds click and drop pin capability to Google Map
+        //Saves value of lat/long to Location variable (at top)
+      map.addListener('click', function(mapClickEvent) {
+        location.lat = mapClickEvent.latLng.lat();
+        location.lng = mapClickEvent.latLng.lng();
+        self.lat = mapClickEvent.latLng.lat();
+        self.lng = mapClickEvent.latLng.lng();
+        createMarker(mapClickEvent);
+      });
+      //Creates Google Geocoder, which is needed by the codeAddress() function:
+        //This is needed to convert lat/long into Street Address, to display in location's input field for user
+      geocoder = new google.maps.Geocoder;
+    })();
   }
 });
 
@@ -467,7 +609,7 @@ var ResultsView = Backbone.View.extend({
     }
 
     this.remove();
-    
+
     var editSearch = new SearchFormView({
       searchParameters : self.searchParameters
     })
@@ -536,7 +678,7 @@ var TileView = Backbone.View.extend({
   selfDestruct: function() {
     console.log('self destruct tile view')
     this.remove();
-  }, 
+  },
 
   showDescription : function(event){
     var $button = $(event.target);
@@ -559,7 +701,7 @@ var MapView = Backbone.View.extend({
   // template: Handlebars.compile( $('#template-map').html() ),
 
   render: function(){
-    console.log('MapView $el', this.$el)
+    console.log('MapView $el', this.$el);
     this.$el.appendTo('.list-view');
     this.loadMap();
   },
@@ -575,9 +717,9 @@ var MapView = Backbone.View.extend({
   },
 
   selfDestruct: function() {
-    console.log('self destruct map view')
+    console.log('self destruct map view');
     this.remove();
-  }, 
+  },
 
   loadMap: function(){
     var center = {lat: 45.542094, lng: -122.9346037};
@@ -614,9 +756,9 @@ var MapView = Backbone.View.extend({
 
       marker.addListener('mouseout', function(){
         infowindow.close(marker.get('map'), marker);
-      })
+      });
 
-    })
+    });
   }
 
 });

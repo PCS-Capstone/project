@@ -4,6 +4,9 @@
 <head>
   <title>Fetch!</title>
 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="public/css/main.css">
@@ -152,10 +155,9 @@
 
   <script type="template-x-handlebars" id="template-upload-sighting">
 
-  <div id="map" class="display-none">
-  </div>
-
   <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+
+  <div id="map" class="display-none"> </div>
 
     <form id="upload-form">
       <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
