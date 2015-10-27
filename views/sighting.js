@@ -220,7 +220,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadSpecies')
           .val();
       requestObject.description =
-        $('uploadDescription')
+        $('#uploadDescription')
           .val();
       requestObject.colors =
         $('input[name="color-group"]:checked')

@@ -9,6 +9,7 @@ var SearchFormView = Backbone.View.extend({
     tagName: 'section',
   className: 'search',
    template: Handlebars.compile( $('#template-searchform').html() ),
+   location: {},
 
   prePopulate : function(){
     this.$el.html( this.template());
@@ -36,6 +37,7 @@ var SearchFormView = Backbone.View.extend({
   },
 
   initialize: function( options ){
+    var self = this;
     _.extend( this, options );
     this.render();
 
@@ -54,10 +56,8 @@ var SearchFormView = Backbone.View.extend({
     function convertToLatLng (){
       //console.log( 'changed place' );
       place = autocomplete.getPlace();
-      var location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
-      console.log( 'location:', location );
-      $('#latlng-storage').val( JSON.stringify( location ) );
-      console.log( 'latlng-storage.val() = ', $('#latlng-storage').val() );
+      self.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+      console.log( 'location:', self.location );
     }
   },
 
@@ -71,7 +71,7 @@ var SearchFormView = Backbone.View.extend({
     var searchParameters = {
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
-     location : $('#latlng-storage').val(),
+     location : JSON.stringify( this.location ),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
@@ -127,7 +127,7 @@ var ResultsView = Backbone.View.extend({
   },
 
   editSearch: function() {
-    var self = this
+    var self = this;
     var model;
 
     while(model = this.collection.first()){
@@ -143,7 +143,10 @@ var ResultsView = Backbone.View.extend({
   },
 
   mapView: function(event) {
-    var $tileView = $('.lost-pet')
+    console.log( 'searchParams:', this.searchParameters );
+    console.log( 'searchParams.location:', this.searchParameters.location );
+
+    var $tileView = $('.lost-pet');
     $tileView.remove();
 
     var $mapButton = $(event.target);
@@ -152,7 +155,7 @@ var ResultsView = Backbone.View.extend({
     var $tileButton = $('#tile-button');
     $tileButton.toggle();
 
-    var mapView = new MapView({ collection : this.collection });
+    var mapView = new MapView({ collection : this.collection, center: this.searchParameters.location });
   },
 
   listView: function() {
@@ -248,13 +251,16 @@ var MapView = Backbone.View.extend({
   },
 
   loadMap: function(){
-    var center = {lat: 45.542094, lng: -122.9346037};
+    console.log( 'loadMap center: ', this.center );
+    var center = JSON.parse( this.center );
 
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: center,
-      zoom: 8,
+      zoom: 15, //need to incorporate radius math.
       disableDefaultUI: true
     });
+
+    this.populateMap();
   },
 
   populateMap: function(){
