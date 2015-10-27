@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Fetch!</title>
+  <title>Fetch</title>
 
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -19,7 +19,7 @@
 <body>
 
   <header class="header">
-    <h1>Fetch!</h1>
+    <h1>Fetch</h1>
   </header>
 
   <section id="master" class="container"></section>
@@ -141,7 +141,6 @@
           </div>
         </div>
       </div>
-      <input id="latlng-storage" style="display: none;"></div>
       <button type="submit" class="btn btn-success">Submit</button>
       <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
     </form>
@@ -233,17 +232,17 @@
   </script>
 
   <!-- MAIN SCRIPTS -->
-  <script src="models/models.js"></script>
-  <script src="views/views.js"></script>
-  <!--<script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&callback=initMap">
-    </script> <!-- how do i call this at will? -->
+  <script src="../models/models.js"></script>
+
+  <script src="../views/main.js"></script>
+  <script src="../views/sighting.js"></script>
+  <script src="../views/searching.js"></script>
+
   <script src="public/js/main.js"></script>
 
   <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
   </script>
-
 
 </body>
 

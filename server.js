@@ -13,27 +13,16 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(__dirname));
 
 //==================================
-// MULTIPART FORM ENCODER CODE HERE
-// var multer = require('multer');
-// var upload = multer({dest:'./uploads/'})
-// var upload = multer({});
-//==================================
-
-//==================================
 //   CLOUD STORAGE CODE HERE
 var cloudinary = require('cloudinary');
 var uploader   = cloudinary.uploader;
 
-cloudinary.config({
-  cloud_name: "dxiaaofss",
-     api_key: "779484679453537",
-  api_secret: "WR-ESHlfepbHtul_9S5MR7iEVCs"
-});
+cloudinary.config( config.cloudinary );
 //==================================
 
 
 app.get('/', function (request, response){
-  response.sendFile( __dirname + 'index.html' );
+  response.sendFile( __dirname + '/public/index.html' );
 });
 
 app.get('/pet', function (request, response) {
@@ -91,3 +80,4 @@ app.post('/pet', function(request, response) {
 });
 
 app.listen(3000);
+console.log( 'listening on PORT:3000' );
