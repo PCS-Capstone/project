@@ -101,53 +101,47 @@ var UploadSightingView = Backbone.View.extend({
 
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
-      }
-
-      function degToDec (latLngArray) {
-
-        console.log('longitude negative? ', latLngArray[0])
-        var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
-        return decimal;
-      }
-
-      var latDecimal = degToDec(exifData.GPSLatitude);
-
-      if (exifData.GPSLongitudeRef === "W"){  
-        var lngDecimal = (-(degToDec(exifData.GPSLongitude)));
       } else {
-        var lngDecimal = degToDec(exifData.GPSLongitude)
+        function degToDec (latLngArray) {
+
+          console.log('longitude negative? ', latLngArray[0])
+          var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
+          return decimal;
+        }
+
+        var latDecimal = degToDec(exifData.GPSLatitude);
+
+        if (exifData.GPSLongitudeRef === "W") {  
+          var lngDecimal = (-(degToDec(exifData.GPSLongitude)));
+        } else {
+          var lngDecimal = degToDec(exifData.GPSLongitude)
+        }
+
+        // google places to fill out address based on latDecimal / lngDecimal
+        address = {lat: latDecimal, lng: lngDecimal};
+        self.lat = address.lat;
+        self.lng = address.lng;
+
+        var displayDate = exifData.DateTime.split(' ')[0];
+        var displayTime = exifData.DateTime.split(' ')[1];
+
+        displayDate = (displayDate.split(':'))
+        displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
+
+        if(displayTime[0] > 12) {
+          displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm"
+        } else if (displayTime[0][0] === 0) {
+          displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am"
+        } else {
+          displayTime = displayTime[0] + ":" + displayTime[1]
+        }
+
+        $locationField.val( address );
+        $dateField.val( displayDate );
+        $timeField.val( displayTime );
+        $animalTypeField.val( animalType );
+        codeAddress();
       }
-
-      // google places to fill out address based on latDecimal / lngDecimal
-      address = {lat: latDecimal, lng: lngDecimal};
-      self.lat = address.lat;
-      self.lng = address.lng;
-
-      // var exifDateTime = exifData.DateTime
-
-      var displayDate = exifData.DateTime.split(' ')[0];
-      var displayTime = exifData.DateTime.split(' ')[1];
-
-      displayDate = (displayDate.split(':'))
-      displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
-
-      displayTime = (displayTime.split(':'))
-
-      if(displayTime[0] > 12) {
-        displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm"
-      } else if (displayTime[0][0] === 0) {
-        displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am"
-      } else {
-        displayTime = displayTime[0] + ":" + displayTime[1]
-      }
-
-      var animalType;// = justVisualMethod( image )
-
-      $locationField.val( address );
-      $dateField.val( displayDate );
-      $timeField.val( displayTime );
-      $animalTypeField.val( animalType );
-      codeAddress();
     }
 
     function codeAddress() {
@@ -182,12 +176,44 @@ var UploadSightingView = Backbone.View.extend({
 
   },
 
+  time: function(){
+    console.log('time')
+    var time = ($('#uploadTime').val())
+    time = time.split(':')
+
+    var timeOfDay = $('#uploadTimeAmPm').val()
+    console.log('am/pm', $('#uploadTimeAmPm').val())
+    if(timeOfDay === "pm") {
+
+      if(parseInt(time[0]) === 12) {
+        time = ($('#uploadTime').val());
+      } else {
+        time[0] = (parseInt(time[0]) + 12);
+        time = time[0] + ":" + time[1];
+      }
+    } else {
+
+      if(time[0].length === 1) {
+        time = "0" + time[0] + ":" + time[1];
+      } else if(parseInt(time[0]) === 12) {
+        time[0] = "00";
+        time = time[0] + ":" + time[1];
+      } else {
+        time = ($('#uploadTime').val());
+      }
+
+    }
+
+    console.log(time)
+
+  },
+
   submitForm : function(event) {
     event.preventDefault();
 
     var self = this;
     var requestObject = {};
-
+    self.time();
     //get the file from the input field
     //run EXIF with the file
     //expose the result to a callback (async)
@@ -206,8 +232,11 @@ var UploadSightingView = Backbone.View.extend({
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
 
-      var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-')
-
+      if(asyncParams.exifData.DateTime) {
+        var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-');
+        requestObject.dateTime = dateTime
+      } 
+      
       requestObject.imageUrl =
         $('#previewHolder')
           .attr('src');
@@ -221,8 +250,6 @@ var UploadSightingView = Backbone.View.extend({
       requestObject.displayTime =
         $('#uploadTime')
           .val();
-      requestObject.dateTime =
-        dateTime
       requestObject.animalType =
         $('#uploadSpecies')
           .val();
