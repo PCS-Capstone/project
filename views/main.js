@@ -26,7 +26,10 @@ var HomePageView = Backbone.View.extend({
 
   renderUploadPage: function(){
     this.remove();
-    var uploadForm = new UploadSightingView({});
+    var uploadForm = new UploadSightingView({
+      lat: 0,
+      lng: 0
+    });
   },
 
   renderSearchForm: function(){
