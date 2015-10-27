@@ -24,7 +24,10 @@ var HomePageView = Backbone.View.extend({
   },
   renderUploadPage: function(){
     this.remove();
-    var uploadForm = new UploadSightingView({});
+    var uploadForm = new UploadSightingView({
+      lat: 0,
+      lng: 0
+    });
   },
   renderSearchForm: function(){
     this.remove();
@@ -52,16 +55,14 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   initialize: function( options ){
-    _.extend( options );
+    _.extend( this, options );
     this.render();
-    this.googleAutocomplete();
   },
 
   events: {
     'change #upload-photo' : 'populateFields',
     'submit #upload-form'  : 'submitForm'
   },
-
   google: function() {
     $('#upload-form').remove();
     $('#map').removeClass('display-none');
@@ -70,7 +71,6 @@ var UploadSightingView = Backbone.View.extend({
     var request;
     var place;
     var infoWindow;
-    var placeLoc;
     var marker;
 
     (function () {
@@ -79,23 +79,21 @@ var UploadSightingView = Backbone.View.extend({
         zoom: 12
       });
       infowindow = new google.maps.InfoWindow();
-      createObject();
+      callback();
     })();
 
-    function createObject() {
-      console.log('createObject');
+    function callback() {
+      console.log('callback');
       request = {
         location: new google.maps.LatLng(45.522337,-122.676865),
         radius: '1000',
         keyword: ['animal shelter']
       };
-    }
 
     function createMarker(place) {
-      placeLoc = place.geometry.location;
       marker = new google.maps.Marker({
         map: map,
-        position: place.geometry.location,
+        position: place.geometry.location
       });
 
       google.maps.event.addListener(marker, 'click', function() {
@@ -104,166 +102,196 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
-    function locationResults(results, status) {
+    function hello(results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
           createMarker(results[i]);
         }
       }
     }
-
     service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(request, locationResults);
+    service.nearbySearch(request, hello);
+    }
   },
-  // uploadPhoto: function(event) {
-  //
-  // },
-  // populateFields : function() {
-  //
-  //     var $locationField = $('#uploadLocation');
-  //         var $dateField = $('#uploadDate');
-  //   var $animalTypeField = $('#uploadSpecies');
-  //        var $imageField = $('#upload-photo');
-  //      var $imagePreview = $('#previewHolder');
-  //
-  //   function readFromExif ( exifData ) {
-  //     Decimal value = Degrees + (Minutes/60) + (Seconds/3600)
-  //      "GPSLatitude" : [ 45, 31, 50.22 ]
-  //
-  //      function degToDec (latLngArray) {
-  //       var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
-  //       return decimal
-  //      }
-  //
-  //     var address;
-  //     var date = exifData.DateTime;
-  //     var animalType;// = justVisualMethod( image )
-  //
-  //     $locationField.val( address );
-  //     $dateField.val( date );
-  //     $animalTypeField.val( animalType );
-  //   }
-  //
-  //   function previewImage ( inputElement ) {
-  //     var image  = inputElement[0].files[0];
-  //     var reader = new FileReader();
-  //
-  //     reader.onload = function(event) {
-  //       $imagePreview.attr('src', event.target.result);
-  //     };
-  //
-  //     reader.readAsDataURL( image );
-  //   }
-  //
-  //   function getExifData ( ){
-  //     var image = $imageField[0].files[0];
-  //
-  //     EXIF.getData(image, function() {
-  //       var xf = EXIF( this ).EXIFwrapped.exifdata;
-  //       readFromExif(xf);
-  //     });
-  //   }
-  //
-  //   previewImage( $imageField );
-  //   getExifData();
-  //
-  // },
-  //
-  // submitForm : function(event) {
-  //
-  //   event.preventDefault();
-  //   var requestObject = {};
-  //
-  //   //get the file from the input field
-  //   //run EXIF with the file
-  //   //expose the result to a callback (async)
-  //   function getExifData ( makeObjectFunction, shipObjectFunction ){
-  //     console.log( 'running addExif' )
-  //     var image = document.getElementsByName('photo')[0].files[0];
-  //
-  //     EXIF.getData(image, function() {
-  //       var xf = EXIF( this ).EXIFwrapped.exifdata;
-  //       console.log( 'xf=', xf );
-  //       makeObjectFunction( { exifData : xf }, shipObjectFunction );
-  //     });
-  //   }
-  //
-  //   // get all the values from the search form
-  //   // save them as properties on the requestObject
-  //   function buildDataForServer ( asyncParams, callback ) {
-  //     requestObject.imageUrl =
-  //       $('#previewHolder')
-  //         .attr('src');
-  //     requestObject.location =
-  //       $('#uploadLocation')
-  //         .val();
-  //     requestObject.date =
-  //       $('#uploadDate')
-  //         .val();
-  //     requestObject.animalType =
-  //       $('#uploadSpecies')
-  //         .val();
-  //     requestObject.size =
-  //       $('input[name="size"]:checked')
-  //         .val();
-  //     requestObject.description =
-  //       $('uploadDescription')
-  //         .val();
-  //     requestObject.colors =
-  //       $('input[name="color-group"]:checked')
-  //         .map(function() {
-  //           return this.value;
-  //         })
-  //         .toArray();
-  //     requestObject.exifData =
-  //       asyncParams.exifData
-  //     console.log( 'ready to send:', requestObject );
-  //
-  //     callback();
-  //   }
-  //
-  //   //send it off
-  //   function sendToServer () {
-  //     $.ajax({
-  //       method: "POST",
-  //       url: "/pet",
-  //       data: { data : JSON.stringify(requestObject) },
-  //       success: function(data) {
-  //         self.google();
-  //         console.log(data);
-  //       }
-  //     });
-  //   }
-  //   getExifData( buildDataForServer, sendToServer );
-  // }
+
+  populateFields : function() {
+
+      var $locationField = $('#uploadLocation');
+          var $dateField = $('#uploadDate');
+    var $animalTypeField = $('#uploadSpecies');
+         var $imageField = $('#upload-photo');
+       var $imagePreview = $('#previewHolder');
+
+       var self = this;
+       var address;
+       var geocoder;
+
+    //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
+    if ($('#locationMap')) {
+      $('#locationMap').remove();
+    }
+    //Clears data field each time new photo is uploaded
+    $('#uploadDate').val('');
+    //Shows image preview
+    $('#previewHolder').removeClass('display-none');
+
+    function readFromExif ( exifData ) {
+
+      if ( !(exifData.GPSLatitude) || !(exifData.GPSLatitude) ) {
+        self.googleAutocomplete();
+      }
+
+       function degToDec (latLngArray) {
+        var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
+        return decimal;
+       }
+
+      var latDecimal = degToDec(exifData.GPSLatitude);
+      var lngDecimal = degToDec(exifData.GPSLongitude);
+
+      // google places to fill out address based on latDecimal / lngDecimal
+      address = {lat: latDecimal, lng: lngDecimal};
+      self.lat = address.lat;
+      self.lng = address.lng;
+
+      var date = exifData.DateTime;
+      var animalType;// = justVisualMethod( image )
+
+      $dateField.val( date );
+      $animalTypeField.val( animalType );
+      codeAddress();
+    }
+
+    function codeAddress() {
+      geocoder = new google.maps.Geocoder;
+      geocoder.geocode( { 'location': {lat: self.lat, lng: self.lng } }, function(results, status) {
+        $('#uploadLocation').val(results[0].formatted_address);
+      });
+    }
+
+    function previewImage ( inputElement ) {
+      var image  = inputElement[0].files[0];
+      var reader = new FileReader();
+
+      reader.onload = function(event) {
+        $imagePreview.attr('src', event.target.result);
+      };
+
+      reader.readAsDataURL( image );
+    }
+
+    function getExifData ( ){
+      var image = $imageField[0].files[0];
+
+      EXIF.getData(image, function() {
+        var xf = EXIF( this ).EXIFwrapped.exifdata;
+        readFromExif(xf);
+      });
+    }
+
+    previewImage( $imageField );
+    getExifData();
+
+  },
+
+  submitForm : function(event) {
+    event.preventDefault();
+
+    var self = this;
+    var requestObject = {};
+
+    //get the file from the input field
+    //run EXIF with the file
+    //expose the result to a callback (async)
+    function getExifData ( makeObjectFunction, shipObjectFunction ){
+      console.log( 'running addExif' );
+      var image = document.getElementsByName('photo')[0].files[0];
+
+      EXIF.getData(image, function() {
+        var xf = EXIF( this ).EXIFwrapped.exifdata;
+        console.log( 'xf=', xf );
+        makeObjectFunction( { exifData : xf }, shipObjectFunction );
+      });
+    }
+
+    // get all the values from the search form
+    // save them as properties on the requestObject
+    function buildDataForServer ( asyncParams, callback ) {
+      requestObject.imageUrl =
+        $('#previewHolder')
+          .attr('src');
+      requestObject.location = {
+        lat: self.lat,
+        lng: self.lng
+      };
+      requestObject.date =
+        $('#uploadDate')
+          .val();
+      requestObject.animalType =
+        $('#uploadSpecies')
+          .val();
+      requestObject.size =
+        $('input[name="size"]:checked')
+          .val();
+      requestObject.description =
+        $('uploadDescription')
+          .val();
+      requestObject.colors =
+        $('input[name="color-group"]:checked')
+          .map(function() {
+            return this.value;
+          })
+          .toArray();
+      requestObject.exifData =
+        asyncParams.exifData;
+      requestObject.address =
+        $('#uploadLocation').val();
+      console.log( 'ready to send:', requestObject );
+
+      callback();
+    }
+
+    //send it off
+    function sendToServer () {
+      $.ajax({
+        method: "POST",
+        url: "/pet",
+        data: { data : JSON.stringify(requestObject) },
+        success: function(data) {
+          self.google();
+          console.log(data);
+        }
+      });
+    }
+
+    getExifData( buildDataForServer, sendToServer );
+  },
   googleAutocomplete: function() {
     /*------------------------------------------------------------------------
       In case the exif geolocation data is abset, this entire function adds a:
         --Google Autocomplete Input Field and Map to the form's loation field.
     ------------------------------------------------------------------------*/
-
     /*
       Builds new elements:
         --Form Location field
         --Location Map
     */
-    $('<input id="locationAutocomplete" placeholder="Enter your address" onFocus="geolocate()" type="text" class="col-xs-8 col-xs-offset-2"></input>').appendTo('body');
-    $('<div id="locationMap" class="col-xs-12 col-md-8 col-md-offset-2" style="height:300px"></div>').appendTo('body');
+    $('#uploadLocation').val('');
+    $('<div id="locationMap" class="col-xs-12 col-md-8 col-md-offset-2" style="height:300px"></div>').insertAfter('#uploadLocation');
 
     var autocomplete;
     var map;
     var request;
     var place;
     var infoWindow;
-    var placeLoc;
     var marker;
     var geocoder;
     var location = {};
 
+    var self = this;
     /*
       Builds Google Autocomplete Input field
     */
-
     //Sets options for Google Autocomplete
     (function() {
       var options = {
@@ -274,7 +302,7 @@ var UploadSightingView = Backbone.View.extend({
       };
       //Creates instance of Google Autocomplete
       autocomplete = new google.maps.places.Autocomplete(
-      /** @type {!HTMLInputElement} */(document.getElementById('locationAutocomplete')), options);
+      /** @type {!HTMLInputElement} */(document.getElementById('uploadLocation')), options);
     })();
 
     //When a Google Autcomplete Location is selected, captures lat/long and creates marker
@@ -283,7 +311,8 @@ var UploadSightingView = Backbone.View.extend({
       place = autocomplete.getPlace();
       location.lat = place.geometry.location.lat();
       location.lng = place.geometry.location.lng();
-      console.log(location);
+      self.lat = place.geometry.location.lat();
+      self.lng = place.geometry.location.lng();
       createMarker();
     }
 
@@ -306,6 +335,8 @@ var UploadSightingView = Backbone.View.extend({
       google.maps.event.addListener(marker,'dragend',function(event) {
         location.lat = event.latLng.lat();
         location.lng = event.latLng.lng();
+        self.lat = event.latLng.lat();
+        self.lng = event.latLng.lng();
         codeAddress();
       });
       codeAddress();
@@ -318,9 +349,7 @@ var UploadSightingView = Backbone.View.extend({
       //Takes first (formatted address) result and sets location input form field to value
     function codeAddress() {
       geocoder.geocode( { 'location': location}, function(results, status) {
-        console.log("drag event results: " + results);
-        console.log("location info: " + location);
-        $('#locationAutocomplete').val(results[0].formatted_address);
+        $('#uploadLocation').val(results[0].formatted_address);
       });
     }
     autocomplete.addListener('place_changed', fillInAddress);
@@ -338,6 +367,8 @@ var UploadSightingView = Backbone.View.extend({
       map.addListener('click', function(mapClickEvent) {
         location.lat = mapClickEvent.latLng.lat();
         location.lng = mapClickEvent.latLng.lng();
+        self.lat = mapClickEvent.latLng.lat();
+        self.lng = mapClickEvent.latLng.lng();
         createMarker(mapClickEvent);
       });
       //Creates Google Geocoder, which is needed by the codeAddress() function:
