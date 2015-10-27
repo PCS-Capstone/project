@@ -214,7 +214,14 @@ var UploadSightingView = Backbone.View.extend({
       displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
 
       displayTime = (displayTime.split(':'))
-      displayTime = displayTime[0] + ":" + displayTime[1]
+
+      if(displayTime[0] > 12) {
+        displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm"
+      } else if (displayTime[0][0] === 0) {
+        displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am"
+      } else {
+        displayTime = displayTime[0] + ":" + displayTime[1]
+      }
 
       var animalType;// = justVisualMethod( image )
 
@@ -271,6 +278,8 @@ var UploadSightingView = Backbone.View.extend({
     // get all the values from the search form
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
+      var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-')
+
       requestObject.imageUrl = 
         $('#previewHolder')
           .attr('src');
@@ -284,7 +293,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadTime')
           .val();
       requestObject.dateTime = 
-        asyncParams.exifData.DateTime;
+        dateTime 
       requestObject.animalType = 
         $('#uploadSpecies')
           .val();

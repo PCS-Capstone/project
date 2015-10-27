@@ -43,8 +43,8 @@ app.get('/pet', function (request, response) {
   // var query =
   // "value.location:NEAR:" +
   // "{"+
-  //   "latitude: "  + search.lat +
-  //   "longitude: " + search.lng +
+  //   "latitude: "  + search.location.lat +
+  //   " longitude: " + search.location.lng +
   //   " radius: "   + search.radius +
   //   "mi"+
   // "} " +
@@ -53,6 +53,9 @@ app.get('/pet', function (request, response) {
   // "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
   var query = "value.dateTime: [" + search.startDate  + " TO " + search.endDate + "]"
+
+  console.log('start date', search.startDate)
+  console.log('end date', search.endDate)
 
 	db.search('sighting', query)
 
