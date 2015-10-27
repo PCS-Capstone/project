@@ -148,7 +148,14 @@ var UploadSightingView = Backbone.View.extend({
       displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
 
       displayTime = (displayTime.split(':'))
-      displayTime = displayTime[0] + ":" + displayTime[1]
+
+      if(displayTime[0] > 12) {
+        displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm"
+      } else if (displayTime[0][0] === 0) {
+        displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am"
+      } else {
+        displayTime = displayTime[0] + ":" + displayTime[1]
+      }
 
       var animalType;// = justVisualMethod( image )
 
