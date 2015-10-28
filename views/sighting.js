@@ -236,7 +236,7 @@ var UploadSightingView = Backbone.View.extend({
       }
     } else {
 
-      if(time[0].length === 1) {
+      if(parseInt(time[0]).length === 1) {
         time = "0" + time[0] + ":" + time[1];
       } else if(parseInt(time[0]) === 12) {
         time[0] = "00";
