@@ -79,11 +79,22 @@ var SearchFormView = Backbone.View.extend({
 
     this.remove();
 
+
+    // only works upon first try, does not work with edit because 
+    // there's only one fetch call.
+    // We want to use conditional prior to ResultsView being rendered
+    // if there are no search results found
+    // where do we put it?
     app.collection.fetch({data : searchParameters, success: function()
-      { new ResultsView ({
-        collection : app.collection,
-        searchParameters : searchParameters
+      { if (app.collection.length === 0) { 
+        new NoResultsFound({ searchParameters : searchParameters})
+      } else {
+        new ResultsView ({
+          collection : app.collection,
+          searchParameters : searchParameters
         });
+      }
+
       }});
   }
 });

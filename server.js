@@ -74,7 +74,7 @@ app.post('/pet', function(request, response) {
     // console.log( data )
     // console.log( data.imageUrl );
 
-    db.post('sighting', data)
+    db.post('test', data)
       .then(function (result) {
         console.log( result.body.results );
       }).fail(function(err){
