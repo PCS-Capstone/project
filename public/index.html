@@ -156,126 +156,107 @@
 
   <script type="template-x-handlebars" id="template-upload-sighting">
 
-  <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+    <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
 
-  <div id="map" class="display-none"> </div>
+    <div id="map" class="display-none"> </div>
 
-
-  <form id="upload-form" class="form-horizontal">
-    <div class="form-group">
-      <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
-      </input>
-    </div>
-
-    <div class="form-group">
-      <label for="uploadLocation" class="col-sm-2 control-label">
-        Location:
-      </label>
-      <div class="col-sm-10">
-        <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
-      </div>
-    </div>
-
-
-
-
-
-
-
-    <div class="form-group">
-      <label for="uploadDate" class="col-sm-2 control-label">
-        Date:
-      </label>
-
-
-      <div class="col-sm-10 input-append date" id="dp3" data-date="" data-date-format="dd-mm-yyyy">
-        <input id="uploadDate" class="form-control span2" size="16" type="text" name="date" value="">
-        <span class="add-on"><i class="icon-th"></i></span>
+    <form id="upload-form" class="form-horizontal">
+      <div class="form-group">
+        <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
+        </input>
       </div>
 
-    </div>
-
-
-
-    <div class="form-group">
-      <label for="uploadTime" class="col-sm-2 control-label">
-        Time:
-      </label>
-      <div class="col-sm-10">
-        <input id="uploadTime" class="form-control" type="text" name="time">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="uploadSpecies" class="col-sm-2 control-label">
-        Type of Animal:
-      </label>
-      <div class="col-sm-10">
-
-        <select id="uploadSpecies" class="form-control" name="animal-type">
-          <option value="" disabled selected>"What kind of animal is it?"</option>
-          <option value="Dog"> Dog </option>
-          <option value="Cat"> Cat </option>
-          <option value="Reptile">Reptile</option>
-          <option value="Rodent">Rodent</option>
-          <option value="Fish">Fish</option>
-        </select>
+      <div class="form-group">
+        <label for="uploadLocation" class="col-sm-2 control-label">
+          Location:
+        </label>
+        <div class="col-sm-10">
+          <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+        </div>
       </div>
 
-    </div>
-
-
-
-
-
-      <fieldset>
-
-        <legend>
-          Please select color:
-        </legend>
-
-        <input id="uploadWhite" type="checkbox" name="color-group" value="White">
-        <label for="uploadWhite">
-          White
+      <div class="form-group">
+        <label for="uploadDate" class="col-sm-2 control-label">
+          Date:
         </label>
 
-        <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
-        <label for="uploadBlack">
-          Black
+        <div class="col-sm-10 input-append date" id="dp3" data-date="" data-date-format="yyyy-mm-dd">
+          <input id="uploadDate" class="form-control span2" size="16" type="text" name="date" value="">
+          <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="uploadTime" class="col-sm-2 control-label">
+          Time:
         </label>
+        <div class="col-sm-10">
+          <input id="uploadTime" class="form-control" type="text" name="time">
+        </div>
+      </div>
 
-        <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
-        <label for="uploadBrown">
-          Brown
+      <div class="form-group">
+        <label for="uploadSpecies" class="col-sm-2 control-label">
+          Type of Animal:
         </label>
+        <div class="col-sm-10">
 
-        <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
-        <label for="uploadOrange">
-          Orange
+          <select id="uploadSpecies" class="form-control" name="animal-type">
+            <option value="" disabled selected>"What kind of animal is it?"</option>
+            <option value="Dog"> Dog </option>
+            <option value="Cat"> Cat </option>
+            <option value="Reptile">Reptile</option>
+            <option value="Rodent">Rodent</option>
+            <option value="Fish">Fish</option>
+          </select>
+        </div>
+      </div>
+
+        <fieldset>
+          <legend>
+            Please select color:
+          </legend>
+
+          <input id="uploadWhite" type="checkbox" name="color-group" value="White">
+          <label for="uploadWhite">
+            White
+          </label>
+
+          <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
+          <label for="uploadBlack">
+            Black
+          </label>
+
+          <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
+          <label for="uploadBrown">
+            Brown
+          </label>
+
+          <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
+          <label for="uploadOrange">
+            Orange
+          </label>
+
+          <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
+          <label for="uploadYellow">
+            Yellow
+          </label>
+
+          <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
+          <label for="uploadGray">
+            Gray
+          </label>
+        </fieldset>
+
+      </div>
+
+        <label for="uploadDescription">
+          Enter description:
         </label>
+        <textarea id="uploadDescription" name="description">
+        </textarea>
 
-        <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
-        <label for="uploadYellow">
-          Yellow
-        </label>
-
-        <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
-        <label for="uploadGray">
-          Gray
-        </label>
-
-      </fieldset>
-
-    </div>
-
-
-      <label for="uploadDescription">
-        Enter description:
-      </label>
-      <textarea id="uploadDescription" name="description">
-      </textarea>
-
-      <input type="submit" value="submit">
+        <input type="submit" value="submit">
 
     </form>
 
@@ -290,7 +271,7 @@
 
   <script src="public/js/main.js"></script>
 
-  <!-- Datepicker Scripts -->
+  <!-- Datepicker -->
   <script src="../public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
 
   <script async defer
