@@ -1,3 +1,4 @@
+
 /*========================================
             Lost a Pet Views
 =========================================*/
@@ -5,7 +6,6 @@
 /*  Search Form
 --------------------*/
 var SearchFormView = Backbone.View.extend({
-
     tagName: 'section',
   className: 'search',
    template: Handlebars.compile( $('#template-searchform').html() ),
@@ -26,10 +26,10 @@ var SearchFormView = Backbone.View.extend({
 
   render: function(){
     if (this.searchParameters !== undefined) {
-      console.log('edited search')
+      // console.log('edited search')
       this.prePopulate();
     } else {
-      console.log('new search')
+      // console.log('new search')
       this.$el.html( this.template() );
       $('#master').html(this.$el);
     }
@@ -57,7 +57,7 @@ var SearchFormView = Backbone.View.extend({
       //console.log( 'changed place' );
       place = autocomplete.getPlace();
       self.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
-      console.log( 'location:', self.location );
+      // console.log( 'location:', self.location );
     }
   },
 
@@ -66,18 +66,23 @@ var SearchFormView = Backbone.View.extend({
   },
 
   renderSearchResults: function(event){
-    console.log( 'doing it' );
+    // console.log( 'doing it' );
+    var self = this;
+    // console.log(self);
+    // console.log( 'searchForm on submit location:', self.location)
+
     event.preventDefault();
     var searchParameters = {
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
-     location : JSON.stringify( this.location ),
+     location : JSON.stringify( self.location ),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
     }
 
     this.remove();
+    // console.log( 'searchForm on submit location:', self.location)
 
     app.collection.fetch({data : searchParameters, success: function()
       { new ResultsView ({
@@ -103,27 +108,31 @@ var ResultsView = Backbone.View.extend({
 
     var self = this;
 
+    console.log( 'ResultsView.searchParamaters.location: ', this.searchParameters.location);
+    var mapView = new MapView({ collection : this.collection, center: this.searchParameters.location });
+
     this.collection.forEach(function(pet) {
       var tileView = new TileView({
           model: pet,
-          parent: self
+          parent: self,
+          mapView: mapView
       });
-
       self.$el.append(tileView.$el)
     });
 
+    
   },
 
   initialize: function( options ) {
-    console.log( 'running' );
+    console.log( 'Initializing ResultsView' );
     _.extend( this, options );
     this.render();
   },
 
   events: {
            "click #edit" : "editSearch",
-    "click #map-button"  : "mapView",
-    "click #tile-button" : "listView"
+    "click #map-button"  : "showMapView",
+    "click #tile-button" : "showListView"
   },
 
   editSearch: function() {
@@ -142,9 +151,10 @@ var ResultsView = Backbone.View.extend({
 
   },
 
-  mapView: function(event) {
-    console.log( 'searchParams:', this.searchParameters );
-    console.log( 'searchParams.location:', this.searchParameters.location );
+  showMapView: function(event) {
+    console.log('ResultsView.showMapView()')
+    // console.log( 'searchParams:', this.searchParameters );
+    // console.log( 'searchParams.location:', this.searchParameters.location );
 
     var $tileView = $('.lost-pet');
     $tileView.remove();
@@ -155,10 +165,10 @@ var ResultsView = Backbone.View.extend({
     var $tileButton = $('#tile-button');
     $tileButton.toggle();
 
-    var mapView = new MapView({ collection : this.collection, center: this.searchParameters.location });
+    $('#map').toggleClass('hidden');
   },
 
-  listView: function() {
+  showListView: function() {
     var $mapView = $('#map')
     $mapView.remove();
 
@@ -187,8 +197,38 @@ var TileView = Backbone.View.extend({
     tagName: 'div',
   className: 'lost-pet',
    template: Handlebars.compile($ ('#template-tile-view').html()),
+  
+  makeMap: function() {
+    // console.log( 'building map' );
+    // var self = this;
+    
+    // var center = this.model.get('value').location;
+    // // console.log( 'center of map: ', center );
+    // // console.log( 'typeof center: ', typeof center );
+    
+    // center = JSON.stringify(center);
+    // // console.log( 'center of map: ', center );
+    // // console.log( 'typeof center: ', typeof center );
+    
+    // center = JSON.parse(center);
+    // // console.log( 'center of map: ', center );
+    // // console.log( 'typeof center: ', typeof center );
+
+    // console.log(this.mapView);
+    // console.log(this.mapView.map);
+    // mapView.map.center = center;
+    // console.log(this.mapView.map.center);
+    // mapView.map.zoom = 18;
+    // console.log(this.mapView.map.zoom);
+    // //change map object center to match this center
+    // $('#map').toggleClass('zoomed');
+  },
 
   render: function() {
+    // console.log( this.model.get('value') );
+    // console.log( this.model.get('value').location );
+    // console.log( typeof this.model.get('value').location );
+
     this.$el.html( this.template(this.model.get('value')) );
   },
 
@@ -197,12 +237,50 @@ var TileView = Backbone.View.extend({
     this.listenTo(this.model, 'remove', this.selfDestruct)
 
     this.render();
+    // this.makeMap();
   },
 
   events: {
-    "click .btn-description" : "showDescription"
+    "click .btn-description" : "showDescription",
+    "click .btn-info"        : "showMiniMap"
   },
 
+
+  showMiniMap : function(event) {
+
+    console.log( 'building map' );
+    var self = this;
+    
+    var center = this.model.get('value').location;
+    // console.log( 'center of map: ', center );
+    // console.log( 'typeof center: ', typeof center );
+    
+    center = JSON.stringify(center);
+    // console.log( 'center of map: ', center );
+    // console.log( 'typeof center: ', typeof center );
+    
+    center = JSON.parse(center);
+    // console.log( 'center of map: ', center );
+    // console.log( 'typeof center: ', typeof center );
+
+    console.log(this.mapView);
+    console.log(this.mapView.map);
+    
+    this.mapView.map.center = center;
+    console.log(this.mapView.map.center);
+    
+    this.mapView.map.zoom = 18;
+    console.log(this.mapView.map.zoom);
+    //change map object center to match this center
+    $('#map').toggleClass('hidden');
+    $('#map').toggleClass('zoomed');
+
+    // console.log( event.target );
+    // console.log( '.mapContainer', $(event.target).closest('.lost-pet').find('.mapContainer')[0] );
+    // // console.log( $(event.target).closest('.lost-pet')[0] );
+    // // console.log($(event.target).closest('.lost-pet') );
+    // $(event.target).closest('.lost-pet').find('.mapContainer').toggleClass('visible');
+  },
 
   selfDestruct: function() {
     console.log('self destruct tile view')
@@ -230,7 +308,11 @@ var MapView = Backbone.View.extend({
   // template: Handlebars.compile( $('#template-map').html() ),
 
   render: function(){
-    console.log('MapView $el', this.$el);
+    console.log('Rendeirng MapView');
+    console.log('MapView.$el', this.$el);
+    var $closeButton = $('<button id="close-button" class="btn btn-default btn-danger">').html('x');
+    this.$el.append($closeButton);
+    this.$el.toggleClass('hidden');
     this.$el.appendTo('.list-view');
     this.loadMap();
   },
@@ -242,7 +324,7 @@ var MapView = Backbone.View.extend({
   },
 
   events: {
-
+    'click close-button' : 'hideMap'
   },
 
   selfDestruct: function() {
@@ -251,35 +333,50 @@ var MapView = Backbone.View.extend({
   },
 
   loadMap: function(){
-    console.log( 'loadMap center: ', this.center );
+    console.log( 'MapView.loadMap()' );
+    // console.log( 'loadMap center: ', this.center );
     var center = JSON.parse( this.center );
+    console.log( 'MapView.center = ', this.center)
 
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: center,
+      // center: {"lat":45.528932,"lng":-122.68564600000002},
       zoom: 15, //need to incorporate radius math.
       disableDefaultUI: true
     });
+    console.log( 'MapView.map', this.map );
+    console.log( this.map.center );
+    console.log( 'MapView.map DOM', document.getElementById('map') );
 
     this.populateMap();
   },
 
+  hideMap : function() {
+    this.$el.toggleClass('hidden');
+  },
+
   populateMap: function(){
-    console.log( 'making pins' );
+    console.log( 'MapView.populateMap()' );
     var self = this;
     //var image = 'public/images/binoculars.png'
     //loop through the collection
     //make a marker for each model in the collection
-    this.collection.forEach( function( sighting ){
 
+    // each not forEach? Backbone colleciton method
+    //_.each (this.collection, ) 
+    this.collection.each( function( model ){
+      // console.log( 'loop => model attributes:', model.attributes );
+      // console.log( 'function?', model.get );
+      //console.log( 'loop => model:', model.get('value').location )
       var marker = new google.maps.Marker({
-        position: sighting.get( 'location' ),
+        position: model.get('value').location,
         //icon: image,
         map: self.map
         // animation: google.maps.Animation.DROP
       });
 
       var infowindow = new google.maps.InfoWindow({
-        content: sighting.get('animalType') + ' @' + sighting.get('date')
+        content: model.get('value').colors + ' ' + model.get('value').animalType + ' @ ' + model.get('value').dateTime + '</br>' + model.get('value').description
       });
 
       marker.addListener('mouseover', function() {

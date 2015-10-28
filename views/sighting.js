@@ -186,6 +186,7 @@ var UploadSightingView = Backbone.View.extend({
     event.preventDefault();
 
     var self = this;
+    console.log( 'this.lat/long=', self.lat, '/', self.lng);
     var requestObject = {};
 
     //get the file from the input field
@@ -235,8 +236,8 @@ var UploadSightingView = Backbone.View.extend({
             return this.value;
           })
           .toArray();
-      requestObject.exifData =
-        asyncParams.exifData;
+      // requestObject.exifData =
+      //   asyncParams.exifData;
       requestObject.address =
         $('#uploadLocation').val();
       console.log( 'ready to send:', requestObject );
