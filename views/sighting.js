@@ -22,7 +22,8 @@ var UploadSightingView = Backbone.View.extend({
 
   events: {
     'change #upload-photo' : 'populateFields',
-    'submit #upload-form'  : 'submitForm'
+    'submit #upload-form'  : 'submitForm',
+    'click #uploadDate' : 'datepickerForm'
   },
   google: function() {
     $('#upload-form').remove();
@@ -220,7 +221,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadSpecies')
           .val();
       requestObject.description =
-        $('uploadDescription')
+        $('#uploadDescription')
           .val();
       requestObject.colors =
         $('input[name="color-group"]:checked')
@@ -361,5 +362,19 @@ var UploadSightingView = Backbone.View.extend({
         //This is needed to convert lat/long into Street Address, to display in location's input field for user
       geocoder = new google.maps.Geocoder;
     })();
+  },
+  datepickerForm: function() {
+    console.log('datepicker');
+
+    $('#dp3').datepicker('show')
+      .on('changeDate', function(ev){
+        console.log(ev);
+        if (ev.date.valueOf() < startDate.valueOf()){
+          console.log('error');
+        }
+    });
+
+
+
   }
 });

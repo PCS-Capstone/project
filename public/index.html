@@ -2,6 +2,7 @@
 <html>
 
 <head>
+
   <title>Fetch</title>
 
   <meta charset="utf-8">
@@ -9,6 +10,7 @@
 
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="public/css/datepicker.css">
   <link rel="stylesheet" href="public/css/main.css">
 
   <!-- CDN SCRIPTS -->
@@ -17,6 +19,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.min.js"></script>
   <script src="public/js/plugins/exif-js/exif.js"></script>
+
 </head>
 
 <body>
@@ -167,10 +170,13 @@
       </label>
       <input id="uploadLocation" type="text" name="address">
 
-      <label for="uploadDate">
-        <p> Date: </p>
-      </label>
-      <input id="uploadDate" type="text" name="date">
+      <div class="input-append date" id="dp3" data-date="" data-date-format="yyyy-mm-dd">
+        <label for="uploadDate">
+          <p> Date: </p>
+        </label>
+        <input id="uploadDate" type="text" name="date" class="span2" size="16" value="">
+        <span class="add-on"><i class="icon-th"></i></span>
+      </div>
 
       <label for="uploadTime">
         <p> Time: </p>
@@ -235,15 +241,18 @@
 
   <!-- MAIN SCRIPTS -->
   <script src="../models/models.js"></script>
-
   <script src="../views/main.js"></script>
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
-
   <script src="public/js/main.js"></script>
 
+  <!-- Datepicker JS -->
+  <script src="public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
+
+  <!-- Google -->
   <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">
+  //Uncaught TypeError: window.initMap is not a function
   </script>
 
 </body>
