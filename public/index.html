@@ -241,12 +241,30 @@
 
   </script>
 
+
+  <script type="template-x-handlebars" id="template-successful-submission">
+  <h1>SUCCESSFUL SUBMISSION</h1>
+  </script>
+
+  <script type="template-x-handlebars" id="template-upload-error">
+    <h1>There was an error with your upload.</h1>
+    <button id="error">  Try again? </button>
+  </script>
+
+  <script type="template-x-handlebars" id="template-no-results">
+    <h1>Sorry. That search returned no results.</h1>
+    <button id="no-results">  Try again? </button>
+  </script>
+
   <!-- MAIN SCRIPTS -->
   <script src="../models/models.js"></script>
 
   <script src="../views/main.js"></script>
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
+  <script src="../views/successful.js"></script>
+  <script src="../views/error.js"></script>
+  <script src="../views/no_results.js"></script>
 
   <script src="public/js/main.js"></script>
 

@@ -128,7 +128,9 @@ var UploadSightingView = Backbone.View.extend({
         displayDate = (displayDate.split(':'))
         displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
 
-        if(displayTime[0] > 12) {
+        displayTime = (displayTime.split(':'))
+
+        if(parseInt(displayTime[0]) > 12) {
           displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm"
         } else if (displayTime[0][0] === 0) {
           displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am"
@@ -136,12 +138,13 @@ var UploadSightingView = Backbone.View.extend({
           displayTime = displayTime[0] + ":" + displayTime[1]
         }
 
+      }
+
         $locationField.val( address );
         $dateField.val( displayDate );
         $timeField.val( displayTime );
         $animalTypeField.val( animalType );
         codeAddress();
-      }
     }
 
     function codeAddress() {
@@ -285,6 +288,10 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     getExifData( buildDataForServer, sendToServer );
+    
+    this.remove();
+    // var success = new SuccessfulSubmission({})
+    var error = new Error({})
   },
   googleAutocomplete: function() {
     /*------------------------------------------------------------------------
