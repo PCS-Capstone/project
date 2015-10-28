@@ -2,7 +2,6 @@
 <html>
 
 <head>
-
   <title>Fetch</title>
 
   <meta charset="utf-8">
@@ -10,8 +9,9 @@
 
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="public/css/datepicker.css">
   <link rel="stylesheet" href="public/css/main.css">
+
+  <link rel="stylesheet" href="public/css/datepicker.css">
 
   <!-- CDN SCRIPTS -->
   <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -19,7 +19,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.min.js"></script>
   <script src="public/js/plugins/exif-js/exif.js"></script>
-
 </head>
 
 <body>
@@ -161,98 +160,141 @@
 
   <div id="map" class="display-none"> </div>
 
-    <form id="upload-form">
+
+  <form id="upload-form" class="form-horizontal">
+    <div class="form-group">
       <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
       </input>
+    </div>
 
-      <label for="uploadLocation">
-        <p> Location: </p>
+    <div class="form-group">
+      <label for="uploadLocation" class="col-sm-2 control-label">
+        Location:
       </label>
-      <input id="uploadLocation" type="text" name="address">
+      <div class="col-sm-10">
+        <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+      </div>
+    </div>
 
-      <div class="input-append date" id="dp3" data-date="" data-date-format="yyyy-mm-dd">
-        <label for="uploadDate">
-          <p> Date: </p>
-        </label>
-        <input id="uploadDate" type="text" name="date" class="span2" size="16" value="">
+
+
+
+
+
+
+    <div class="form-group">
+      <label for="uploadDate" class="col-sm-2 control-label">
+        Date:
+      </label>
+
+
+      <div class="col-sm-10 input-append date" id="dp3" data-date="" data-date-format="dd-mm-yyyy">
+        <input id="uploadDate" class="form-control span2" size="16" type="text" name="date" value="">
         <span class="add-on"><i class="icon-th"></i></span>
       </div>
 
-      <label for="uploadTime">
-        <p> Time: </p>
-      </label>
-      <input id="uploadTime" type="text" name="time">
+    </div>
 
-      <label for="uploadSpecies">
-        <p> Type of Animal </p>
-      <select id="uploadSpecies" name="animal-type">
-        <option value=""></option>
-        <option value="Dog"> Dog </option>
-        <option value="Cat"> Cat </option>
-        <option value="Reptile">Reptile</option>
-        <option value="Rodent">Rodent</option>
-        <option value="Fish">Fish</option>
-      </select>
+
+
+    <div class="form-group">
+      <label for="uploadTime" class="col-sm-2 control-label">
+        Time:
+      </label>
+      <div class="col-sm-10">
+        <input id="uploadTime" class="form-control" type="text" name="time">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="uploadSpecies" class="col-sm-2 control-label">
+        Type of Animal:
+      </label>
+      <div class="col-sm-10">
+
+        <select id="uploadSpecies" class="form-control" name="animal-type">
+          <option value="" disabled selected>"What kind of animal is it?"</option>
+          <option value="Dog"> Dog </option>
+          <option value="Cat"> Cat </option>
+          <option value="Reptile">Reptile</option>
+          <option value="Rodent">Rodent</option>
+          <option value="Fish">Fish</option>
+        </select>
+      </div>
+
+    </div>
+
+
+
+
 
       <fieldset>
-        <legend> Please select color:
-          <input id="uploadWhite" type="checkbox" name="color-group" value="White">
-          <label for="uploadWhite">
-            White
-          </label>
 
-          <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
-          <label for="uploadBlack">
-            Black
-          </label>
-
-          <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
-          <label for="uploadBrown">
-            Brown
-          </label>
-
-          <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
-          <label for="uploadOrange">
-            Orange
-          </label>
-
-          <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
-          <label for="uploadYellow">
-            Yellow
-          </label>
-
-          <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
-          <label for="uploadGray">
-            Gray
-          </label>
+        <legend>
+          Please select color:
         </legend>
 
-        <label for="uploadDescription">
-          Enter description:
+        <input id="uploadWhite" type="checkbox" name="color-group" value="White">
+        <label for="uploadWhite">
+          White
         </label>
-        <textarea id="uploadDescription" name="description">
-        </textarea>
 
-        <input type="submit" value="submit">
+        <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
+        <label for="uploadBlack">
+          Black
+        </label>
+
+        <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
+        <label for="uploadBrown">
+          Brown
+        </label>
+
+        <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
+        <label for="uploadOrange">
+          Orange
+        </label>
+
+        <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
+        <label for="uploadYellow">
+          Yellow
+        </label>
+
+        <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
+        <label for="uploadGray">
+          Gray
+        </label>
+
       </fieldset>
+
+    </div>
+
+
+      <label for="uploadDescription">
+        Enter description:
+      </label>
+      <textarea id="uploadDescription" name="description">
+      </textarea>
+
+      <input type="submit" value="submit">
+
     </form>
 
   </script>
 
   <!-- MAIN SCRIPTS -->
   <script src="../models/models.js"></script>
+
   <script src="../views/main.js"></script>
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
+
   <script src="public/js/main.js"></script>
 
-  <!-- Datepicker JS -->
-  <script src="public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
+  <!-- Datepicker Scripts -->
+  <script src="../public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
 
-  <!-- Google -->
   <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">
-  //Uncaught TypeError: window.initMap is not a function
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
   </script>
 
 </body>

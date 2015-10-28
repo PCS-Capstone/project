@@ -25,6 +25,17 @@ var UploadSightingView = Backbone.View.extend({
     'submit #upload-form'  : 'submitForm',
     'click #uploadDate' : 'datepickerForm'
   },
+  datepickerForm: function() {
+
+      $('#dp3').datepicker('show')
+    .on('changeDate', function(ev){
+      console.log(ev);
+      $('#dp3').datepicker('hide')
+      if (ev.date.valueOf() < startDate.valueOf()){
+
+      }
+    });
+  },
   google: function() {
     $('#upload-form').remove();
     $('#map').removeClass('display-none');
@@ -100,17 +111,24 @@ var UploadSightingView = Backbone.View.extend({
 
     function readFromExif ( exifData ) {
 
-      if ( !(exifData.GPSLatitude) || !(exifData.GPSLatitude) ) {
+      if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
 
-       function degToDec (latLngArray) {
+      function degToDec (latLngArray) {
+
+        console.log('longitude negative? ', latLngArray[0])
         var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
         return decimal;
-       }
+      }
 
       var latDecimal = degToDec(exifData.GPSLatitude);
-      var lngDecimal = degToDec(exifData.GPSLongitude);
+
+      if (exifData.GPSLongitudeRef === "W"){
+        var lngDecimal = (-(degToDec(exifData.GPSLongitude)));
+      } else {
+        var lngDecimal = degToDec(exifData.GPSLongitude)
+      }
 
       // google places to fill out address based on latDecimal / lngDecimal
       address = {lat: latDecimal, lng: lngDecimal};
@@ -362,19 +380,5 @@ var UploadSightingView = Backbone.View.extend({
         //This is needed to convert lat/long into Street Address, to display in location's input field for user
       geocoder = new google.maps.Geocoder;
     })();
-  },
-  datepickerForm: function() {
-    console.log('datepicker');
-
-    $('#dp3').datepicker('show')
-      .on('changeDate', function(ev){
-        console.log(ev);
-        if (ev.date.valueOf() < startDate.valueOf()){
-          console.log('error');
-        }
-    });
-
-
-
   }
 });
