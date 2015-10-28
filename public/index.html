@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="public/css/main.css">
 
+  <link rel="stylesheet" href="public/css/datepicker.css">
+
   <!-- CDN SCRIPTS -->
   <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
@@ -86,10 +88,9 @@
             <option value="" disabled selected>"What kind of animal are you looking for?"</option>
             <option value="Dog" id="dog">Dog</option>
             <option value="Cat">Cat</option>
-            <option value="Bird">Bird</option>
-            <option value="Small & Furry">Small & Furry</option>
-            <option value="Scales & Fins">Scales & Fins</option>
-            <option value="Barnyard">Barnyard</option>
+            <option value="Reptile">Reptile</option>
+            <option value="Rodent">Rodent</option>
+            <option value="Fish">Fish</option>
           </select>
         </div>
       </div>
@@ -155,49 +156,89 @@
 
   <script type="template-x-handlebars" id="template-upload-sighting">
 
-  <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+    <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+    <div id="map" class="display-none"> </div>
 
-  <div id="map" class="display-none"> </div>
+    <form id="upload-form" class="form-horizontal">
+      <div class="form-group">
+        <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
+        </input>
+      </div>
 
-    <form id="upload-form">
-      <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
-      </input>
+      <div class="form-group">
+        <label for="uploadLocation" class="col-sm-2 control-label">
+          Location:
+        </label>
+        <div class="col-sm-10">
+          <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+        </div>
+      </div>
 
-      <label for="uploadLocation">
-        <p> Location: </p>
-      </label>
-      <input id="uploadLocation" type="text" name="address">
+      <div class="form-group">
+        <label for="uploadDate" class="col-sm-2 control-label">
+          Date:
+        </label>
 
-      <label for="uploadDate">
-        <p> Date: </p>
-      </label>
-      <input id="uploadDate" type="text" name="date">
+        <div class="col-sm-10 input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
+          <input id="uploadDate" class="form-control span2" size="16" type="text" name="date" value="" placeholder="yyyy-mm-dd">
+          <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+      </div>
 
-      <label for="uploadTime">
-        <p> Time: </p>
-      </label>
-      <input id="uploadTime" type="text" placeholder="ex. 12:34"name="time">
 
-      <select id="uploadTimeAmPm" name="uploadTimeAmPm">
-        <option value=""></option>
-        <option value="am">am</option>
-        <option value="pm">pm</option>
-      </select>
 
-      <label for="uploadSpecies">
-        <p> Type of Animal </p>
-      <select id="uploadSpecies" name="animal-type">
-        <option value=""></option>
-        <option value="Dog"> Dog </option>
-        <option value="Cat"> Cat </option>
-        <option value="Bird"> Bird </option>
-        <option value="Small & Furry">Small & Furry</option>
-        <option value="Scales & Fins">Scales & Fins</option>
-        <option value="Barnyard">Barnyard</option>
-      </select>
-        
-      <fieldset>
-        <legend> Please select color:
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">
+          Time:
+        </label>
+
+        <div id="hour" class="col-sm-2 input-group pull-left">
+          <span class="input-group-addon">hr</span>
+          <select id="hour-select" class="form-control" name="hour">
+          </select>
+        </div>
+
+        <div id="minute" class="col-sm-2 input-group pull-left">
+          <span class="input-group-addon">minutes</span>
+          <select id="minute-select" class="form-control" name="minute">
+
+          </select>
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <div class="form-group">
+        <label for="uploadSpecies" class="col-sm-2 control-label">
+          Type of Animal:
+        </label>
+        <div class="col-sm-10">
+
+          <select id="uploadSpecies" class="form-control" name="animal-type">
+            <option value="" disabled selected>"What kind of animal is it?"</option>
+            <option value="Dog"> Dog </option>
+            <option value="Cat"> Cat </option>
+            <option value="Reptile">Reptile</option>
+            <option value="Rodent">Rodent</option>
+            <option value="Fish">Fish</option>
+          </select>
+        </div>
+      </div>
+
+        <fieldset>
+          <legend>
+            Please select color:
+          </legend>
+
           <input id="uploadWhite" type="checkbox" name="color-group" value="White">
           <label for="uploadWhite">
             White
@@ -227,7 +268,9 @@
           <label for="uploadGray">
             Gray
           </label>
-        </legend>
+        </fieldset>
+
+      </div>
 
         <label for="uploadDescription">
           Enter description:
@@ -236,24 +279,9 @@
         </textarea>
 
         <input type="submit" value="submit">
-      </fieldset>
+
     </form>
 
-  </script>
-
-
-  <script type="template-x-handlebars" id="template-successful-submission">
-  <h1>SUCCESSFUL SUBMISSION</h1>
-  </script>
-
-  <script type="template-x-handlebars" id="template-upload-error">
-    <h1>There was an error with your upload.</h1>
-    <button id="error">  Try again? </button>
-  </script>
-
-  <script type="template-x-handlebars" id="template-no-results">
-    <h1>Sorry. That search returned no results.</h1>
-    <button id="no-results">  Try again? </button>
   </script>
 
   <!-- MAIN SCRIPTS -->
@@ -262,11 +290,11 @@
   <script src="../views/main.js"></script>
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
-  <script src="../views/successful.js"></script>
-  <script src="../views/error.js"></script>
-  <script src="../views/no_results.js"></script>
 
   <script src="public/js/main.js"></script>
+
+  <!-- Datepicker -->
+  <script src="../public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
 
   <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
