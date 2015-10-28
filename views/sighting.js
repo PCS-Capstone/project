@@ -36,7 +36,7 @@ var UploadSightingView = Backbone.View.extend({
   },
   google: function() {
     $('#upload-form').remove();
-    $('#map').removeClass('display-none');
+    $('#map').removeClass('display-none').addClass('col-xs-12');
 
     var map;
     var request;
@@ -131,8 +131,10 @@ var UploadSightingView = Backbone.View.extend({
         self.lat = address.lat;
         self.lng = address.lng;
 
+
         var displayDate = exifData.DateTime.split(' ')[0];
         var displayTime = exifData.DateTime.split(' ')[1];
+        console.log(displayTime);
 
         displayDate = (displayDate.split(':'))
         displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
@@ -313,7 +315,7 @@ var UploadSightingView = Backbone.View.extend({
         --Location Map
     */
     $('#uploadLocation').val('');
-    $('<div id="locationMap" class="col-xs-12 col-md-8 col-md-offset-2" style="height:300px"></div>').insertAfter('#uploadLocation');
+    $('<div id="locationMap" class="col-xs-12" style="height:300px"></div>').insertAfter('#uploadLocation');
 
     var autocomplete;
     var map;
