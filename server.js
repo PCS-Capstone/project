@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
+var pretty = require('prettyjson');
 
 var config = require('./config');
 var db = require('orchestrate')(config.dbkey);
@@ -60,10 +61,10 @@ app.get('/pet', function (request, response) {
 
 app.post('/pet', function(request, response) {
   // console.log(upload)
-  console.log('location: ', request.body.data.location);
   // console.log('request.file =', request.file);
   // console.log('data.file =', request.body.data.file )
   var data = JSON.parse(request.body.data);
+  console.log('location: ', data.location);
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
 
@@ -76,7 +77,7 @@ app.post('/pet', function(request, response) {
 
     db.post('test', data)
       .then(function (result) {
-        console.log( result.body.results );
+        console.log( 'confirmed!: ', pretty.render( JSON.parse( result.request.body ) ) );
       }).fail(function(err){
         console.log(err);
     });
