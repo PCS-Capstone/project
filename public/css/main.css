@@ -84,16 +84,16 @@ div.lost-pet {
   position: relative;
 }
 
-.lost-pet .mapContainer.visible {
+/*.lost-pet .mapContainer.visible {
   width: 100%;
   height: 300px;
   display: block;
   border: 1px solid black;
   background: pink;
   transition: all 1s;
-}
+}*/
 
-#map {
+/*#map {
   transition: all 1s;
 }
 
@@ -108,4 +108,4 @@ div.lost-pet {
   border: solid 2px black;
   width: 90%;
   height: 500px;
-}
+}*/
