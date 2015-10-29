@@ -58,7 +58,7 @@ var UploadSightingView = Backbone.View.extend({
     */
       $('#uploadDateDiv').datepicker('show')
         .on('changeDate', function(ev){
-          console.log(ev);
+          console.log(ev.date);
           $('#uploadDateDiv').datepicker('hide');
           if (ev.date.valueOf() < startDate.valueOf()){
           }
@@ -138,6 +138,10 @@ var UploadSightingView = Backbone.View.extend({
     $('#previewHolder').removeClass('display-none');
 
     function readFromExif ( exifData ) {
+      console.log('exif', exifData)
+      exifData.Orientation = 1
+      console.log('exif orient', exifData.Orientation)
+      console.log('post change', exifData)
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
@@ -210,6 +214,10 @@ var UploadSightingView = Backbone.View.extend({
 
       EXIF.getData(image, function() {
         var xf = EXIF( this ).EXIFwrapped.exifdata;
+        console.log('xf orient pre', xf.Orientation)
+        xf.Orientation = 1
+        console.log('xf orient post', xf.Orientation)
+        console.log('xf', xf)
         readFromExif(xf);
       });
     }
@@ -255,6 +263,7 @@ var UploadSightingView = Backbone.View.extend({
     event.preventDefault();
 
     var self = this;
+    console.log( 'this.lat/long=', self.lat, '/', self.lng);
     var requestObject = {};
     self.time();
     //get the file from the input field
@@ -287,6 +296,8 @@ var UploadSightingView = Backbone.View.extend({
             lat: self.lat,
             lng: self.lng
       };
+      requestObject.prettyLocation = 
+        this.
       requestObject.displayDate =
         $('#uploadDate')
           .val();
@@ -305,8 +316,8 @@ var UploadSightingView = Backbone.View.extend({
             return this.value;
           })
           .toArray();
-      requestObject.exifData =
-        asyncParams.exifData;
+      // requestObject.exifData =
+      //   asyncParams.exifData;
       requestObject.address =
         $('#uploadLocation').val();
       console.log( 'ready to send:', requestObject );
