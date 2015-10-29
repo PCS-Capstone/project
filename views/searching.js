@@ -101,6 +101,7 @@ var ResultsView = Backbone.View.extend({
     tagName: 'div',
   className: 'list-view',
    template: Handlebars.compile( $('#template-results-list').html()),
+   mapView: {},
 
   render: function() {
     this.$el.html( this.template(this.searchParameters) )
@@ -109,16 +110,20 @@ var ResultsView = Backbone.View.extend({
     var self = this;
 
     console.log( 'ResultsView.searchParamaters.location: ', this.searchParameters.location);
-    var mapView = new MapView({ collection : this.collection, center: this.searchParameters.location });
+    
+    self.mapView = new MapView({ collection : this.collection, center: this.searchParameters.location });
 
-    this.collection.forEach(function(pet) {
-      var tileView = new TileView({
-          model: pet,
-          parent: self,
-          mapView: mapView
+    setTimeout( function(){
+      self.collection.forEach(function(pet) {
+        var tileView = new TileView({
+            model: pet,
+            parent: self,
+            mapView: self.mapView
+        });
+        self.$el.append(tileView.$el)
       });
-      self.$el.append(tileView.$el)
-    });
+    }, 15000)
+    
 
     
   },
@@ -183,7 +188,8 @@ var ResultsView = Backbone.View.extend({
     this.collection.forEach(function(pet) {
       var tileView = new TileView({
           model: pet,
-          parent: self
+          parent: self,
+          mapView: self.mapView
       });
 
       self.$el.append(tileView.$el)
@@ -314,6 +320,7 @@ var MapView = Backbone.View.extend({
     this.$el.append($closeButton);
     this.$el.toggleClass('hidden');
     this.$el.appendTo('.list-view');
+    
     this.loadMap();
   },
 
@@ -335,17 +342,20 @@ var MapView = Backbone.View.extend({
   loadMap: function(){
     console.log( 'MapView.loadMap()' );
     // console.log( 'loadMap center: ', this.center );
+    
     var center = JSON.parse( this.center );
     console.log( 'MapView.center = ', this.center)
+    console.log( '#map before making Gmap =', document.getElementById('map') );
 
-    this.map = new google.maps.Map(document.getElementById('map'), {
+    new google.maps.Map(document.getElementById('map'), {
       center: center,
       // center: {"lat":45.528932,"lng":-122.68564600000002},
       zoom: 15, //need to incorporate radius math.
       disableDefaultUI: true
     });
-    console.log( 'MapView.map', this.map );
-    console.log( this.map.center );
+
+    //console.log( 'MapView.map', this.map );
+    //console.log( this.map.center );
     console.log( 'MapView.map DOM', document.getElementById('map') );
 
     this.populateMap();
