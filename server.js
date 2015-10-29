@@ -73,13 +73,14 @@ app.post('/pet', function(request, response) {
     data.imageUrl = result.url;
     // console.log( data )
     // console.log( data.imageUrl );
-
-    db.post('test', data)
-      .then(function (result) {
-        console.log( result.body.results );
-      }).fail(function(err){
-        console.log(err);
-    });
+    //
+    // db.post('test', data)
+    //   .then(function (result) {
+    //     console.log( result.body.results );
+    //   }).fail(function(err){
+    //     console.log(err);
+    // });
+    response.send('server received form');
   });
 });
 
