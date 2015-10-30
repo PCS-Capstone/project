@@ -121,11 +121,7 @@ var ResultsView = Backbone.View.extend({
           mapView: self.mapView
       });
       self.$el.append(tileView.$el)
-    });
-    
-    
-
-    
+    });    
   },
 
   initialize: function( options ) {
@@ -137,7 +133,7 @@ var ResultsView = Backbone.View.extend({
   events: {
            "click #edit" : "editSearch",
     "click #map-button"  : "showMapView",
-    // "click #tile-button" : "showListView"
+    "click #tile-button" : "showListView"
   },
 
   editSearch: function() {
@@ -158,7 +154,10 @@ var ResultsView = Backbone.View.extend({
 
   showMapView: function(event) {
     var self = this;
-    $('#map').slideToggle()
+    $('.lost-pet').hide();
+    $('#map').show();
+    google.maps.event.trigger(self.mapView.map, 'resize'); //magically fixes window resize problem http://stackoverflow.com/questions/13059034/how-to-use-google-maps-event-triggermap-resize
+
     self.mapView.map.setZoom(15);
     // console.log( self.searchParameters.location );
     // console.log( typeof self.searchParameters.location)
@@ -173,24 +172,25 @@ var ResultsView = Backbone.View.extend({
   //   var $tileView = $('.lost-pet');
   //   $tileView.remove();
 
-  //   var $mapButton = $(event.target);
-  //   $mapButton.toggle();
+    var $mapButton = $(event.target);
+    $mapButton.toggle();
 
-  //   var $tileButton = $('#tile-button');
-  //   $tileButton.toggle();
-
-  //   $('#map').toggleClass('hidden');
+    var $tileButton = $('#tile-button');
+    $tileButton.toggle();
   },
 
-  // showListView: function() {
+  showListView: function() {
+    var self = this;
+    $('#map').hide();
+    $('.lost-pet').show();
   //   var $mapView = $('#map')
   //   $mapView.remove();
 
-  //   var $tileButton = $(event.target);
-  //   $tileButton.toggle();
+    var $tileButton = $(event.target);
+    $tileButton.toggle();
 
-  //   var $mapButton = $('#map-button');
-  //   $mapButton.toggle();
+    var $mapButton = $('#map-button');
+    $mapButton.toggle();
 
   //   var self = this;
 
@@ -203,7 +203,7 @@ var ResultsView = Backbone.View.extend({
 
   //     self.$el.append(tileView.$el)
   //   });
-  // }
+  }
 
 });
 
@@ -231,7 +231,7 @@ var TileView = Backbone.View.extend({
 
   events: {
     "click .btn-description" : "showDescription",
-    "click .btn-info"        : "showMiniMap"
+    "click .btn-info" : "showMiniMap"
   },
 
   selfDestruct: function() {
@@ -247,10 +247,12 @@ var TileView = Backbone.View.extend({
     this.mapView.map.setZoom(20);
     this.mapView.markers.forEach( function(marker){
 
-      console.log( marker.modelId );
-      console.log( self.model.get('path').key );
+      // console.log( marker.modelId );
+      // console.log( self.model.get('path').key );
       if ( marker.modelId !== self.model.get('path').key ) {
         marker.setMap(null);
+      } else {
+        marker.setMap(self.mapView.map);
       }
       // var markerLat = marker.position.lat();
       // var markerLng = marker.position.lng();
@@ -299,6 +301,7 @@ var MapView = Backbone.View.extend({
     // var $closeButton = $('<button id="close-button" class="btn btn-default btn-danger">').html('x');
     // this.$el.append($closeButton);
     // this.$el.toggleClass('hidden');
+    this.$el.hide();
     this.$el.appendTo('.list-view');
     
     this.loadMap();
@@ -308,6 +311,7 @@ var MapView = Backbone.View.extend({
     _.extend( this, options );
     this.listenTo(this.model, 'remove', this.selfDestruct);
     this.render();
+
   },
 
   events: {
