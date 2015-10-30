@@ -84,8 +84,7 @@ div.lost-pet {
   position: relative;
 }
 
-/*
-#previewHolder {
+/*#previewHolder .rotate90 {
   -webkit-transform: rotate(90deg);
   -moz-trasform: rotate(90deg;
   -o-transform: rotate(90deg;
