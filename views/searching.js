@@ -263,7 +263,9 @@ var TileView = Backbone.View.extend({
   showMiniMap : function() {
     var self = this;
     console.log( this.mapView.map );
-    $('#map').slideToggle()
+    // if ( $('#map').css('display') === 'none' ){
+      $('#map').slideToggle()
+    // }
     this.mapView.map.setCenter(this.model.get('value').location);
     this.mapView.map.setZoom(20);
     this.mapView.markers.forEach( function(marker){
