@@ -121,8 +121,7 @@ var UploadSightingView = Backbone.View.extend({
     var $imagePreview = $('#previewHolder');
 
     var self = this;
-    var address;
-    var geocoder;
+    var address, exif, geocoder;
 
     //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
     if ($('#locationMap')) {
@@ -134,16 +133,11 @@ var UploadSightingView = Backbone.View.extend({
     // $('#previewHolder').removeClass('display-none');
 
     function readFromExif ( exifData ) {
-      console.log('exif', exifData)
-      exifData.Orientation = 1
-      console.log('exif orient', exifData.Orientation)
-      console.log('post change', exifData)
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
       else {
         function degToDec (latLngArray) {
-          console.log('longitude negative? ', latLngArray[0])
           var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
           return decimal;
         }
@@ -161,10 +155,8 @@ var UploadSightingView = Backbone.View.extend({
         self.lat = address.lat;
         self.lng = address.lng;
 
-
         var displayDate = exifData.DateTime.split(' ')[0];
         var displayTime = exifData.DateTime.split(' ')[1];
-        console.log(displayTime);
 
         displayDate = (displayDate.split(':'))
         displayDate = displayDate[1] + "/" + displayDate[2] + "/" + displayDate[0]
@@ -180,9 +172,15 @@ var UploadSightingView = Backbone.View.extend({
         }
       }
 
+      console.log('exif orient', exifData.Orientation)
+      if(exifData.Orientation === 6) {
+        $('#previewHolder').addClass('rotate90');
+      }
+
       $('#uploadDate').val( displayDate );
       $('#uploadTime').val( displayTime );
       codeAddress();
+
     }
 
     function codeAddress() {
@@ -208,10 +206,6 @@ var UploadSightingView = Backbone.View.extend({
 
       EXIF.getData(image, function() {
         var xf = EXIF( this ).EXIFwrapped.exifdata;
-        console.log('xf orient pre', xf.Orientation)
-        xf.Orientation = 1
-        console.log('xf orient post', xf.Orientation)
-        console.log('xf', xf)
         readFromExif(xf);
       });
     }
@@ -224,34 +218,37 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   time: function(){
-    console.log('time');
-    var time = ($('#uploadTime').val());
-    time = time.split(':');
+    //*** Reformat to fit new time options ***//
+    //*** id = hour-select and minute-select ***//
 
-    var timeOfDay = $('#uploadTimeAmPm').val();
-    console.log('am/pm', $('#uploadTimeAmPm').val());
-    if(timeOfDay === "pm") {
+    // console.log('time');
+    // var time = ($('#uploadTime').val());
+    // time = time.split(':');
 
-      if(parseInt(time[0]) === 12) {
-        time = ($('#uploadTime').val());
-      } else {
-        time[0] = (parseInt(time[0]) + 12);
-        time = time[0] + ":" + time[1];
-      }
-    } else {
+    // var timeOfDay = $('#uploadTimeAmPm').val();
+    // console.log('am/pm', $('#uploadTimeAmPm').val());
+    // if(timeOfDay === "pm") {
 
-      if(parseInt(time[0]).length === 1) {
-        time = "0" + time[0] + ":" + time[1];
-      } else if(parseInt(time[0]) === 12) {
-        time[0] = "00";
-        time = time[0] + ":" + time[1];
-      } else {
-        time = ($('#uploadTime').val());
-      }
+    //   if(parseInt(time[0]) === 12) {
+    //     time = ($('#uploadTime').val());
+    //   } else {
+    //     time[0] = (parseInt(time[0]) + 12);
+    //     time = time[0] + ":" + time[1];
+    //   }
+    // } else {
 
-    }
+    //   if(parseInt(time[0]).length === 1) {
+    //     time = "0" + time[0] + ":" + time[1];
+    //   } else if(parseInt(time[0]) === 12) {
+    //     time[0] = "00";
+    //     time = time[0] + ":" + time[1];
+    //   } else {
+    //     time = ($('#uploadTime').val());
+    //   }
 
-    console.log(time);
+    // }
+
+    // console.log(time);
 
   },
 
