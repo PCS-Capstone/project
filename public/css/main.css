@@ -84,8 +84,43 @@ div.lost-pet {
   position: relative;
 }
 
+#hour, #minute {
+  padding: 5px 15px;
+}
 
+#upload-photo-div {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-image: url("https://placeimg.com/400/300/animals/grayscale");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 
-/*#previewHolder {
-  image-orientation: from-image;
-}*/
+#upload-photo-div button  {
+  height: 185px;
+  width: 185px;
+  margin: 0 auto;
+  color: white;
+  border: 10px  double white;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -o-border-radius: 50%;
+  background: black;
+  opacity: .7;
+  z-index: 99;
+  font-size: 1.1em;
+  letter-spacing: .1em;
+}
+
+#upload-photo-div .glyphicon {
+  position: relative;
+  font-size: 1.5em;
+  display: inline-block;
+  padding: 15px 0;
+}
+
+#previewHolder {
+  max-width: 100%;
+  height: auto;
+}
