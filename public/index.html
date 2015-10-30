@@ -157,65 +157,36 @@
 
   <script type="template-x-handlebars" id="template-upload-sighting">
 
-    <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
     <div id="map" class="display-none"> </div>
 
     <form id="upload-form" class="form-horizontal">
-      <div class="form-group">
-        <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
-        </input>
-      </div>
-
-      <div class="form-group">
-        <label for="uploadLocation" class="col-sm-2 control-label">
-          Location:
-        </label>
-        <div class="col-sm-10">
-          <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="uploadDate" class="col-sm-2 control-label">
-          Date:
-        </label>
-
-        <div class="col-sm-10 input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
-          <input id="uploadDate" class="form-control span2" size="16" type="text" name="date" value="" placeholder="yyyy-mm-dd">
-          <span class="add-on"><i class="icon-th"></i></span>
-        </div>
-      </div>
-
-
-
-
-      <div class="form-group">
-        <label class="col-sm-2 control-label">
-          Time:
-        </label>
-
-        <div id="hour" class="col-sm-2 input-group pull-left">
-          <span class="input-group-addon">hr</span>
-          <select id="hour-select" class="form-control" name="hour">
-          </select>
-        </div>
-
-        <div id="minute" class="col-sm-2 input-group pull-left">
-          <span class="input-group-addon">minutes</span>
-          <select id="minute-select" class="form-control" name="minute">
-          </select>
+      <div class='row'>
+        <img id="previewHolder" class="display-none .img-responsive col-xs-8 col-sm-4 col-sm-offset-4" alt="Uploaded Image Preview Holder" height="auto" />
+        <div id="upload-photo-div" class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+          <button type="button" class="btn btn-primary btn-lg btn-block">
+            <span class="glyphicon glyphicon-upload " aria-hidden="true">
+            </span> </br>
+            <span class="text">
+              Upload Photo </br>
+            </span>
+            <span class="glyphicon glyphicon-camera " aria-hidden="true">
+            </span>
+          </button>
         </div>
 
 
+        <div class="form-group hidden">
+          <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
+          </input>
+        </div>
       </div>
-
 
       <div class="form-group">
         <label for="uploadSpecies" class="col-sm-2 control-label">
           Type of Animal:
         </label>
-        <div class="col-sm-10">
 
+        <div class="col-sm-9 col-lg-8">
           <select id="uploadSpecies" class="form-control" name="animal-type">
             <option value="" disabled selected>"What kind of animal is it?"</option>
             <option value="Dog"> Dog </option>
@@ -228,51 +199,121 @@
         </div>
       </div>
 
-        <fieldset>
-          <legend>
+      <div class="form-group">
+        <label for="uploadLocation" class="col-sm-2 control-label">
+          Location:
+        </label>
+        <div class="col-sm-9 col-lg-8">
+          <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+          <button type="button" id="uploadLocationButton" class="btn btn-info display-none">Edit Location</button>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label for="uploadDate" class="col-sm-2 control-label">
+          Date:
+        </label>
+
+        <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
+          <input id="uploadDate" class="form-control span2" type="text" name="date" value="" placeholder="yyyy-mm-dd">
+          <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-2 control-label">
+          Time:
+        </label>
+
+        <div id="hour" class="col-sm-4 col-md-2 input-group pull-left">
+          <span class="input-group-addon">hr</span>
+          <select id="hour-select" class="form-control" name="hour">
+          </select>
+        </div>
+
+        <div id="minute" class="col-sm-5 col-md-3 input-group pull-left">
+          <span class="input-group-addon">minutes</span>
+          <select id="minute-select" class="form-control" name="minute">
+          </select>
+        </div>
+
+        <div id="am-pm-div" class="radio col-sm-1 col-md-2 pull-left">
+          <label>
+            <input type="radio" name="am-pm" id="am" value="am">
+              am
+          </label>
+          <label>
+            <input type="radio" name="am-pm" id="pm" value="pm">
+              pm
+          </label>
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">
             Please select color:
-          </legend>
+        </label>
 
-          <input id="uploadWhite" type="checkbox" name="color-group" value="White">
-          <label for="uploadWhite">
-            White
-          </label>
+        <fieldset>
+          <div id="white" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadWhite" type="checkbox" name="color-group" value="White" aria-label="uploadWhite">
+            <label for="uploadWhite">
+              White
+            </label>
+          </div>
 
-          <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
-          <label for="uploadBlack">
-            Black
-          </label>
+          <div id="black" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
+            <label for="uploadBlack">
+              Black
+            </label>
+          </div>
 
-          <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
-          <label for="uploadBrown">
-            Brown
-          </label>
+          <div id="brown" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
+            <label for="uploadBrown">
+              Brown
+            </label>
+          </div>
 
-          <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
-          <label for="uploadOrange">
-            Orange
-          </label>
+          <div id="orange" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
+            <label for="uploadOrange">
+              Orange
+            </label>
+          </div>
 
-          <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
-          <label for="uploadYellow">
-            Yellow
-          </label>
+          <div id="yellow" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
+            <label for="uploadYellow">
+              Yellow
+            </label>
+          </div>
 
-          <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
-          <label for="uploadGray">
-            Gray
-          </label>
+          <div id="gray" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
+            <label for="uploadGray">
+              Gray
+            </label>
+          </div>
         </fieldset>
 
       </div>
 
-        <label for="uploadDescription">
+      <div class="form-group">
+        <label for="uploadDescription" class="col-sm-2  control-label">
           Enter description:
         </label>
-        <textarea id="uploadDescription" name="description">
-        </textarea>
+        <div class="col-sm-9 col-md-9 col-lg-8">
+          <textarea id="uploadDescription" name="description" class="form-control col-sm-10 col-md-9 col-lg-8">
+          </textarea>
+        </div>
+      </div>
 
-        <input type="submit" value="submit">
+      <button type="submit" class="btn btn-primary btn-lg center-block"> Submit </button>
 
     </form>
 
