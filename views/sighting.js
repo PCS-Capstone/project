@@ -117,16 +117,12 @@ var UploadSightingView = Backbone.View.extend({
 
   populateFields : function() {
 
-      var $locationField = $('#uploadLocation');
-          var $dateField = $('#uploadDate');
-          var $timeField = $('#uploadTime');
-    var $animalTypeField = $('#uploadSpecies');
-         var $imageField = $('#upload-photo');
-       var $imagePreview = $('#previewHolder');
+    var $imageField = $('#upload-photo');
+    var $imagePreview = $('#previewHolder');
 
-       var self = this;
-       var address;
-       var geocoder;
+    var self = this;
+    var address;
+    var geocoder;
 
     //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
     if ($('#locationMap')) {
@@ -135,7 +131,7 @@ var UploadSightingView = Backbone.View.extend({
     //Clears data field each time new photo is uploaded
     $('#uploadDate').val('');
     //Shows image preview
-    $('#previewHolder').removeClass('display-none');
+    // $('#previewHolder').removeClass('display-none');
 
     function readFromExif ( exifData ) {
       console.log('exif', exifData)
@@ -184,11 +180,9 @@ var UploadSightingView = Backbone.View.extend({
         }
       }
 
-        $locationField.val( address );
-        $dateField.val( displayDate );
-        $timeField.val( displayTime );
-        $animalTypeField.val( animalType );
-        codeAddress();
+      $('#uploadDate').val( displayDate );
+      $('#uploadTime').val( displayTime );
+      codeAddress();
     }
 
     function codeAddress() {
@@ -222,8 +216,10 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
-    previewImage( $imageField );
     getExifData();
+    previewImage( $imageField );
+
+    $('#previewHolder').removeClass('display-none');
 
   },
 
@@ -296,8 +292,6 @@ var UploadSightingView = Backbone.View.extend({
             lat: self.lat,
             lng: self.lng
       };
-      requestObject.prettyLocation = 
-        this.
       requestObject.displayDate =
         $('#uploadDate')
           .val();
@@ -344,6 +338,7 @@ var UploadSightingView = Backbone.View.extend({
     // var success = new SuccessfulSubmission({})
     var error = new Error({});
   },
+
   googleAutocomplete: function() {
     /*------------------------------------------------------------------------
       In case the exif geolocation data is abset, this entire function adds a:
