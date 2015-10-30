@@ -222,8 +222,9 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
-    previewImage( $imageField );
     getExifData();
+    previewImage( $imageField );
+
 
   },
 

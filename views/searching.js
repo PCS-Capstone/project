@@ -129,6 +129,7 @@ var ResultsView = Backbone.View.extend({
     });
 
     self.collection.forEach(function(pet) {
+      console.log('collection', self.collection)
       var tileView = new TileView({
           model: pet,
           parent: self,
