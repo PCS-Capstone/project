@@ -84,8 +84,14 @@ div.lost-pet {
   position: relative;
 }
 
+#previewHolder.rotate90 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
 
-
-/*#previewHolder {
-  image-orientation: from-image;
-}*/
+textarea {
+  resize: none;
+}
