@@ -60,7 +60,7 @@
     </div>
 
     <div class="flex-row">
-      <button class="btn btn-info btn-lg">Location: {{location}}</button>
+      <button class="btn btn-info btn-lg">Location: {{address}}</button>
       <h4>Last seen: {{displayDate}} at {{displayTime}}</h4>
     </div>
 
@@ -86,11 +86,12 @@
 
           <select name="animal-type" class="form-control" id="animal-type">
             <option value="" disabled selected>"What kind of animal are you looking for?"</option>
-            <option value="Dog" id="dog">Dog</option>
-            <option value="Cat">Cat</option>
-            <option value="Reptile">Reptile</option>
-            <option value="Rodent">Rodent</option>
-            <option value="Fish">Fish</option>
+            <option value="Dog"> Dog </option>
+            <option value="Cat"> Cat </option>
+            <option value="Bird"> Bird </option>
+            <option value="Small-Furry"> Small and Furry </option>
+            <option value="Scales-Fins"> Scales and Fins</option>
+            <option value="Barnyard"> Barnyard </option>
           </select>
         </div>
       </div>
@@ -158,10 +159,6 @@
 
     <div id="map" class="display-none"> </div>
 
-
-
-
-
     <form id="upload-form" class="form-horizontal">
       <div class='row'>
         <img id="previewHolder" class="display-none .img-responsive col-xs-8 col-sm-4 col-sm-offset-4" alt="Uploaded Image Preview Holder" height="auto" />
@@ -194,9 +191,10 @@
             <option value="" disabled selected>"What kind of animal is it?"</option>
             <option value="Dog"> Dog </option>
             <option value="Cat"> Cat </option>
-            <option value="Reptile">Reptile</option>
-            <option value="Rodent">Rodent</option>
-            <option value="Fish">Fish</option>
+            <option value="Bird"> Bird </option>
+            <option value="Small-Furry"> Small and Furry </option>
+            <option value="Scales-Fins"> Scales and Fins</option>
+            <option value="Barnyard"> Barnyard </option>
           </select>
         </div>
       </div>

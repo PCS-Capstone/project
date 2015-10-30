@@ -62,6 +62,7 @@ var UploadSightingView = Backbone.View.extend({
     */
       $('#uploadDateDiv').datepicker('show')
         .on('changeDate', function(ev){
+          console.log(ev.date);
           $('#uploadDateDiv').datepicker('hide');
         });
   },
@@ -117,12 +118,8 @@ var UploadSightingView = Backbone.View.extend({
 
   populateFields : function() {
 
-      var $locationField = $('#uploadLocation');
-          var $dateField = $('#uploadDate');
-          var $timeField = $('#uploadTime');
-    var $animalTypeField = $('#uploadSpecies');
-         var $imageField = $('#upload-photo');
-       var $imagePreview = $('#previewHolder');
+    var $imageField = $('#upload-photo');
+    var $imagePreview = $('#previewHolder');
 
     var self = this;
 
@@ -136,7 +133,6 @@ var UploadSightingView = Backbone.View.extend({
     //Clears data field each time new photo is uploaded
     $('#uploadDate').val('');
 
-
     function codeAddress(xLat, xLng) {
       // console.log('code address running');
       geocoder = new google.maps.Geocoder;
@@ -145,7 +141,14 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
+    //Shows image preview
+    // $('#previewHolder').removeClass('display-none');
+
     function readFromExif ( exifData ) {
+      console.log('exif', exifData)
+      exifData.Orientation = 1
+      console.log('exif orient', exifData.Orientation)
+      console.log('post change', exifData)
 
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
@@ -206,7 +209,6 @@ var UploadSightingView = Backbone.View.extend({
 
         $dateField.val( displayDate );
       }
-
     }
 
     function previewImage ( inputElement ) {
@@ -229,18 +231,25 @@ var UploadSightingView = Backbone.View.extend({
 
       EXIF.getData(image, function() {
         var xf = EXIF( this ).EXIFwrapped.exifdata;
+        console.log('xf orient pre', xf.Orientation)
+        xf.Orientation = 1
+        console.log('xf orient post', xf.Orientation)
+        console.log('xf', xf)
         readFromExif(xf);
       });
     }
 
-    previewImage( $imageField );
     getExifData();
+    previewImage( $imageField );
+
+    $('#previewHolder').removeClass('display-none');
 
   },
   submitForm : function(event) {
     event.preventDefault();
 
     var self = this;
+    console.log( 'this.lat/long=', self.lat, '/', self.lng);
     var requestObject = {};
     // self.time();
     //get the file from the input field
@@ -308,6 +317,7 @@ var UploadSightingView = Backbone.View.extend({
     // // var success = new SuccessfulSubmission({})
     // var error = new Error({});
   },
+
   googleAutocomplete: function() {
     /*------------------------------------------------------------------------
       In case the exif geolocation data is abset, this entire function adds a:
@@ -410,7 +420,7 @@ var UploadSightingView = Backbone.View.extend({
           center: {lat: 39.5, lng: -98.35},
           zoom: 4
         });
-        mapListener(); 
+        mapListener();
       }
 
       function showPosition(position) {

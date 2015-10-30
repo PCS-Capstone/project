@@ -110,7 +110,7 @@ div.lost-pet {
   opacity: .7;
   z-index: 99;
   font-size: 1.1em;
-  letter-spacing: .1em; 
+  letter-spacing: .1em;
 }
 
 #upload-photo-div .glyphicon {
