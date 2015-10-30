@@ -230,32 +230,6 @@ var TileView = Backbone.View.extend({
     tagName: 'div',
   className: 'lost-pet',
    template: Handlebars.compile($ ('#template-tile-view').html()),
-  
-  makeMap: function() {
-    // console.log( 'building map' );
-    // var self = this;
-    
-    // var center = this.model.get('value').location;
-    // // console.log( 'center of map: ', center );
-    // // console.log( 'typeof center: ', typeof center );
-    
-    // center = JSON.stringify(center);
-    // // console.log( 'center of map: ', center );
-    // // console.log( 'typeof center: ', typeof center );
-    
-    // center = JSON.parse(center);
-    // // console.log( 'center of map: ', center );
-    // // console.log( 'typeof center: ', typeof center );
-
-    // console.log(this.mapView);
-    // console.log(this.mapView.map);
-    // mapView.map.center = center;
-    // console.log(this.mapView.map.center);
-    // mapView.map.zoom = 18;
-    // console.log(this.mapView.map.zoom);
-    // //change map object center to match this center
-    // $('#map').toggleClass('zoomed');
-  },
 
   render: function() {
 
@@ -268,6 +242,7 @@ var TileView = Backbone.View.extend({
   },
 
   initialize: function( options ) {
+    console.log( 'Initialize TileView' )
     _.extend( this, options );
     this.listenTo(this.model, 'remove', this.selfDestruct)
 
@@ -348,11 +323,14 @@ var MapView = Backbone.View.extend({
     // this.$el.append($closeButton);
     // this.$el.toggleClass('hidden');
     this.$el.hide();
-    this.$el.appendTo('.list-view');
+    this.$el.appendTo('.results-view');
+    console.log('MapView.render()' );
+    console.log('==============\n', document.getElementById('map') )
     this.loadMap();
   },
 
   initialize: function( options ){
+    console.log( 'Initialize MapView')
     _.extend( this, options );
     this.listenTo(this.model, 'remove', this.selfDestruct);
     this.render();
@@ -369,14 +347,15 @@ var MapView = Backbone.View.extend({
   },
 
   loadMap: function(){
-
+    console.log( 'loadmap MapView')
     // console.log( 'MapView.loadMap()' );
     // console.log( 'loadMap center: ', this.center );
     
     var center = JSON.parse( this.center );
     // console.log( 'MapView.center = ', this.center)
-    // console.log( '#map before making Gmap =', document.getElementById('map') );
-
+    console.log( '#map before making Gmap =', document.getElementById('map') );
+    // console.log( 'MapView.map=', this.map)
+    // console.log( 'google works=', google.maps.Map)
     this.map = new google.maps.Map(document.getElementById('map'), {
       center: center,
       // center: {"lat":45.528932,"lng":-122.68564600000002},
@@ -384,7 +363,7 @@ var MapView = Backbone.View.extend({
       disableDefaultUI: true
     });
 
-    //console.log( 'MapView.map', this.map );
+    console.log( 'MapView.map', this.map );
     //console.log( this.map.center );
     // console.log( 'MapView.map DOM', document.getElementById('map') );
 
@@ -392,6 +371,7 @@ var MapView = Backbone.View.extend({
   },
 
   populateMap: function(){
+    console.log( 'populateMap MapView')
     // console.log( 'MapView.populateMap()' );
     var self = this;
     // console.log( 'map =', self.map );
