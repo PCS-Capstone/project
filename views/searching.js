@@ -84,11 +84,21 @@ var SearchFormView = Backbone.View.extend({
     this.remove();
     // console.log( 'searchForm on submit location:', self.location)
 
+    // only works upon first try, does not work with edit because 
+    // there's only one fetch call.
+    // We want to use conditional prior to ResultsView being rendered
+    // if there are no search results found
+    // where do we put it?
     app.collection.fetch({data : searchParameters, success: function()
-      { new ResultsView ({
-        collection : app.collection,
-        searchParameters : searchParameters
+      { if (app.collection.length === 0) { 
+        new NoResultsFound({ searchParameters : searchParameters})
+      } else {
+        new ResultsView ({
+          collection : app.collection,
+          searchParameters : searchParameters
         });
+      }
+
       }});
   }
 });
@@ -99,7 +109,7 @@ var SearchFormView = Backbone.View.extend({
 var ResultsView = Backbone.View.extend({
 
     tagName: 'div',
-  className: 'list-view',
+  className: 'results-view',
    template: Handlebars.compile( $('#template-results-list').html()),
    mapView: {},
 
@@ -109,11 +119,15 @@ var ResultsView = Backbone.View.extend({
 
     var self = this;
 
-    // console.log( 'ResultsView.searchParamaters.location: ', this.searchParameters.location);
-    
-    self.mapView = new MapView({ collection : this.collection, center: this.searchParameters.location });
 
-  
+    console.log( 'ResultsView.searchParamaters.location: ', this.searchParameters.location);
+    
+    self.mapView = new MapView({ 
+      collection : this.collection, 
+      center: this.searchParameters.location,
+      parent: self
+    });
+
     self.collection.forEach(function(pet) {
       var tileView = new TileView({
           model: pet,
@@ -121,11 +135,13 @@ var ResultsView = Backbone.View.extend({
           mapView: self.mapView
       });
       self.$el.append(tileView.$el)
-    });    
+
+    });
+    
   },
 
   initialize: function( options ) {
-    // console.log( 'Initializing ResultsView' );
+    console.log( 'Initializing ResultsView' );
     _.extend( this, options );
     this.render();
   },
@@ -153,6 +169,7 @@ var ResultsView = Backbone.View.extend({
   },
 
   showMapView: function(event) {
+
     var self = this;
     $('.lost-pet').hide();
     $('#map').show();
@@ -203,6 +220,7 @@ var ResultsView = Backbone.View.extend({
 
   //     self.$el.append(tileView.$el)
   //   });
+
   }
 
 });
@@ -212,13 +230,41 @@ var TileView = Backbone.View.extend({
     tagName: 'div',
   className: 'lost-pet',
    template: Handlebars.compile($ ('#template-tile-view').html()),
+  
+  makeMap: function() {
+    // console.log( 'building map' );
+    // var self = this;
+    
+    // var center = this.model.get('value').location;
+    // // console.log( 'center of map: ', center );
+    // // console.log( 'typeof center: ', typeof center );
+    
+    // center = JSON.stringify(center);
+    // // console.log( 'center of map: ', center );
+    // // console.log( 'typeof center: ', typeof center );
+    
+    // center = JSON.parse(center);
+    // // console.log( 'center of map: ', center );
+    // // console.log( 'typeof center: ', typeof center );
+
+    // console.log(this.mapView);
+    // console.log(this.mapView.map);
+    // mapView.map.center = center;
+    // console.log(this.mapView.map.center);
+    // mapView.map.zoom = 18;
+    // console.log(this.mapView.map.zoom);
+    // //change map object center to match this center
+    // $('#map').toggleClass('zoomed');
+  },
 
   render: function() {
+
     // console.log( this.model.get('value') );
     // console.log( this.model.get('value').location );
     // console.log( typeof this.model.get('value').location );
 
     this.$el.html( this.template(this.model.get('value')) );
+
   },
 
   initialize: function( options ) {
@@ -303,7 +349,6 @@ var MapView = Backbone.View.extend({
     // this.$el.toggleClass('hidden');
     this.$el.hide();
     this.$el.appendTo('.list-view');
-    
     this.loadMap();
   },
 
@@ -324,6 +369,7 @@ var MapView = Backbone.View.extend({
   },
 
   loadMap: function(){
+
     // console.log( 'MapView.loadMap()' );
     // console.log( 'loadMap center: ', this.center );
     
@@ -367,7 +413,6 @@ var MapView = Backbone.View.extend({
         modelId: model.get('path').key
         // animation: google.maps.Animation.DROP
       });
-
       console.log(model.get('path').key);
       console.log(marker.modelId);
 
