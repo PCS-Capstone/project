@@ -71,7 +71,10 @@ app.post('/pet', function(request, response) {
   uploader.upload( data.imageUrl, function (result)  {
     //console.log('return after upload: ', result);
 
-    data.imageUrl = result.url;
+    data.imageUrl = result.url.replace(/upload/, 'upload/a_exif');;
+
+
+    // data.imageUrl.replace('')
     // console.log( data )
     // console.log( data.imageUrl );
     db.post('test', data)

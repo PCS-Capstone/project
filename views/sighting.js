@@ -144,6 +144,7 @@ var UploadSightingView = Backbone.View.extend({
     // $('#previewHolder').removeClass('display-none');
 
     function readFromExif ( exifData ) {
+      
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
@@ -191,10 +192,7 @@ var UploadSightingView = Backbone.View.extend({
       // $('#uploadDate').val( displayDate );
       // $('#uploadTime').val( displayTime );
       // codeAddress();
-
-      }
-
-      if (parseInt(displayTime[0]) > 12) {
+        if (parseInt(displayTime[0]) > 12) {
 
         $("#pm").prop("checked", true);
 
@@ -205,16 +203,18 @@ var UploadSightingView = Backbone.View.extend({
         $('#hour-select').val(hour);
         $('#minute-select').val(minute);
         displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm";
+        }
+        else if (displayTime[0][0] === 0) {
+          displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
+        }
+        else {
+          displayTime = displayTime[0] + ":" + displayTime[1];
+        }
       }
-      else if (displayTime[0][0] === 0) {
-        displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
-      }
-      else {
-        displayTime = displayTime[0] + ":" + displayTime[1];
-      }
-
       $dateField.val( displayDate );
+      
     }
+
 
     function previewImage ( inputElement ) {
       var image  = inputElement[0].files[0];
@@ -241,7 +241,7 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     getExifData();
-    previewImage( $imageField );
+    previewImage( $imageField );    
 
     $('#previewHolder').removeClass('display-none');
 
