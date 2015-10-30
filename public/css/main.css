@@ -84,35 +84,7 @@ div.lost-pet {
   position: relative;
 }
 
-#hour, #minute {
-  padding: 5px 15px;
-}
 
-.lost-pet .mapContainer.visible {
-  width: 100%;
-  height: 300px;
-  display: block;
-  border: 1px solid black;
-  background: pink;
-  transition: all 1s;
-}
-
-#map {
-  transition: all 1s;
-}
-
-#map.hidden {
-  display: none;
-}
-
-#map.zoomed {
-  display: block;
-  position: fixed;
-  z-index: 999;
-  border: solid 2px black;
-  width: 90%;
-  height: 500px;
-}
 
 /*#previewHolder {
   image-orientation: from-image;
