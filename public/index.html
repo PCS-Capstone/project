@@ -307,9 +307,9 @@
         <label for="uploadDescription" class="col-sm-2  control-label">
           Enter description:
         </label>
+
         <div class="col-sm-9 col-md-9 col-lg-8">
-          <textarea id="uploadDescription" name="description" class="form-control col-sm-10 col-md-9 col-lg-8">
-          </textarea>
+          <textarea id="uploadDescription" name="description" class="form-control col-sm-10 col-md-9 col-lg-8"></textarea>
         </div>
       </div>
 
@@ -317,6 +317,24 @@
 
     </form>
 
+  </script>
+
+  <script type="template-x-handlebars" id="template-infowindow">
+    <div class="row">
+      <img class="col-xs-6" src={{imageUrl}}>
+      <div class="col-xs-6">
+        <p>{{colors}} {{animalType}}</p>
+        <p>sighted on {{dateTime}}</p>
+        <p>@ {{address}}</p>
+      </div>
+    </div>
+    {{#if description}}
+      <div class="row">
+        <div class="col-xs-12">
+          {{description}}
+        </div>
+      </div>
+    {{/if }}
   </script>
 
   <!-- MAIN SCRIPTS -->
