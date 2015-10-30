@@ -74,7 +74,6 @@ app.post('/pet', function(request, response) {
     data.imageUrl = result.url;
     // console.log( data )
     // console.log( data.imageUrl );
-
     db.post('test', data)
       .then(function (result) {
         console.log( 'confirmed!: ', pretty.render( JSON.parse( result.request.body ) ) );
