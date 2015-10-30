@@ -263,10 +263,11 @@ var TileView = Backbone.View.extend({
 
   showMiniMap : function() {
     var self = this;
-    console.log( this.mapView.map );
+    //console.log( this.mapView.map );
     // if ( $('#map').css('display') === 'none' ){
-      $('#map').slideToggle()
+      $('#map').show()
     // }
+    google.maps.event.trigger(self.mapView.map, 'resize');
     this.mapView.map.setCenter(this.model.get('value').location);
     this.mapView.map.setZoom(20);
     this.mapView.markers.forEach( function(marker){
@@ -350,13 +351,13 @@ var MapView = Backbone.View.extend({
   },
 
   loadMap: function(){
-    console.log( 'loadmap MapView')
+    //console.log( 'loadmap MapView')
     // console.log( 'MapView.loadMap()' );
     // console.log( 'loadMap center: ', this.center );
     
     var center = JSON.parse( this.center );
     // console.log( 'MapView.center = ', this.center)
-    console.log( '#map before making Gmap =', document.getElementById('map') );
+    //console.log( '#map before making Gmap =', document.getElementById('map') );
     // console.log( 'MapView.map=', this.map)
     // console.log( 'google works=', google.maps.Map)
     this.map = new google.maps.Map(document.getElementById('map'), {
@@ -366,7 +367,7 @@ var MapView = Backbone.View.extend({
       disableDefaultUI: true
     });
 
-    console.log( 'MapView.map', this.map );
+    //console.log( 'MapView.map', this.map );
     //console.log( this.map.center );
     // console.log( 'MapView.map DOM', document.getElementById('map') );
 
@@ -374,9 +375,10 @@ var MapView = Backbone.View.extend({
   },
 
   populateMap: function(){
-    console.log( 'populateMap MapView')
+    //console.log( 'populateMap MapView')
     // console.log( 'MapView.populateMap()' );
     var self = this;
+    var template = Handlebars.compile($ ('#template-infowindow').html())
     // console.log( 'map =', self.map );
     //var image = 'public/images/binoculars.png'
     //loop through the collection
@@ -388,7 +390,7 @@ var MapView = Backbone.View.extend({
       // console.log( 'loop => model attributes:', model.attributes );
       // console.log( 'function?', model.get );
       //console.log( 'loop => model:', model.get('value').location )
-      console.log(model)
+      //console.log(model)
       var marker = new google.maps.Marker({
         position: model.get('value').location, //are these being altered??
         //icon: image,
@@ -396,22 +398,23 @@ var MapView = Backbone.View.extend({
         modelId: model.get('path').key
         // animation: google.maps.Animation.DROP
       });
-      console.log(model.get('path').key);
-      console.log(marker.modelId);
+      //console.log(model.get('path').key);
+      //console.log(marker.modelId);
 
       self.markers.push(marker);
 
-      // var infowindow = new google.maps.InfoWindow({
-      //   content: model.get('value').colors + ' ' + model.get('value').animalType + ' @ ' + model.get('value').dateTime + '</br>' + model.get('value').description
-      // });
+      var infowindow = new google.maps.InfoWindow({
+        content: template(model.get('value'))
+        // content: '<img src="' + model.get('value').imageUrl + '" style="max-width:75px">' + model.get('value').colors + ' ' + model.get('value').animalType + ' @ ' + model.get('value').dateTime + '</br>' + model.get('value').description
+      });
 
-      // marker.addListener('mouseover', function() {
-      //   infowindow.open(marker.get('map'), marker);
-      // });
+      marker.addListener('mouseover', function() {
+        infowindow.open(marker.get('map'), marker);
+      });
 
-      // marker.addListener('mouseout', function(){
-      //   infowindow.close(marker.get('map'), marker);
-      // });
+      marker.addListener('mouseout', function(){
+        infowindow.close(marker.get('map'), marker);
+      });
 
     });
   }
