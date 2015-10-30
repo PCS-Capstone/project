@@ -49,7 +49,12 @@ var UploadSightingView = Backbone.View.extend({
   events: {
     'change #upload-photo' : 'populateFields',
     'submit #upload-form'  : 'submitForm',
-    'click #uploadDate' : 'datepickerForm'
+    'click #uploadDate' : 'datepickerForm',
+    'click #upload-photo-div button' : 'uploadPhoto',
+    'click #uploadLocationButton' : 'googleAutocomplete'
+  },
+  uploadPhoto: function() {
+    $('#upload-photo').trigger('click');
   },
 
   datepickerForm: function() {
@@ -62,7 +67,6 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   google: function() {
-    console.log('google running');
     $('#map').removeClass('display-none').addClass('col-xs-12');
 
     var map;
@@ -131,8 +135,7 @@ var UploadSightingView = Backbone.View.extend({
       $('#locationMap').remove();    }
     //Clears data field each time new photo is uploaded
     $('#uploadDate').val('');
-    //Shows image preview
-    $('#previewHolder').removeClass('display-none');
+
 
     function codeAddress(xLat, xLng) {
       // console.log('code address running');
@@ -148,6 +151,7 @@ var UploadSightingView = Backbone.View.extend({
         self.googleAutocomplete();
       }
       else {
+        $('#uploadLocationButton').removeClass("display-none");
         function degToDec(latLngArray) {
           // console.log('longitude negative? ', latLngArray[0]);
           var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
@@ -203,8 +207,6 @@ var UploadSightingView = Backbone.View.extend({
         $dateField.val( displayDate );
       }
 
-      console.log($dateField.val());
-      console.log($timeField.val());
     }
 
     function previewImage ( inputElement ) {
@@ -212,7 +214,11 @@ var UploadSightingView = Backbone.View.extend({
       var reader = new FileReader();
 
       reader.onload = function(event) {
+        $('#upload-photo-div').remove();
         $imagePreview.attr('src', event.target.result);
+        //Shows image preview
+        $imagePreview.removeClass('display-none');
+
       };
 
       reader.readAsDataURL( image );
@@ -231,37 +237,6 @@ var UploadSightingView = Backbone.View.extend({
     getExifData();
 
   },
-  //
-  // time: function(){
-  //   console.log('time');
-  //   var time = ($('#uploadTime').val());
-  //   time = time.split(':');
-  //
-  //   var timeOfDay = $('#uploadTimeAmPm').val();
-  //   console.log('am/pm', $('#uploadTimeAmPm').val());
-  //   if(timeOfDay === "pm") {
-  //
-  //     if(parseInt(time[0]) === 12) {
-  //       time = ($('#uploadTime').val());
-  //     } else {
-  //       time[0] = (parseInt(time[0]) + 12);
-  //       time = time[0] + ":" + time[1];
-  //     }
-  //   } else {
-  //     if(time[0].length === 1) {
-  //       time = "0" + time[0] + ":" + time[1];
-  //     } else if(parseInt(time[0]) === 12) {
-  //       time[0] = "00";
-  //       time = time[0] + ":" + time[1];
-  //     } else {
-  //       time = ($('#uploadTime').val());
-  //     }
-  //
-  //   }
-  //
-  //   console.log(time);
-  //
-  // },
   submitForm : function(event) {
     event.preventDefault();
 
@@ -321,6 +296,7 @@ var UploadSightingView = Backbone.View.extend({
         success: function(data) {
           $('#upload-form').remove();
           $('#previewHolder').remove();
+          self.google();
           console.log(data);
         }
       });
@@ -341,7 +317,9 @@ var UploadSightingView = Backbone.View.extend({
         --Form Location field
         --Location Map
     */
-    $('#uploadLocation').val('');
+
+    // $('#uploadLocation').val('');
+    $('#uploadLocationButton').remove();
     $('<div id="locationMap" class="col-xs-12" style="height:300px"></div>').insertAfter('#uploadLocation');
 
     var autocomplete;
@@ -401,7 +379,7 @@ var UploadSightingView = Backbone.View.extend({
         codeAddress();
       });
       codeAddress();
-      map.setZoom(16);
+      map.setZoom(12);
       map.setCenter({lat: self.lat, lng: self.lng});
     }
 
@@ -419,22 +397,73 @@ var UploadSightingView = Backbone.View.extend({
      Creates Google Map
     ------------------- */
     (function () {
-      map = new google.maps.Map(document.getElementById('locationMap'), {
-        center: {lat: 45.522337, lng: -122.676865},
-        zoom: 12
-      });
-      //Adds click and drop pin capability to Google Map
-        //Saves value of lat/long to Location variable (at top)
-      map.addListener('click', function(mapClickEvent) {
-        // location.lat = mapClickEvent.latLng.lat();
-        // location.lng = mapClickEvent.latLng.lng();
-        self.lat = mapClickEvent.latLng.lat();
-        self.lng = mapClickEvent.latLng.lng();
-        createMarker(mapClickEvent);
-      });
-      //Creates Google Geocoder, which is needed by the codeAddress() function:
-        //This is needed to convert lat/long into Street Address, to display in location's input field for user
-      geocoder = new google.maps.Geocoder;
+
+      var centerLat;
+      var centerLng;
+
+
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+      }
+      else {
+        map = new google.maps.Map(document.getElementById('locationMap'), {
+          center: {lat: 39.5, lng: -98.35},
+          zoom: 4
+        });
+        mapListener(); 
+      }
+
+      function showPosition(position) {
+        centerLat = position.coords.latitude;
+        centerLng = position.coords.longitude;
+        map = new google.maps.Map(document.getElementById('locationMap'), {
+          center: {lat: centerLat, lng: centerLng},
+          zoom: 12
+        });
+        mapListener();
+      }
+
+      function mapListener() {
+        //Adds click and drop pin capability to Google Map
+          //Saves value of lat/long to Location variable (at top)
+        map.addListener('click', function(mapClickEvent) {
+          // location.lat = mapClickEvent.latLng.lat();
+          // location.lng = mapClickEvent.latLng.lng();
+          self.lat = mapClickEvent.latLng.lat();
+          self.lng = mapClickEvent.latLng.lng();
+          createMarker(mapClickEvent);
+        });
+        //Creates Google Geocoder, which is needed by the codeAddress() function:
+          //This is needed to convert lat/long into Street Address, to display in location's input field for user
+        geocoder = new google.maps.Geocoder;
+      }
+
     })();
-  }
+  },
+  // time: function(){
+  //   console.log('time');
+  //   var time = ($('#uploadTime').val());
+  //   time = time.split(':');
+  //
+  //   var timeOfDay = $('#uploadTimeAmPm').val();
+  //   console.log('am/pm', $('#uploadTimeAmPm').val());
+  //   if(timeOfDay === "pm") {
+  //
+  //     if(parseInt(time[0]) === 12) {
+  //       time = ($('#uploadTime').val());
+  //     } else {
+  //       time[0] = (parseInt(time[0]) + 12);
+  //       time = time[0] + ":" + time[1];
+  //     }
+  //   } else {
+  //     if(time[0].length === 1) {
+  //       time = "0" + time[0] + ":" + time[1];
+  //     } else if(parseInt(time[0]) === 12) {
+  //       time[0] = "00";
+  //       time = time[0] + ":" + time[1];
+  //     } else {
+  //       time = ($('#uploadTime').val());
+  //     }
+  //   }
+  // },
 });
