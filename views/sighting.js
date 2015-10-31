@@ -177,6 +177,7 @@ var UploadSightingView = Backbone.View.extend({
         displayDate = exifData.DateTime.split(' ')[0];
         displayTime = exifData.DateTime.split(' ')[1];
         console.log('displayTime = ' + displayTime);
+        console.log('displayDate = ', displayDate)
 
         displayDate = (displayDate.split(':'));
         displayDate = displayDate[0] + "-" + displayDate[2] + "-" + displayDate[1];
@@ -186,7 +187,8 @@ var UploadSightingView = Backbone.View.extend({
       }
 
       console.log('exif orient', exifData.Orientation)
-      if(exifData.Orientation === 6) {
+
+      if(parseInt(exifData.Orientation) === 6) {
         $('#previewHolder').addClass('rotate90');
       }
 
