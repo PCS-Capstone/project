@@ -76,6 +76,7 @@ var SearchFormView = Backbone.View.extend({
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
      location : JSON.stringify( self.location ),
+      address : $('input[name="address"]').val(),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
