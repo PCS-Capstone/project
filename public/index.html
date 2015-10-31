@@ -38,7 +38,18 @@
         Search Results For:
         <br>
           <span>
-            {{size}} {{animalType}} that might be {{#each colors}} {{this}} {{/each}}
+            {{#if colors}}
+              {{#each colors}} {{this}} {{/each}} 
+            {{/if}}
+
+            {{animalType}} sightings
+
+            {{#if endDate}}
+              from {{startDate}} to {{endDate}}
+            {{else}}
+              on {{startDate}}
+            {{/if}}
+
           </span>
         </span>
         <div class="btn-group pull-right">

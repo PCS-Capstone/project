@@ -177,21 +177,19 @@ var UploadSightingView = Backbone.View.extend({
         displayDate = exifData.DateTime.split(' ')[0];
         displayTime = exifData.DateTime.split(' ')[1];
         console.log('displayTime = ' + displayTime);
+        console.log('displayDate = ', displayDate)
 
         displayDate = (displayDate.split(':'));
         displayDate = displayDate[0] + "-" + displayDate[2] + "-" + displayDate[1];
 
-        displayTime = (displayTime.split(':'));
+        displayTime = (displayTime.split(':'))
 
-      // console.log('exif orient', exifData.Orientation)
-      // if(exifData.Orientation === 6) {
-      //   $('#previewHolder').addClass('rotate90');
-      // }
+      }
 
-      // $('#uploadDate').val( displayDate );
-      // $('#uploadTime').val( displayTime );
-      // codeAddress();
+      console.log('exif orient', exifData.Orientation)
 
+      if(parseInt(exifData.Orientation) === 6) {
+        $('#previewHolder').addClass('rotate90');
       }
 
       if (parseInt(displayTime[0]) > 12) {
@@ -447,7 +445,6 @@ var UploadSightingView = Backbone.View.extend({
 
       var centerLat;
       var centerLng;
-
 
       if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);

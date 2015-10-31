@@ -18,8 +18,8 @@ var SearchFormView = Backbone.View.extend({
     $("[name=animal-type]").val(this.searchParameters.animalType);
     $("[name=address]").val(this.searchParameters.address);
     $("[name=radius]").val(this.searchParameters.radius);
-    $("[name=start-date]").val(this.searchParameters.date);
-    $("[name=end-date]").val(this.searchParameters.date);
+    $("[name=start-date]").val(this.searchParameters.startDate);
+    $("[name=end-date]").val(this.searchParameters.endDate);
     $("[name=color-group]").val(this.searchParameters.colors);
     $("[value="+this.searchParameters.size+"]").prop("checked", true);
   },
@@ -76,6 +76,7 @@ var SearchFormView = Backbone.View.extend({
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
      location : JSON.stringify( self.location ),
+      address : $('input[name="address"]').val(),
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
