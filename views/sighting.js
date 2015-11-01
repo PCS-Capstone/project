@@ -60,7 +60,9 @@ var UploadSightingView = Backbone.View.extend({
     'submit #upload-form'  : 'submitForm',
     'click #uploadDate' : 'datepickerForm',
     'click #upload-photo-div button' : 'uploadPhoto',
+    'click #previewHolderButton' : 'uploadPhoto',
     'click #uploadLocationButton' : 'googleAutocomplete'
+
   },
   uploadPhoto: function() {
     $('#upload-photo').trigger('click');
@@ -152,8 +154,10 @@ var UploadSightingView = Backbone.View.extend({
     // Shows image preview
     $('#previewHolder').removeClass('display-none');
     $('#previewHolderDiv').removeClass('display-none');
+    $('#previewHolderButtonDiv').removeClass('display-none');
 
     function readFromExif ( exifData ) {
+      console.log(exifData)
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
