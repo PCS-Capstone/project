@@ -124,3 +124,12 @@ div.lost-pet {
   max-width: 100%;
   height: auto;
 }
+
+.minuteSelectOption, .hourSelectOption {
+  display: block;
+}
+
+.missing-field {
+  background-color: red;
+  height: 200px; 
+}

@@ -81,6 +81,7 @@ app.post('/pet', function(request, response) {
         console.log(err);
     });
   });
+  response.send('server received form submission');
 });
 
 app.listen(3000);
