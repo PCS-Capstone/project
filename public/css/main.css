@@ -89,47 +89,53 @@ div.lost-pet {
 }
 
 #upload-photo-div {
-  margin-top: 15px;
-  margin-bottom: 15px;
+  height: 260px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   background-image: url("https://placeimg.com/400/300/animals/grayscale");
   background-size: cover;
   background-repeat: no-repeat;
+  box-shadow: 0 1px 1px 2px rgba(0,0,0,1), 0 1px 1px 2px rgba(0,0,0,1);
 }
 
 #upload-photo-div button  {
-  height: 185px;
-  width: 185px;
+  height: 180px;
+  width: 180px;
+  position: relative;
+  top: 40px;
   margin: 0 auto;
   color: white;
-  border: 10px  double white;
+  border: 10px  inset white;
   border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   -o-border-radius: 50%;
-  background: black;
-  opacity: .7;
+  opacity: .8;
   z-index: 99;
-  font-size: 1.1em;
-  letter-spacing: .1em;
+  font-size: 1.2em;
 }
 
 #upload-photo-div .glyphicon {
   position: relative;
-  font-size: 1.5em;
+  font-size: 1.75em;
   display: inline-block;
   padding: 15px 0;
 }
 
+#previewHolderDiv {
+  /*max-height: 260px;*/
+  /*background-color: rgba(53,62,79,.8);*/
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
 #previewHolder {
   max-width: 100%;
-  height: auto;
+  max-height: 260px;
+  box-shadow: 0 1px 1px 2px rgba(53,62,79,.8), 0 1px 1px 2px rgba(53,62,79,.8);
 }
 
 .minuteSelectOption, .hourSelectOption {
   display: block;
-}
-
-.missing-field {
-  background-color: red;
-  height: 200px; 
 }

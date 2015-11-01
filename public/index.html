@@ -160,9 +160,15 @@
     <div id="map" class="display-none"> </div>
 
     <form id="upload-form" class="form-horizontal">
+
       <div class='row'>
-        <img id="previewHolder" class="display-none .img-responsive col-xs-8 col-sm-4 col-sm-offset-4" alt="Uploaded Image Preview Holder" height="auto" />
-        <div id="upload-photo-div" class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+        <div id="previewHolderDiv" class="display-none col-sm-6 col-sm-offset-3">
+          <img id="previewHolder"  class="display-none" alt=""/>          
+        </div>
+      </div>
+
+      <div class='row'>
+        <div id="upload-photo-div" class="col-sm-6 col-sm-offset-3">
           <button type="button" class="btn btn-primary btn-lg btn-block">
             <span class="glyphicon glyphicon-upload " aria-hidden="true">
             </span> </br>

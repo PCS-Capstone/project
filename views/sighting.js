@@ -149,9 +149,10 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
-
-    //Shows image preview
-    // $('#previewHolder').removeClass('display-none');
+    //
+    // Shows image preview
+    $('#previewHolder').removeClass('display-none');
+    $('#previewHolderDiv').removeClass('display-none');
 
     function readFromExif ( exifData ) {
       console.log('exif', exifData)
@@ -227,8 +228,8 @@ var UploadSightingView = Backbone.View.extend({
       var reader = new FileReader();
 
       reader.onload = function(event) {
-        $('#upload-photo-div').remove();
         $imagePreview.attr('src', event.target.result);
+        $('#upload-photo-div').remove();
         //Shows image preview
         $imagePreview.removeClass('display-none');
       };
