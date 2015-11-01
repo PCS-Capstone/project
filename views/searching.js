@@ -85,13 +85,13 @@ var SearchFormView = Backbone.View.extend({
     this.remove();
     // console.log( 'searchForm on submit location:', self.location)
 
-    // only works upon first try, does not work with edit because 
+    // only works upon first try, does not work with edit because
     // there's only one fetch call.
     // We want to use conditional prior to ResultsView being rendered
     // if there are no search results found
     // where do we put it?
     app.collection.fetch({data : searchParameters, success: function()
-      { if (app.collection.length === 0) { 
+      { if (app.collection.length === 0) {
         new NoResultsFound({ searchParameters : searchParameters})
       } else {
         new ResultsView ({
@@ -122,9 +122,9 @@ var ResultsView = Backbone.View.extend({
 
 
     console.log( 'ResultsView.searchParamaters.location: ', this.searchParameters.location);
-    
-    self.mapView = new MapView({ 
-      collection : this.collection, 
+
+    self.mapView = new MapView({
+      collection : this.collection,
       center: this.searchParameters.location,
       parent: self
     });
@@ -139,7 +139,7 @@ var ResultsView = Backbone.View.extend({
       self.$el.append(tileView.$el)
 
     });
-    
+
   },
 
   initialize: function( options ) {
@@ -286,7 +286,7 @@ var TileView = Backbone.View.extend({
       // var location = self.model.get('value').location;
       // var modelLat = location.lat;
       // var modelLng = location.lng;
-      
+
       // console.log(markerLat);
       // console.log(modelLat);
       // console.log(markerLat!==modelLat);
@@ -296,7 +296,7 @@ var TileView = Backbone.View.extend({
       // console.log(markerLng!==modelLng);
 
       // (markerLat !== modelLat) || (markerLng !== modelLng) ? marker.setMap(null) : console.log(marker.map);
-      
+
     })
   },
 
@@ -355,7 +355,7 @@ var MapView = Backbone.View.extend({
     //console.log( 'loadmap MapView')
     // console.log( 'MapView.loadMap()' );
     // console.log( 'loadMap center: ', this.center );
-    
+
     var center = JSON.parse( this.center );
     // console.log( 'MapView.center = ', this.center)
     //console.log( '#map before making Gmap =', document.getElementById('map') );
@@ -386,7 +386,7 @@ var MapView = Backbone.View.extend({
     //make a marker for each model in the collection
 
     // each not forEach? Backbone colleciton method
-    //_.each (this.collection, ) 
+    //_.each (this.collection, )
     this.collection.each( function( model ){
       // console.log( 'loop => model attributes:', model.attributes );
       // console.log( 'function?', model.get );
