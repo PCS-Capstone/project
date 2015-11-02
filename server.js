@@ -88,3 +88,7 @@ app.post('/pet', function(request, response) {
 
 app.listen(3000);
 console.log( 'listening on PORT:3000' );
+
+cloudinary.api.delete_all_resources(function(result){})
+
+console.log('destroyed all cloudinary images')
