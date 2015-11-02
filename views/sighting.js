@@ -9,24 +9,34 @@ var UploadSightingView = Backbone.View.extend({
   className: 'upload',
    template: Handlebars.compile( $('#template-upload-sighting').html() ),
 
-  render: function(){
+  render: function() {
+    router.navigate('sighting')
     this.$el.html( this.template() );
     $('#master').append(this.$el);
 
     /* Creates Datepicker feature
     */
-    for (var i = 1; i <= 12; i++) {
+    for (var i = 0; i <= 12; i++) {
       var $hourSelectOption = $('<option class="form-control">');
-      $hourSelectOption.attr('id', 'hourSelectOption' + i);
-      $hourSelectOption.attr('value', ""+ i);
-      $hourSelectOption.html(i);
-      $('#hour-select').append($hourSelectOption);
+      if (i === 0) {
+        $hourSelectOption.attr('value', "");
+        $hourSelectOption.html('Select Hour');
+        $('#hour-select').append($hourSelectOption);
+      }
+      else {
+        $hourSelectOption.attr('id', 'hourSelectOption' + i);
+        $hourSelectOption.attr('value', ""+ i);
+        $hourSelectOption.html(i);
+        $('#hour-select').append($hourSelectOption);
+        $hourSelectOption.attr('class', 'hourSelectOption');
+      }
     }
     /* For the form's hours and minutes, this creates the options of 1-12(hour) and 0-59(minute)
     */
     for (var j = 0; j < 60; j++) {
       var $minuteSelectOption = $('<option class="form-control">');
       $minuteSelectOption.attr('id', 'minuteSelectOption' + j);
+      $minuteSelectOption.attr('class', 'minuteSelectOption');
       //This adds an initial zero if the minute number is below 10 (i.e. 01, 02, 03...)
       if (j < 10) {
         $minuteSelectOption.attr('value', "0" + j);
@@ -139,9 +149,10 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
-
-    //Shows image preview
-    // $('#previewHolder').removeClass('display-none');
+    //
+    // Shows image preview
+    $('#previewHolder').removeClass('display-none');
+    $('#previewHolderDiv').removeClass('display-none');
 
     function readFromExif ( exifData ) {
       
@@ -150,7 +161,7 @@ var UploadSightingView = Backbone.View.extend({
       }
       else {
         $('#uploadLocationButton').removeClass("display-none");
-      
+
         function degToDec(latLngArray) {
           // console.log('longitude negative? ', latLngArray[0]);
           var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
@@ -178,21 +189,23 @@ var UploadSightingView = Backbone.View.extend({
         displayDate = exifData.DateTime.split(' ')[0];
         displayTime = exifData.DateTime.split(' ')[1];
         console.log('displayTime = ' + displayTime);
+        console.log('displayDate = ' + displayDate);
+
 
         displayDate = (displayDate.split(':'));
         displayDate = displayDate[0] + "-" + displayDate[2] + "-" + displayDate[1];
 
         displayTime = (displayTime.split(':'));
 
-      // console.log('exif orient', exifData.Orientation)
-      // if(exifData.Orientation === 6) {
-      //   $('#previewHolder').addClass('rotate90');
-      // }
+      }
 
-      // $('#uploadDate').val( displayDate );
-      // $('#uploadTime').val( displayTime );
-      // codeAddress();
-        if (parseInt(displayTime[0]) > 12) {
+      console.log('exif orient', exifData.Orientation);
+
+      if(parseInt(exifData.Orientation) === 6) {
+        $('#previewHolder').addClass('rotate90');
+      }
+
+      if (parseInt(displayTime[0]) > 12) {
 
         $("#pm").prop("checked", true);
 
@@ -211,23 +224,29 @@ var UploadSightingView = Backbone.View.extend({
           displayTime = displayTime[0] + ":" + displayTime[1];
         }
       }
-      $dateField.val( displayDate );
-      
+
+      else if (displayTime[0][0] === 0) {
+        displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
+      }
+      else {
+        displayTime = displayTime[0] + ":" + displayTime[1];
+      }
+
+      $('#uploadDate').val( displayDate );
     }
 
 
     function previewImage ( inputElement ) {
+
       var image  = inputElement[0].files[0];
       var reader = new FileReader();
 
       reader.onload = function(event) {
-        $('#upload-photo-div').remove();
         $imagePreview.attr('src', event.target.result);
+        $('#upload-photo-div').remove();
         //Shows image preview
         $imagePreview.removeClass('display-none');
-
       };
-
       reader.readAsDataURL( image );
     }
 
@@ -242,43 +261,6 @@ var UploadSightingView = Backbone.View.extend({
 
     getExifData();
     previewImage( $imageField );    
-
-    $('#previewHolder').removeClass('display-none');
-
-  },
-
-  time: function(){
-    //*** Reformat to fit new time options ***//
-    //*** id = hour-select and minute-select ***//
-
-    // console.log('time');
-    // var time = ($('#uploadTime').val());
-    // time = time.split(':');
-
-    // var timeOfDay = $('#uploadTimeAmPm').val();
-    // console.log('am/pm', $('#uploadTimeAmPm').val());
-    // if(timeOfDay === "pm") {
-
-    //   if(parseInt(time[0]) === 12) {
-    //     time = ($('#uploadTime').val());
-    //   } else {
-    //     time[0] = (parseInt(time[0]) + 12);
-    //     time = time[0] + ":" + time[1];
-    //   }
-    // } else {
-
-    //   if(parseInt(time[0]).length === 1) {
-    //     time = "0" + time[0] + ":" + time[1];
-    //   } else if(parseInt(time[0]) === 12) {
-    //     time[0] = "00";
-    //     time = time[0] + ":" + time[1];
-    //   } else {
-    //     time = ($('#uploadTime').val());
-    //   }
-
-    // }
-
-    // console.log(time);
 
   },
 
@@ -306,11 +288,14 @@ var UploadSightingView = Backbone.View.extend({
     // get all the values from the search form
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
+          console.log('send to server function running');
 
       if(asyncParams.exifData.DateTime) {
         var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-');
         requestObject.dateTime = dateTime;
         console.log('dateTime = ' + dateTime);
+      } else {
+        requestObject.dateTime = $('#uploadDate').val();
       }
 
       requestObject.imageUrl = $('#previewHolder').attr('src');
@@ -332,27 +317,63 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     console.log(requestObject);
-
     //send it off
+
     function sendToServer () {
-      $.ajax({
-        method: "POST",
-        url: "/pet",
-        data: { data : JSON.stringify(requestObject) },
-        success: function(data) {
-          $('#upload-form').remove();
-          $('#previewHolder').remove();
-          self.google();
-          console.log(data);
+       console.log(self.lat);
+
+      var errorCount = 0;
+
+      var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
+      var uploadWarningColor = '#FCF8E3';
+
+      if (  $('#uploadSpecies').find(":selected").index() === 0   ) {
+        errorCount += 1;
+        $('#uploadSpecies').css('background-color', uploadWarningColor );
+        console.log('Form Validation Failed: No Animal Selected');
+      }
+      if ( (self.lat === 0) || (self.lng === 0)  ) {
+        errorCount += 1;
+        $('#uploadLocation').css('background-color', uploadWarningColor);
+        console.log('Form Validation Failed: No Latitude or Longitude Set; Incorrect Location');
+      }
+      if ( $('#hour-select').find(":selected").index() === 0   ) {
+        errorCount += 1;
+        $('#hour-select').css('background-color', uploadWarningColor);
+        console.log('Form Validation Failed: No Hour Selected');
+      }
+      if ( !$('#am').prop('checked') ) {
+        if (  !$('#pm').prop('checked')   ) {
+          errorCount += 1;
+          $('#am-pm-div').css('background-color', uploadWarningColor);
+          console.log('Required Field: Please Select AM/PM');
         }
-      });
+      }
+
+      if (errorCount > 0) {
+        $('#upload-form').prepend($uploadWarning);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+      }
+      else {
+        $.ajax({
+          method: "POST",
+          url: "/pet",
+          data: { data : JSON.stringify(requestObject) },
+          success: function(data) {
+            $('#upload-form').remove();
+            $('#previewHolder').remove();
+            self.google();
+            console.log(data);
+          }
+        });
+      }
+
+      console.log('missing required fields: ' + errorCount);
     }
 
     getExifData( buildDataForServer, sendToServer );
 
-    // this.remove();
-    // // var success = new SuccessfulSubmission({})
-    // var error = new Error({});
+
   },
 
   googleAutocomplete: function() {
@@ -447,7 +468,6 @@ var UploadSightingView = Backbone.View.extend({
 
       var centerLat;
       var centerLng;
-
 
       if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);

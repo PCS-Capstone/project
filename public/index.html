@@ -38,7 +38,24 @@
         Search Results For:
         <br>
           <span>
-            {{size}} {{animalType}} that might be {{#each colors}} {{this}} {{/each}}
+            {{#if colors}}
+              {{#each colors}} {{this}} {{/each}}
+            {{/if}}
+
+            {{animalType}} sightings within {{radius}} miles of {{address}}
+
+            {{#if startDate}}
+              {{#if endDate}}
+                from {{startDate}} to {{endDate}}
+              {{else}}
+                on {{startDate}}
+              {{/if}}
+            {{else}}
+              {{#if endDate}}
+                on {{endDate}}
+              {{/if}}
+            {{/if}}
+
           </span>
         </span>
         <div class="btn-group pull-right">
@@ -162,9 +179,15 @@
     <div id="map" class="display-none"> </div>
 
     <form id="upload-form" class="form-horizontal">
+
       <div class='row'>
-        <img id="previewHolder" class="display-none .img-responsive col-xs-8 col-sm-4 col-sm-offset-4" alt="Uploaded Image Preview Holder" height="auto" />
-        <div id="upload-photo-div" class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+        <div id="previewHolderDiv" class="display-none col-sm-6 col-sm-offset-3">
+          <img id="previewHolder"  class="display-none" alt=""/>
+        </div>
+      </div>
+
+      <div class='row'>
+        <div id="upload-photo-div" class="col-sm-6 col-sm-offset-3">
           <button type="button" class="btn btn-primary btn-lg btn-block">
             <span class="glyphicon glyphicon-upload " aria-hidden="true">
             </span> </br>
@@ -343,8 +366,14 @@
   <script src="../models/models.js"></script>
 
   <script src="../views/main.js"></script>
+
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
+  <script src="../views/no_results.js"></script>
+  <script src="../views/successful.js"></script>
+  <script src="../views/error.js"></script>
+  <script src="../routes/router.js"></script>
+
 
   <script src="public/js/main.js"></script>
 
@@ -353,6 +382,12 @@
 
   <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
+  </script>
+
+  <script>
+    function initMap() {
+      console.log
+    }
   </script>
 
 </body>

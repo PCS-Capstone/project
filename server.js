@@ -27,9 +27,9 @@ app.get('/', function (request, response){
 });
 
 app.get('/pet', function (request, response) {
+  console.log(request.query)
 
   var search = request.query;
-
   // var query =
   // "value.location:NEAR:" +
   // "{"+
@@ -42,16 +42,21 @@ app.get('/pet', function (request, response) {
   // "AND value.colors: ("     + search.colors     + ") "   +
   // "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
 
-  // var query = "value.dateTime: [" + search.startDate  + " TO " + search.endDate + "]"
+  // var query = "value.location:NEAR:{latitude:" + search.location.lat + " longitude:" + search.location.lng + " radius:" + search.radius + "mi" + "}" 
+
+  // var query = "value.location:NEAR:{latitude:33.687353 longitude:-112.20568600000001 radius:10mi}"
+
+  // "OR value.dateTime: (" + search.startDate + ")" + 
+  // "OR value.dateTime: (" + search.endDate + ")" + 
+  // "OR value.dateTime: [" + search.startDate  + " TO " + 
+  //     search.endDate + "]" + 
+  // "OR value.colors: (" + search.colors + ")"
 
   var query = "value.animalType: (" + search.animalType + ")"
-  console.log('start date', search.startDate)
-  console.log('end date', search.endDate)
 
-	db.search('sighting', query)
+	db.search('test', query)
 
 	.then(function(result) {
-		//console.log(result.body.results);
 		response.send(result.body.results);
 	})
 	.fail(function(err){
@@ -84,6 +89,7 @@ app.post('/pet', function(request, response) {
         console.log(err);
     });
   });
+  response.send('server received form submission');
 });
 
 app.listen(3000);
