@@ -38,7 +38,24 @@
         Search Results For:
         <br>
           <span>
-            {{size}} {{animalType}} that might be {{#each colors}} {{this}} {{/each}}
+            {{#if colors}}
+              {{#each colors}} {{this}} {{/each}}
+            {{/if}}
+
+            {{animalType}} sightings within {{radius}} miles of {{address}}
+
+            {{#if startDate}}
+              {{#if endDate}}
+                from {{startDate}} to {{endDate}}
+              {{else}}
+                on {{startDate}}
+              {{/if}}
+            {{else}}
+              {{#if endDate}}
+                on {{endDate}}
+              {{/if}}
+            {{/if}}
+
           </span>
         </span>
         <div class="btn-group pull-right">
@@ -162,9 +179,15 @@
     <div id="map" class="display-none"> </div>
 
     <form id="upload-form" class="form-horizontal">
+
       <div class='row'>
-        <img id="previewHolder" class="display-none .img-responsive col-xs-8 col-sm-4 col-sm-offset-4" alt="Uploaded Image Preview Holder" height="auto" />
-        <div id="upload-photo-div" class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+        <div id="previewHolderDiv" class="display-none col-sm-6 col-sm-offset-3">
+          <img id="previewHolder"  class="display-none" alt=""/>
+        </div>
+      </div>
+
+      <div class='row'>
+        <div id="upload-photo-div" class="col-sm-6 col-sm-offset-3">
           <button type="button" class="btn btn-primary btn-lg btn-block">
             <span class="glyphicon glyphicon-upload " aria-hidden="true">
             </span> </br>
@@ -175,17 +198,27 @@
             </span>
           </button>
         </div>
+      </div>
 
+      <div class="form-group hidden">
+        <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
+        </input>
+      </div>
 
-        <div class="form-group hidden">
-          <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
-          </input>
+      <div id="previewHolderButtonDiv" class="text-center display-none">
+        <button id="previewHolderButton" type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit " aria-hidden="true"></span> Change Photo </button>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-2 text-right">
+          <em>** Required Fields</em>
         </div>
       </div>
 
+
       <div class="form-group">
         <label for="uploadSpecies" class="col-sm-2 control-label">
-          Type of Animal:
+          ** Type of Animal:
         </label>
 
         <div class="col-sm-9 col-lg-8">
@@ -203,30 +236,28 @@
 
       <div class="form-group">
         <label for="uploadLocation" class="col-sm-2 control-label">
-          Location:
+          ** Location:
         </label>
         <div class="col-sm-9 col-lg-8">
           <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
-          <button type="button" id="uploadLocationButton" class="btn btn-info display-none">Edit Location</button>
+          <button type="button" id="uploadLocationButton" class="btn btn-info pull-left display-none"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Location</button>
         </div>
       </div>
 
-
-
       <div class="form-group">
         <label for="uploadDate" class="col-sm-2 control-label">
-          Date:
+          ** Date:
         </label>
 
         <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
-          <input id="uploadDate" class="form-control span2" type="text" name="date" value="" placeholder="yyyy-mm-dd">
+          <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="yyyy-mm-dd">
           <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-xs-2 control-label">
-          Time:
+        <label class="col-sm-2 control-label">
+          ** Time:
         </label>
 
         <div id="hour" class="col-sm-4 col-md-2 input-group pull-left">
@@ -343,8 +374,14 @@
   <script src="../models/models.js"></script>
 
   <script src="../views/main.js"></script>
+
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
+  <script src="../views/no_results.js"></script>
+  <script src="../views/successful.js"></script>
+  <script src="../views/error.js"></script>
+  <script src="../routes/router.js"></script>
+
 
   <script src="public/js/main.js"></script>
 
@@ -353,6 +390,12 @@
 
   <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
+  </script>
+
+  <script>
+    function initMap() {
+      console.log
+    }
   </script>
 
 </body>
