@@ -153,6 +153,8 @@ var UploadSightingView = Backbone.View.extend({
     }
     //Clears data fields each time new photo is uploaded
     $('#uploadDate').val(' ');
+    self.lat = 0;
+    self.lng = 0; 
     $('#uploadLocation').val(' ');
     $('[name=hour]').prop('selectedIndex', 0);
     $('[name=minute]').prop('selectedIndex', 0);
