@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="public/css/main.css">
 
+  <link rel="stylesheet" href="public/css/datepicker.css">
+
   <!-- CDN SCRIPTS -->
   <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
@@ -36,7 +38,24 @@
         Search Results For:
         <br>
           <span>
-            {{size}} {{animalType}} that might be {{#each colors}} {{this}} {{/each}}
+            {{#if colors}}
+              {{#each colors}} {{this}} {{/each}}
+            {{/if}}
+
+            {{animalType}} sightings within {{radius}} miles of {{address}}
+
+            {{#if startDate}}
+              {{#if endDate}}
+                from {{startDate}} to {{endDate}}
+              {{else}}
+                on {{startDate}}
+              {{/if}}
+            {{else}}
+              {{#if endDate}}
+                on {{endDate}}
+              {{/if}}
+            {{/if}}
+
           </span>
         </span>
         <div class="btn-group pull-right">
@@ -58,7 +77,7 @@
     </div>
 
     <div class="flex-row">
-      <button class="btn btn-info btn-lg">Location: {{location}}</button>
+      <button class="btn btn-info btn-lg">Location: {{address}}</button>
       <h4>Last seen: {{displayDate}} at {{displayTime}}</h4>
     </div>
 
@@ -84,11 +103,12 @@
 
           <select name="animal-type" class="form-control" id="animal-type">
             <option value="" disabled selected>"What kind of animal are you looking for?"</option>
-            <option value="Dog" id="dog">Dog</option>
-            <option value="Cat">Cat</option>
-            <option value="Reptile">Reptile</option>
-            <option value="Rodent">Rodent</option>
-            <option value="Fish">Fish</option>
+            <option value="Dog"> Dog </option>
+            <option value="Cat"> Cat </option>
+            <option value="Bird"> Bird </option>
+            <option value="Small-Furry"> Small and Furry </option>
+            <option value="Scales-Fins"> Scales and Fins</option>
+            <option value="Barnyard"> Barnyard </option>
           </select>
         </div>
       </div>
@@ -154,102 +174,218 @@
 
   <script type="template-x-handlebars" id="template-upload-sighting">
 
-  <img id="previewHolder" class="display-none" alt="Uploaded Image Preview Holder" width="250px" height="250px" />
+    <div id="map" class="display-none"> </div>
 
-  <div id="map" class="display-none"> </div>
+    <form id="upload-form" class="form-horizontal">
 
-    <form id="upload-form">
-      <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
-      </input>
+      <div class='row'>
+        <div id="previewHolderDiv" class="display-none col-sm-6 col-sm-offset-3">
+          <img id="previewHolder"  class="display-none" alt=""/>
+        </div>
+      </div>
 
-      <label for="uploadLocation">
-        <p> Location: </p>
-      </label>
-      <input id="uploadLocation" type="text" name="address">
+      <div class='row'>
+        <div id="upload-photo-div" class="col-sm-6 col-sm-offset-3">
+          <button type="button" class="btn btn-primary btn-lg btn-block">
+            <span class="glyphicon glyphicon-upload " aria-hidden="true">
+            </span> </br>
+            <span class="text">
+              Upload Photo </br>
+            </span>
+            <span class="glyphicon glyphicon-camera " aria-hidden="true">
+            </span>
+          </button>
+        </div>
 
-      <label for="uploadDate">
-        <p> Date: </p>
-      </label>
-      <input id="uploadDate" type="text" name="date">
 
-      <label for="uploadTime">
-        <p> Time: </p>
-      </label>
-      <input id="uploadTime" type="text" placeholder="ex. 12:34"name="time">
+        <div class="form-group hidden">
+          <input type="file" name="photo" value="" id="upload-photo" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg" accept="image/*">
+          </input>
+        </div>
+      </div>
 
-      <select id="uploadTimeAmPm" name="uploadTimeAmPm">
-        <option value=""></option>
-        <option value="am">am</option>
-        <option value="pm">pm</option>
-      </select>
+      <div class="form-group">
+        <label for="uploadSpecies" class="col-sm-2 control-label">
+          Type of Animal:
+        </label>
 
-      <label for="uploadSpecies">
-        <p> Type of Animal </p>
-      <select id="uploadSpecies" name="animal-type">
-        <option value=""></option>
-        <option value="Dog"> Dog </option>
-        <option value="Cat"> Cat </option>
-        <option value="Reptile">Reptile</option>
-        <option value="Rodent">Rodent</option>
-        <option value="Fish">Fish</option>
-      </select>
+        <div class="col-sm-9 col-lg-8">
+          <select id="uploadSpecies" class="form-control" name="animal-type">
+            <option value="" disabled selected>"What kind of animal is it?"</option>
+            <option value="Dog"> Dog </option>
+            <option value="Cat"> Cat </option>
+            <option value="Bird"> Bird </option>
+            <option value="Small-Furry"> Small and Furry </option>
+            <option value="Scales-Fins"> Scales and Fins</option>
+            <option value="Barnyard"> Barnyard </option>
+          </select>
+        </div>
+      </div>
 
-      <fieldset>
-        <legend> Please select color:
-          <input id="uploadWhite" type="checkbox" name="color-group" value="White">
-          <label for="uploadWhite">
-            White
+      <div class="form-group">
+        <label for="uploadLocation" class="col-sm-2 control-label">
+          Location:
+        </label>
+        <div class="col-sm-9 col-lg-8">
+          <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+          <button type="button" id="uploadLocationButton" class="btn btn-info display-none">Edit Location</button>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label for="uploadDate" class="col-sm-2 control-label">
+          Date:
+        </label>
+
+        <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
+          <input id="uploadDate" class="form-control span2" type="text" name="date" value="" placeholder="yyyy-mm-dd">
+          <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-2 control-label">
+          Time:
+        </label>
+
+        <div id="hour" class="col-sm-4 col-md-2 input-group pull-left">
+          <span class="input-group-addon">hr</span>
+          <select id="hour-select" class="form-control" name="hour">
+          </select>
+        </div>
+
+        <div id="minute" class="col-sm-5 col-md-3 input-group pull-left">
+          <span class="input-group-addon">minutes</span>
+          <select id="minute-select" class="form-control" name="minute">
+          </select>
+        </div>
+
+        <div id="am-pm-div" class="radio col-sm-1 col-md-2 pull-left">
+          <label>
+            <input type="radio" name="am-pm" id="am" value="am">
+              am
           </label>
-
-          <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
-          <label for="uploadBlack">
-            Black
+          <label>
+            <input type="radio" name="am-pm" id="pm" value="pm">
+              pm
           </label>
+        </div>
 
-          <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
-          <label for="uploadBrown">
-            Brown
-          </label>
+      </div>
 
-          <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
-          <label for="uploadOrange">
-            Orange
-          </label>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">
+            Please select color:
+        </label>
 
-          <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
-          <label for="uploadYellow">
-            Yellow
-          </label>
+        <fieldset>
+          <div id="white" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadWhite" type="checkbox" name="color-group" value="White" aria-label="uploadWhite">
+            <label for="uploadWhite">
+              White
+            </label>
+          </div>
 
-          <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
-          <label for="uploadGray">
-            Gray
-          </label>
-        </legend>
+          <div id="black" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
+            <label for="uploadBlack">
+              Black
+            </label>
+          </div>
 
-        <label for="uploadDescription">
+          <div id="brown" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
+            <label for="uploadBrown">
+              Brown
+            </label>
+          </div>
+
+          <div id="orange" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
+            <label for="uploadOrange">
+              Orange
+            </label>
+          </div>
+
+          <div id="yellow" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
+            <label for="uploadYellow">
+              Yellow
+            </label>
+          </div>
+
+          <div id="gray" class="col-sm-3 col-md-2 pull-left">
+            <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
+            <label for="uploadGray">
+              Gray
+            </label>
+          </div>
+        </fieldset>
+
+      </div>
+
+      <div class="form-group">
+        <label for="uploadDescription" class="col-sm-2  control-label">
           Enter description:
         </label>
-        <textarea id="uploadDescription" name="description">
-        </textarea>
 
-        <input type="submit" value="submit">
-      </fieldset>
+        <div class="col-sm-9 col-md-9 col-lg-8">
+          <textarea id="uploadDescription" name="description" class="form-control col-sm-10 col-md-9 col-lg-8"></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg center-block"> Submit </button>
+
     </form>
 
+  </script>
+
+  <script type="template-x-handlebars" id="template-infowindow">
+    <div class="row">
+      <img class="col-xs-6" src={{imageUrl}}>
+      <div class="col-xs-6">
+        <p>{{colors}} {{animalType}}</p>
+        <p>sighted on {{dateTime}}</p>
+        <p>@ {{address}}</p>
+      </div>
+    </div>
+    {{#if description}}
+      <div class="row">
+        <div class="col-xs-12">
+          {{description}}
+        </div>
+      </div>
+    {{/if }}
   </script>
 
   <!-- MAIN SCRIPTS -->
   <script src="../models/models.js"></script>
 
   <script src="../views/main.js"></script>
+
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
+  <script src="../views/no_results.js"></script>
+  <script src="../views/successful.js"></script>
+  <script src="../views/error.js"></script>
+  <script src="../routes/router.js"></script>
+
 
   <script src="public/js/main.js"></script>
 
+  <!-- Datepicker -->
+  <script src="../public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
+
   <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
+  </script>
+
+  <script>
+    function initMap() {
+      console.log
+    }
   </script>
 
 </body>
