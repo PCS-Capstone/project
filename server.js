@@ -85,11 +85,15 @@ app.post('/pet', function(request, response) {
     db.post('test', data)
       .then(function (result) {
         console.log( 'confirmed!: ', pretty.render( JSON.parse( result.request.body ) ) );
-      }).fail(function(err){
+        //Sends 'true' back to client's ajax request if successful;
+        //Throws error if 'true' isn't received back
+        response.send(true);
+      })
+      .fail(function(err){
         console.log(err);
+        response.send('Error Uploading Photo in Database');
     });
   });
-  response.send('server received form submission');
 });
 
 app.listen(3000);
