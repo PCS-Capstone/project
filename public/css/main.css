@@ -95,9 +95,11 @@ div.lost-pet {
   background-image: url("https://placeimg.com/400/300/animals/grayscale");
   background-size: cover;
   background-repeat: no-repeat;
-  box-shadow: 0 1px 1px 2px rgba(0,0,0,1), 0 1px 1px 2px rgba(0,0,0,1);
-}
 
+  box-shadow: 0 1px 1px 2px rgba(0,0,0,1), 0 1px 1px 2px rgba(0,0,0,1);
+  -webkit-border-radius: 0 1px 1px 2px rgba(0,0,0,1), 0 1px 1px 2px rgba(0,0,0,1);
+
+}
 #upload-photo-div button  {
   height: 180px;
   width: 180px;
@@ -106,10 +108,12 @@ div.lost-pet {
   margin: 0 auto;
   color: white;
   border: 10px  inset white;
-  border-radius: 50%;
-  -moz-border-radius: 50%;
+
   -webkit-border-radius: 50%;
-  -o-border-radius: 50%;
+     -moz-border-radius: 50%;
+       -o-border-radius: 50%;
+          border-radius: 50%;
+
   opacity: .8;
   z-index: 99;
   font-size: 1.2em;
@@ -126,8 +130,8 @@ div.lost-pet {
   /*max-height: 260px;*/
   /*background-color: rgba(53,62,79,.8);*/
   text-align: center;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 50px;
+  margin-top: 50px;
 }
 
 #previewHolder {
@@ -136,17 +140,47 @@ div.lost-pet {
   box-shadow: 0 1px 1px 2px rgba(53,62,79,.8), 0 1px 1px 2px rgba(53,62,79,.8);
 }
 
+#previewHolderButton  {
+  display: inline-block;
+  text-align: center;
+}
+
+#previewHolderButtonDiv button{
+  margin-bottom: 20px;
+}
+
 .minuteSelectOption, .hourSelectOption {
   display: block;
 }
 
 #previewHolder.rotate90 {
   -webkit-transform: rotate(90deg);
-  -moz-trasform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
-  max-height: 200px;
+      -moz-trasform: rotate(90deg);
+       -o-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+
+  max-height: 260px;
+  width: auto;
+}
+#previewHolder.rotate180 {
+  -webkit-transform: rotate(180deg);
+      -moz-trasform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+       -o-transform: rotate(180deg);
+          transform: rotate(180deg);
+
+  max-height: 260px;
+  width: auto;
+}
+#previewHolder.rotate270 {
+  -webkit-transform: rotate(270deg);
+      -moz-trasform: rotate(270deg);
+      -ms-transform: rotate(270deg);
+       -o-transform: rotate(270deg);
+          transform: rotate(270deg);
+          
+  max-height: 260px;
   width: auto;
 }
 

@@ -13,8 +13,8 @@ var UploadSightingView = Backbone.View.extend({
     router.navigate('sighting')
     this.$el.html( this.template() );
     $('#master').append(this.$el);
-
-    /* Creates Datepicker feature
+    /* ----
+      For the form's hours and minutes, this creates the options of 1-12(hour) and 0-59(minute)
     */
     for (var i = 0; i <= 12; i++) {
       var $hourSelectOption = $('<option class="form-control">');
@@ -31,8 +31,6 @@ var UploadSightingView = Backbone.View.extend({
         $hourSelectOption.attr('class', 'hourSelectOption');
       }
     }
-    /* For the form's hours and minutes, this creates the options of 1-12(hour) and 0-59(minute)
-    */
     for (var j = 0; j < 60; j++) {
       var $minuteSelectOption = $('<option class="form-control">');
       $minuteSelectOption.attr('id', 'minuteSelectOption' + j);
@@ -61,23 +59,30 @@ var UploadSightingView = Backbone.View.extend({
     'submit #upload-form'  : 'submitForm',
     'click #uploadDate' : 'datepickerForm',
     'click #upload-photo-div button' : 'uploadPhoto',
+    'click #previewHolderButton' : 'uploadPhoto',
     'click #uploadLocationButton' : 'googleAutocomplete'
   },
+
   uploadPhoto: function() {
     $('#upload-photo').trigger('click');
   },
 
   datepickerForm: function() {
-    /* Creates Datepicker feature
+    /*  ----
+        Creates Datepicker feature
     */
-      $('#uploadDateDiv').datepicker('show')
-        .on('changeDate', function(ev){
-          console.log(ev.date);
-          $('#uploadDateDiv').datepicker('hide');
-        });
+    $('#uploadDateDiv').datepicker('show')
+      .on('changeDate', function(ev){
+        console.log(ev.date);
+        $('#uploadDateDiv').datepicker('hide');
+      });
   },
 
-  google: function() {
+
+
+
+
+  google: function(xLat, xLng) {
     $('#map').removeClass('display-none').addClass('col-xs-12');
 
     var map;
@@ -88,7 +93,7 @@ var UploadSightingView = Backbone.View.extend({
 
     (function () {
       map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 45.522337, lng: -122.676865},
+        center: {lat: xLat, lng: xLng},
         zoom: 12
       });
       infowindow = new google.maps.InfoWindow();
@@ -138,9 +143,15 @@ var UploadSightingView = Backbone.View.extend({
 
     //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
     if ($('#locationMap')) {
-      $('#locationMap').remove();    }
-    //Clears data field each time new photo is uploaded
-    $('#uploadDate').val('');
+      $('#locationMap').remove();
+      $('uploadLocationButton').removeClass('display-none');
+    }
+    //Clears data fields each time new photo is uploaded
+    $('#uploadDate').val(' ');
+    $('#uploadLocation').val(' ');
+    $('[name=hour]').prop('selectedIndex', 0);
+    $('[name=minute]').prop('selectedIndex', 0);
+    $("input[name='am-pm']").prop("checked", false);
 
     function codeAddress(xLat, xLng) {
       // console.log('code address running');
@@ -153,6 +164,7 @@ var UploadSightingView = Backbone.View.extend({
     // Shows image preview
     $('#previewHolder').removeClass('display-none');
     $('#previewHolderDiv').removeClass('display-none');
+    $('#previewHolderButtonDiv').removeClass('display-none');
 
     function readFromExif ( exifData ) {
       var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -193,7 +205,6 @@ var UploadSightingView = Backbone.View.extend({
         console.log('displayTime = ' + displayTime);
         console.log('displayDate = ' + displayDate);
 
-
         displayDate = (displayDate.split(':'));
         displayDate = (month[(displayDate[1]) -1] + " " + displayDate[2] + 
         ', ' + displayDate[0])
@@ -203,10 +214,32 @@ var UploadSightingView = Backbone.View.extend({
       }
 
       console.log('exif orient', exifData.Orientation);
+      console.log( parseInt(exifData.Orientation));
 
-      if(parseInt(exifData.Orientation) === 6) {
-        $('#previewHolder').addClass('rotate90');
+      /*  ----
+          Each time a new photo is uploaded, rotation classes are reset and then applied;
+      */
+      if (  $('#previewHolder').hasClass('rotate90')  ) {
+        $('#previewHolder').removeClass('rotate90');
       }
+      if (  $('#previewHolder').hasClass('rotate180') ) {
+        $('#previewHolder').removeClass('rotate180');
+      }
+      if (  $('#previewHolder').hasClass('rotate270') ) {
+        $('#previewHolder').removeClass('rotate270');
+      }
+      switch (  parseInt(exifData.Orientation)  ) {
+        case 3:
+          $('#previewHolder').addClass('rotate180');
+          break;
+        case 6 :
+          $('#previewHolder').addClass('rotate90');
+          break;
+        case 8:
+          $('#previewHolder').addClass('rotate270');
+          break;
+      }
+      /* ---- */
 
       if (parseInt(displayTime[0]) > 12) {
 
@@ -219,7 +252,15 @@ var UploadSightingView = Backbone.View.extend({
         $('#hour-select').val(hour);
         $('#minute-select').val(minute);
         displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm";
+        }
+        if (displayTime[0][0] === 0) {
+          displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
+        }
+        else {
+          displayTime = displayTime[0] + ":" + displayTime[1];
+        }
       }
+
       else if (displayTime[0][0] === 0) {
         displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
       }
@@ -230,12 +271,14 @@ var UploadSightingView = Backbone.View.extend({
       $('#uploadDate').val( displayDate );
     }
 
+
     function previewImage ( inputElement ) {
 
       var image  = inputElement[0].files[0];
       var reader = new FileReader();
 
       reader.onload = function(event) {
+        console.log(event);
         $imagePreview.attr('src', event.target.result);
         $('#upload-photo-div').remove();
         //Shows image preview
@@ -254,7 +297,7 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     getExifData();
-    previewImage( $imageField );
+    previewImage( $imageField );    
 
   },
 
@@ -321,6 +364,15 @@ var UploadSightingView = Backbone.View.extend({
 
       var errorCount = 0;
 
+      if (  $('.alert').length  ) {
+        $('.alert').remove();
+      }
+      if (  $('#uploadLocation').val('')  ) {
+        self.lat = 0;
+        self.lng = 0;
+      }
+      $('#upload-form').children().not('button').css('background-color', 'transparent');
+
       var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
       var uploadWarningColor = '#FCF8E3';
 
@@ -357,10 +409,14 @@ var UploadSightingView = Backbone.View.extend({
           url: "/pet",
           data: { data : JSON.stringify(requestObject) },
           success: function(data) {
-            $('#upload-form').remove();
-            $('#previewHolder').remove();
-            self.google();
-            console.log(data);
+            if (data === true) {
+              $('#upload-form').remove();
+              $('#previewHolder').remove();
+              self.google(self.lat, self.lng);
+            }
+            else {
+              alert('error with submission');
+            }
           }
         });
       }
@@ -384,7 +440,8 @@ var UploadSightingView = Backbone.View.extend({
     */
 
     // $('#uploadLocation').val('');
-    $('#uploadLocationButton').remove();
+    console.log('googleAutocomplete running');
+    $('#uploadLocationButton').addClass('display-none');
     $('<div id="locationMap" class="col-xs-12" style="height:300px"></div>').insertAfter('#uploadLocation');
 
     var autocomplete;
@@ -397,8 +454,8 @@ var UploadSightingView = Backbone.View.extend({
 
     var self = this;
 
-    /*
-      Builds Google Autocomplete Input field
+    /*  ----
+        Builds Google Autocomplete Input field
     */
 
     //Sets options for Google Autocomplete
