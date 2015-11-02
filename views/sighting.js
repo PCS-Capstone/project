@@ -10,6 +10,7 @@ var UploadSightingView = Backbone.View.extend({
    template: Handlebars.compile( $('#template-upload-sighting').html() ),
 
   render: function() {
+    router.navigate('sighting')
     this.$el.html( this.template() );
     $('#master').append(this.$el);
 
@@ -253,41 +254,6 @@ var UploadSightingView = Backbone.View.extend({
 
   },
 
-  time: function(){
-    //*** Reformat to fit new time options ***//
-    //*** id = hour-select and minute-select ***//
-
-    // console.log('time');
-    // var time = ($('#uploadTime').val());
-    // time = time.split(':');
-
-    // var timeOfDay = $('#uploadTimeAmPm').val();
-    // console.log('am/pm', $('#uploadTimeAmPm').val());
-    // if(timeOfDay === "pm") {
-
-    //   if(parseInt(time[0]) === 12) {
-    //     time = ($('#uploadTime').val());
-    //   } else {
-    //     time[0] = (parseInt(time[0]) + 12);
-    //     time = time[0] + ":" + time[1];
-    //   }
-    // } else {
-
-    //   if(parseInt(time[0]).length === 1) {
-    //     time = "0" + time[0] + ":" + time[1];
-    //   } else if(parseInt(time[0]) === 12) {
-    //     time[0] = "00";
-    //     time = time[0] + ":" + time[1];
-    //   } else {
-    //     time = ($('#uploadTime').val());
-    //   }
-
-    // }
-
-    // console.log(time);
-
-  },
-
   submitForm : function(event) {
     event.preventDefault();
 
@@ -318,6 +284,8 @@ var UploadSightingView = Backbone.View.extend({
         var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-');
         requestObject.dateTime = dateTime;
         console.log('dateTime = ' + dateTime);
+      } else {
+        requestObject.dateTime = $('#uploadDate').val();
       }
 
       requestObject.imageUrl = $('#previewHolder').attr('src');

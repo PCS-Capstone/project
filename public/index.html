@@ -42,12 +42,18 @@
               {{#each colors}} {{this}} {{/each}}
             {{/if}}
 
-            {{animalType}} sightings
+            {{animalType}} sightings within {{radius}} miles of {{address}}
 
-            {{#if endDate}}
-              from {{startDate}} to {{endDate}}
+            {{#if startDate}}
+              {{#if endDate}}
+                from {{startDate}} to {{endDate}}
+              {{else}}
+                on {{startDate}}
+              {{/if}}
             {{else}}
-              on {{startDate}}
+              {{#if endDate}}
+                on {{endDate}}
+              {{/if}}
             {{/if}}
 
           </span>
@@ -358,8 +364,14 @@
   <script src="../models/models.js"></script>
 
   <script src="../views/main.js"></script>
+
   <script src="../views/sighting.js"></script>
   <script src="../views/searching.js"></script>
+  <script src="../views/no_results.js"></script>
+  <script src="../views/successful.js"></script>
+  <script src="../views/error.js"></script>
+  <script src="../routes/router.js"></script>
+
 
   <script src="public/js/main.js"></script>
 
