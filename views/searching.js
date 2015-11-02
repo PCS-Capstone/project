@@ -25,6 +25,7 @@ var SearchFormView = Backbone.View.extend({
   },
 
   render: function(){
+    router.navigate('search')
     if (this.searchParameters !== undefined) {
       // console.log('edited search')
       this.prePopulate();
@@ -57,7 +58,10 @@ var SearchFormView = Backbone.View.extend({
       //console.log( 'changed place' );
       place = autocomplete.getPlace();
       self.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
-      // console.log( 'location:', self.location );
+      console.log( 'location:', self.location );
+      // self.location.lat = place.geometry.location.lat();
+      // self.location.lng = place.geometry.location.lng();
+      //      console.log( 'location:', self.location ); 
     }
   },
 
@@ -72,11 +76,16 @@ var SearchFormView = Backbone.View.extend({
     // console.log( 'searchForm on submit location:', self.location)
 
     event.preventDefault();
+
+    var shortAddress = $('input[name="address"]').val().split(',')
+    shortAddress = shortAddress[0] + "," + shortAddress[1]
+    console.log(shortAddress)
+
     var searchParameters = {
     startDate : $('input[name="start-date"]').val(),
       endDate : $('input[name="end-date"]').val(),
      location : JSON.stringify( self.location ),
-      address : $('input[name="address"]').val(),
+      address : shortAddress,
        radius : $('input[name="radius"]').val(),
    animalType : $('option:selected').val(),
        colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
@@ -92,7 +101,7 @@ var SearchFormView = Backbone.View.extend({
     // where do we put it?
     app.collection.fetch({data : searchParameters, success: function()
       { if (app.collection.length === 0) {
-        new NoResultsFound({ searchParameters : searchParameters})
+        var nothing = new NoResultsFound({ searchParameters : searchParameters})
       } else {
         new ResultsView ({
           collection : app.collection,
