@@ -26,6 +26,9 @@ var SearchFormView = Backbone.View.extend({
 
   render: function(){
     router.navigate('search')
+    console.log('searchParams', this.searchParameters)
+    console.log('self.location', self.location)
+
     if (this.searchParameters !== undefined) {
       // console.log('edited search')
       this.prePopulate();
@@ -70,25 +73,39 @@ var SearchFormView = Backbone.View.extend({
   },
 
   renderSearchResults: function(event){
-    // console.log( 'doing it' );
     var self = this;
-    // console.log(self);
-    // console.log( 'searchForm on submit location:', self.location)
+    var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                  'August', 'September', 'October', 'November', 'December'];
 
     event.preventDefault();
 
     var shortAddress = $('input[name="address"]').val().split(',')
-    shortAddress = shortAddress[0] + "," + shortAddress[1]
-    console.log(shortAddress)
+    shortAddress.splice((shortAddress.length)-1)
+
+    var prettyStartDate = $('input[name="start-date"]').val().split('-');
+    prettyStartDate = (month[(prettyStartDate[1]) -1] + " " + prettyStartDate[2] + 
+      ', ' + prettyStartDate[0])
+    console.log('pretty date', prettyStartDate)
+    
+    var prettyEndDate = $('input[name="end-date"]').val().split('-');
+    prettyEndDate = (month[(prettyEndDate[1]) -1] + " " + prettyEndDate[2] + 
+      ', ' + prettyEndDate[0])
 
     var searchParameters = {
-    startDate : $('input[name="start-date"]').val(),
-      endDate : $('input[name="end-date"]').val(),
-     location : JSON.stringify( self.location ),
-      address : shortAddress,
-       radius : $('input[name="radius"]').val(),
-   animalType : $('option:selected').val(),
-       colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
+        startDate : $('input[name="start-date"]').val(),
+          endDate : $('input[name="end-date"]').val(),
+  prettyStartDate : prettyStartDate,
+    prettyEndDate : prettyEndDate,
+          address : shortAddress,
+           radius : $('input[name="radius"]').val(),
+       animalType : $('option:selected').val(),
+           colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
+    }
+
+    if (this.searchParameters) {
+      searchParameters.location = this.searchParameters.location
+    } else {
+      searchParameters.location = JSON.stringify(self.location)
     }
 
     this.remove();
@@ -172,7 +189,8 @@ var ResultsView = Backbone.View.extend({
     }
 
     this.remove();
-
+    console.log('edit search location', this.searchParameters.location)
+    
     var editSearch = new SearchFormView({
       searchParameters : self.searchParameters
     })

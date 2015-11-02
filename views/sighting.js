@@ -155,6 +155,9 @@ var UploadSightingView = Backbone.View.extend({
     $('#previewHolderDiv').removeClass('display-none');
 
     function readFromExif ( exifData ) {
+      var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                  'August', 'September', 'October', 'November', 'December'];
+
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
@@ -192,7 +195,8 @@ var UploadSightingView = Backbone.View.extend({
 
 
         displayDate = (displayDate.split(':'));
-        displayDate = displayDate[0] + "-" + displayDate[2] + "-" + displayDate[1];
+        displayDate = (month[(displayDate[1]) -1] + " " + displayDate[2] + 
+        ', ' + displayDate[0])
 
         displayTime = (displayTime.split(':'));
 
@@ -278,7 +282,6 @@ var UploadSightingView = Backbone.View.extend({
     // get all the values from the search form
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
-          console.log('send to server function running');
 
       if(asyncParams.exifData.DateTime) {
         var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-');
@@ -288,12 +291,16 @@ var UploadSightingView = Backbone.View.extend({
         requestObject.dateTime = $('#uploadDate').val();
       }
 
+      var shortAddress = $('#uploadLocation').val().split(',')
+      shortAddress.splice((shortAddress.length)-1)
+
+      console.log('sighting address', shortAddress)
       requestObject.imageUrl = $('#previewHolder').attr('src');
       requestObject.location = {
         lat: self.lat,
         lng: self.lng
       };
-      requestObject.address = $('#uploadLocation').val();
+      requestObject.address = shortAddress
       requestObject.displayDate = $('#uploadDate').val();
       requestObject.displayTime = '' + $('#hour-select').val() + ':' + $('#minute-select').val() + ' ' + $('input[name="am-pm"]:checked').val();
       requestObject.animalType = $("#uploadSpecies option:selected").val();

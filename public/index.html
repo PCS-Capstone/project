@@ -44,17 +44,7 @@
 
             {{animalType}} sightings within {{radius}} miles of {{address}}
 
-            {{#if startDate}}
-              {{#if endDate}}
-                from {{startDate}} to {{endDate}}
-              {{else}}
-                on {{startDate}}
-              {{/if}}
-            {{else}}
-              {{#if endDate}}
-                on {{endDate}}
-              {{/if}}
-            {{/if}}
+            from {{prettyStartDate}} to {{prettyEndDate}}
 
           </span>
         </span>
@@ -77,8 +67,8 @@
     </div>
 
     <div class="flex-row">
-      <button class="btn btn-info btn-lg">Location: {{address}}</button>
-      <h4>Last seen: {{displayDate}} at {{displayTime}}</h4>
+      <button class="btn btn-info btn-lg">Location/Map</button>
+      <h4>Last seen: {{displayDate}} at {{displayTime}} near {{address}}</h4>
     </div>
 
     {{#if description}}

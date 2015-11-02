@@ -30,29 +30,16 @@ app.get('/pet', function (request, response) {
   console.log(request.query)
 
   var search = request.query;
-  // var query =
-  // "value.location:NEAR:" +
-  // "{"+
-  //   "latitude: "  + search.location.lat +
-  //   " longitude: " + search.location.lng +
-  //   " radius: "   + search.radius +
-  //   "mi"+
-  // "} " +
-  // "AND value.animalType: (" + search.animalType + ") "   +
-  // "AND value.colors: ("     + search.colors     + ") "   +
-  // "AND value.date: ["       + search.startDate  + " TO " + search.endDate + "]"
+  search.location = JSON.parse(search.location);
 
-  // var query = "value.location:NEAR:{latitude:" + search.location.lat + " longitude:" + search.location.lng + " radius:" + search.radius + "mi" + "}" 
-
-  // var query = "value.location:NEAR:{latitude:33.687353 longitude:-112.20568600000001 radius:10mi}"
-
-  // "OR value.dateTime: (" + search.startDate + ")" + 
-  // "OR value.dateTime: (" + search.endDate + ")" + 
-  // "OR value.dateTime: [" + search.startDate  + " TO " + 
-  //     search.endDate + "]" + 
-  // "OR value.colors: (" + search.colors + ")"
-
-  var query = "value.animalType: (" + search.animalType + ")"
+  var query = "value.animalType: (" + search.animalType + ")" + 
+  "AND value.location:NEAR:{latitude:" + search.location.lat +
+  " longitude:" + search.location.lng + " radius:" + search.radius + "mi" + "}" +
+  "AND value.dateTime: [" + search.startDate  + " TO " + search.endDate + "]"
+   
+  if (search.colors) {
+    query += "AND value.colors: (" + search.colors + ")"
+  }
 
 	db.search('test', query)
 
