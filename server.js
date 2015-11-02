@@ -75,7 +75,11 @@ app.post('/pet', function(request, response) {
 
   uploader.upload( data.imageUrl, function (result)  {
     //console.log('return after upload: ', result);
-    data.imageUrl = result.url;
+
+    data.imageUrl = result.url.replace(/upload/, 'upload/a_exif');;
+
+
+    // data.imageUrl.replace('')
     // console.log( data )
     // console.log( data.imageUrl );
     db.post('test', data)
@@ -94,3 +98,7 @@ app.post('/pet', function(request, response) {
 
 app.listen(3000);
 console.log( 'listening on PORT:3000' );
+
+cloudinary.api.delete_all_resources(function(result){})
+
+console.log('destroyed all cloudinary images')
