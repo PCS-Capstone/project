@@ -141,6 +141,11 @@ var UploadSightingView = Backbone.View.extend({
     var displayDate;
     var displayTime;
 
+    // Shows image preview
+    $('#previewHolder').removeClass('display-none');
+    $('#previewHolderDiv').removeClass('display-none');
+    $('#previewHolderButtonDiv').removeClass('display-none');
+
     //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
     if ($('#locationMap')) {
       $('#locationMap').remove();
@@ -148,6 +153,8 @@ var UploadSightingView = Backbone.View.extend({
     }
     //Clears data fields each time new photo is uploaded
     $('#uploadDate').val(' ');
+    self.lat = 0;
+    self.lng = 0; 
     $('#uploadLocation').val(' ');
     $('[name=hour]').prop('selectedIndex', 0);
     $('[name=minute]').prop('selectedIndex', 0);
@@ -160,11 +167,8 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
-    //
-    // Shows image preview
-    $('#previewHolder').removeClass('display-none');
-    $('#previewHolderDiv').removeClass('display-none');
-    $('#previewHolderButtonDiv').removeClass('display-none');
+
+
 
     function readFromExif ( exifData ) {
 
@@ -249,8 +253,8 @@ var UploadSightingView = Backbone.View.extend({
         $('#hour-select').val(hour);
         $('#minute-select').val(minute);
         displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm";
-        }
-        else if (displayTime[0][0] === 0) {
+
+        if (displayTime[0][0] === 0) {
           displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
         }
         else {
@@ -294,7 +298,7 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     getExifData();
-    previewImage( $imageField );    
+    previewImage( $imageField );
 
   },
 
@@ -361,7 +365,7 @@ var UploadSightingView = Backbone.View.extend({
       if (  $('.alert').length  ) {
         $('.alert').remove();
       }
-      if (  $('#uploadLocation').val('')  ) {
+      if (  !$('#uploadLocation').val() ) {
         self.lat = 0;
         self.lng = 0;
       }

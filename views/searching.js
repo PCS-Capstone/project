@@ -61,12 +61,23 @@ var SearchFormView = Backbone.View.extend({
       console.log( 'location:', self.location );
       // self.location.lat = place.geometry.location.lat();
       // self.location.lng = place.geometry.location.lng();
-      //      console.log( 'location:', self.location ); 
+      //      console.log( 'location:', self.location );
     }
   },
 
   events: {
-    'submit form' : 'renderSearchResults'
+    'submit form' : 'renderSearchResults',
+    'click #start-date' : 'datepicker',
+    'click #end-date' : 'datepicker'
+  },
+
+  datepicker: function(event) {
+    console.log(event.target.id);
+    $('#' + event.target.id).datepicker('show')
+      .on('changeDate', function(ev){
+        console.log(ev.date);
+        $('#' + event.target.id).datepicker('hide');
+      });
   },
 
   renderSearchResults: function(event){
