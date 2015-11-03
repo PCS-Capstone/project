@@ -2,8 +2,6 @@
            Found a Pet Views
 ========================================*/
 
-/*  Photo Prompt
---------------------*/
 var UploadSightingView = Backbone.View.extend({
     tagName: 'div',
   className: 'upload',
@@ -13,6 +11,7 @@ var UploadSightingView = Backbone.View.extend({
     router.navigate('sighting')
     this.$el.html( this.template() );
     $('#master').append(this.$el);
+
     /* ----
       For the form's hours and minutes, this creates the options of 1-12(hour) and 0-59(minute)
     */
@@ -35,7 +34,7 @@ var UploadSightingView = Backbone.View.extend({
       var $minuteSelectOption = $('<option class="form-control">');
       $minuteSelectOption.attr('id', 'minuteSelectOption' + j);
       $minuteSelectOption.attr('class', 'minuteSelectOption');
-      //This adds an initial zero if the minute number is below 10 (i.e. 01, 02, 03...)
+      //Adds an initial zero if the minute number is below 10 (i.e. 01, 02, 03...)
       if (j < 10) {
         $minuteSelectOption.attr('value', "0" + j);
         $minuteSelectOption.html("0" + j);
@@ -46,7 +45,7 @@ var UploadSightingView = Backbone.View.extend({
       }
       $('#minute-select').append($minuteSelectOption);
     }
-
+    /* ---- */
   },
 
   initialize: function( options ){
@@ -64,23 +63,18 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   uploadPhoto: function() {
+  //When the upload photo button is clicked, this triggers a click on a separate, HIDDEN input (type=file) field
     $('#upload-photo').trigger('click');
   },
 
+  //Creates Datepicker feature
   datepickerForm: function() {
-    /*  ----
-        Creates Datepicker feature
-    */
     $('#uploadDateDiv').datepicker('show')
       .on('changeDate', function(ev){
         console.log(ev.date);
         $('#uploadDateDiv').datepicker('hide');
       });
   },
-
-
-
-
 
   google: function(xLat, xLng) {
     $('#map').removeClass('display-none').addClass('col-xs-12');
@@ -151,41 +145,47 @@ var UploadSightingView = Backbone.View.extend({
       $('#locationMap').remove();
       $('uploadLocationButton').removeClass('display-none');
     }
-    //Clears data fields each time new photo is uploaded
+    //Clears data fields and any previously-stored lat/long data each time new photo is uploaded
     $('#uploadDate').val(' ');
     self.lat = 0;
-    self.lng = 0; 
+    self.lng = 0;
     $('#uploadLocation').val(' ');
     $('[name=hour]').prop('selectedIndex', 0);
     $('[name=minute]').prop('selectedIndex', 0);
     $("input[name='am-pm']").prop("checked", false);
 
+    //Uses Google Geocoder to convert lat/long into address; inputs address into form's location field
     function codeAddress(xLat, xLng) {
-      // console.log('code address running');
       geocoder = new google.maps.Geocoder;
       geocoder.geocode( { 'location': {lat: xLat, lng: xLng } }, function(results, status) {
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
 
-
-
+    /* ----
+      Receives exif data from getExifData() function below;
+      Extracts/Converts lat/lng data & time
+    */
     function readFromExif ( exifData ) {
-
+      //If geolocation exif data is abset, googleAutocomplete is called - which:
+        //Adds google autocomplete feature to location field;
+        //Attaches map
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
+      //Runs if geolocation data exists
       else {
+        //Displays the "Edit Location" button below auto-filled in address;
+        //This allows user to edit address without automatically calling google places API every time new photo is uploaded
+        //When clicked, this button loads google map and creates google autocomplete field
         $('#uploadLocationButton').removeClass("display-none");
 
+        //Converts lat/lng exif data into decimal format;
         function degToDec(latLngArray) {
-          // console.log('longitude negative? ', latLngArray[0]);
           var decimal = (latLngArray[0] + (latLngArray[1]/ 60) + (latLngArray[2]/ 3600));
           return decimal;
         }
-
         var latDecimal = degToDec(exifData.GPSLatitude);
-        // console.log(latDecimal);
 
         if (exifData.GPSLongitudeRef === "W") {
           var lngDecimal = (-(degToDec(exifData.GPSLongitude)));
@@ -193,15 +193,15 @@ var UploadSightingView = Backbone.View.extend({
         else {
           var lngDecimal = degToDec(exifData.GPSLongitude);
         }
-        // google places to fill out address based on latDecimal / lngDecimal
+        //Passes exif lat/lng to this view's lat/lng properties (which are declared when this view is initially created)
         self.lat = latDecimal;
         self.lng = lngDecimal;
         //Run codeAddress() to display street address in form's location input field
         codeAddress(self.lat, self.lng);
       }
 
+      //Reads and converts exif data's timestamp into usable format
       if (exifData.DateTime) {
-
         displayDate = exifData.DateTime.split(' ')[0];
         displayTime = exifData.DateTime.split(' ')[1];
         console.log('displayTime = ' + displayTime);
@@ -213,13 +213,8 @@ var UploadSightingView = Backbone.View.extend({
         displayTime = (displayTime.split(':'));
 
       }
-
-      console.log('exif orient', exifData.Orientation);
-      console.log( parseInt(exifData.Orientation));
-
-      /*  ----
-          Each time a new photo is uploaded, rotation classes are reset and then applied;
-      */
+      // This rotates the image correctly based on exif data's noted orientation;
+      // Rotation classes are also removed each time a new photo is uploaded
       if (  $('#previewHolder').hasClass('rotate90')  ) {
         $('#previewHolder').removeClass('rotate90');
       }
@@ -240,13 +235,12 @@ var UploadSightingView = Backbone.View.extend({
           $('#previewHolder').addClass('rotate270');
           break;
       }
-      /* ---- */
 
+      //Uses extracted exif-data time to autofill form's hour/minute/am-pm fields
       if (parseInt(displayTime[0]) > 12) {
 
         $("#pm").prop("checked", true);
 
-        //Compile 0-12 hour format
         var hour = displayTime[0] - 12;
         var minute = displayTime[1];
 
@@ -271,10 +265,11 @@ var UploadSightingView = Backbone.View.extend({
 
       $('#uploadDate').val( displayDate );
     }
+    /* ---- */
 
-
+    //Uses Filereader to generate a url of photo;
+    //To preview image, the url is applied to an empty image's "src" attribute
     function previewImage ( inputElement ) {
-
       var image  = inputElement[0].files[0];
       var reader = new FileReader();
 
@@ -288,6 +283,7 @@ var UploadSightingView = Backbone.View.extend({
       reader.readAsDataURL( image );
     }
 
+    //Reads exif data of image; passes exif data as argument into readerFromExif() function above
     function getExifData ( ){
       var image = $imageField[0].files[0];
 
@@ -308,10 +304,13 @@ var UploadSightingView = Backbone.View.extend({
     var self = this;
     console.log( 'this.lat/long=', self.lat, '/', self.lng);
     var requestObject = {};
-    // self.time();
-    //get the file from the input field
-    //run EXIF with the file
-    //expose the result to a callback (async)
+
+    // If the initial form submittal is denied because of missing required fields, this resets the highlighted background colors
+    $('#upload-form').children().not('button').css('background-color', 'transparent');
+
+    // get the file from the input field
+    // run EXIF with the file
+    // expose the result to a callback (async)
     function getExifData ( makeObjectFunction, shipObjectFunction ){
       console.log( 'running addExif' );
       var image = document.getElementsByName('photo')[0].files[0];
@@ -358,8 +357,9 @@ var UploadSightingView = Backbone.View.extend({
     //send it off
 
     function sendToServer () {
-       console.log(self.lat);
-
+      /*  ----
+          Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied;
+      */
       var errorCount = 0;
 
       if (  $('.alert').length  ) {
@@ -369,21 +369,22 @@ var UploadSightingView = Backbone.View.extend({
         self.lat = 0;
         self.lng = 0;
       }
-      $('#upload-form').children().not('button').css('background-color', 'transparent');
-
+      //If required fields are absent, this adds a dismissable warning popup at top of page and background color to form fields
       var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
       var uploadWarningColor = '#FCF8E3';
-
+      //Check whether species if selected
       if (  $('#uploadSpecies').find(":selected").index() === 0   ) {
         errorCount += 1;
         $('#uploadSpecies').css('background-color', uploadWarningColor );
         console.log('Form Validation Failed: No Animal Selected');
       }
+      //Check location
       if ( (self.lat === 0) || (self.lng === 0)  ) {
         errorCount += 1;
         $('#uploadLocation').css('background-color', uploadWarningColor);
         console.log('Form Validation Failed: No Latitude or Longitude Set; Incorrect Location');
       }
+      //Check Time/HR/Minutes/AM-PM
       if ( $('#hour-select').find(":selected").index() === 0   ) {
         errorCount += 1;
         $('#hour-select').css('background-color', uploadWarningColor);
@@ -396,7 +397,7 @@ var UploadSightingView = Backbone.View.extend({
           console.log('Required Field: Please Select AM/PM');
         }
       }
-
+      //Checks to see if there are any errors; If not, sends form
       if (errorCount > 0) {
         $('#upload-form').prepend($uploadWarning);
         $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -418,27 +419,17 @@ var UploadSightingView = Backbone.View.extend({
           }
         });
       }
-
       console.log('missing required fields: ' + errorCount);
     }
-
+    /*  ----  */
     getExifData( buildDataForServer, sendToServer );
-
-
   },
 
   googleAutocomplete: function() {
     /*------------------------------------------------------------------------
       In case the exif geolocation data is abset, this entire function adds a:
-        --Google Autocomplete Input Field and Map to the form's loation field.
+        --Google Autocomplete Input Field and Map to the form's location field.
     ------------------------------------------------------------------------*/
-    /* Builds new elements:
-        --Form Location field
-        --Location Map
-    */
-
-    // $('#uploadLocation').val('');
-    console.log('googleAutocomplete running');
     $('#uploadLocationButton').addClass('display-none');
     $('<div id="locationMap" class="col-xs-12" style="height:300px"></div>').insertAfter('#uploadLocation');
 
@@ -455,8 +446,7 @@ var UploadSightingView = Backbone.View.extend({
     /*  ----
         Builds Google Autocomplete Input field
     */
-
-    //Sets options for Google Autocomplete
+    //Sets options for Google Autocomplete F
     (function() {
       var options = {
         types: 'geocode',
@@ -468,16 +458,18 @@ var UploadSightingView = Backbone.View.extend({
       autocomplete = new google.maps.places.Autocomplete(
       /** @type {!HTMLInputElement} */(document.getElementById('uploadLocation')), options);
     })();
+    /*  ----  */
 
-    //When a Google Autcomplete Location is selected, captures lat/long and creates marker
-      //This function is triggered as a listener on the autcomplete (declared immediately after codeAddress function)
+    /*  ----
+        When a Google Autcomplete Location is selected, this captures lat/long and creates marker
+    */
+    //This function is triggered as a listener on the autocomplete, which is declared immediately after codeAddress() function below
     function fillInAddress() {
       place = autocomplete.getPlace();
       self.lat = place.geometry.location.lat();
       self.lng = place.geometry.location.lng();
       createMarker();
     }
-
     //Creates new markers
     function createMarker(xMapClickEvent) {
       //Clears existing marker when new marker is added
@@ -491,8 +483,7 @@ var UploadSightingView = Backbone.View.extend({
         animation: google.maps.Animation.DROP,
         draggable:true
       });
-      //Provides drag functionality to marker;
-        //Sets marker creation and captures lat/long when drag is complete
+      //Provides drag functionality to marker; Sets marker creation and captures lat/long when drag is complete
       google.maps.event.addListener(marker,'dragend',function(event) {
         self.lat = event.latLng.lat();
         self.lng = event.latLng.lng();
@@ -513,6 +504,8 @@ var UploadSightingView = Backbone.View.extend({
     }
     autocomplete.addListener('place_changed', fillInAddress);
 
+    /*  ----  */
+
     /* ----------------
      Creates Google Map
     ------------------- */
@@ -521,9 +514,11 @@ var UploadSightingView = Backbone.View.extend({
       var centerLat;
       var centerLng;
 
+      //This gets current geolocation data from BROWSER (requests permission from client);
       if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);
       }
+      //If browser lacks geolocation data (or client denies permission to access) this centers map on entire united states
       else {
         map = new google.maps.Map(document.getElementById('locationMap'), {
           center: {lat: 39.5, lng: -98.35},
@@ -531,7 +526,7 @@ var UploadSightingView = Backbone.View.extend({
         });
         mapListener();
       }
-
+      //Generates map using BROWSER location data if initial "if" statement is met
       function showPosition(position) {
         centerLat = position.coords.latitude;
         centerLng = position.coords.longitude;
