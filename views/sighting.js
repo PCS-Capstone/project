@@ -1,7 +1,6 @@
 /*========================================
            Found a Pet Views
 ========================================*/
-
 var UploadSightingView = Backbone.View.extend({
     tagName: 'div',
   className: 'upload',
@@ -51,6 +50,7 @@ var UploadSightingView = Backbone.View.extend({
   initialize: function( options ){
     _.extend( this, options );
     this.render();
+
   },
 
   events: {
@@ -59,7 +59,11 @@ var UploadSightingView = Backbone.View.extend({
     'click #uploadDate' : 'datepickerForm',
     'click #upload-photo-div button' : 'uploadPhoto',
     'click #previewHolderButton' : 'uploadPhoto',
-    'click #uploadLocationButton' : 'googleAutocomplete'
+    'click #uploadLocationButton' : 'googleAutocomplete',
+    'click .alert' : 'removeAlert'
+  },
+  removeAlert: function(event) {
+    $('#' + event.target.id).remove();
   },
 
   uploadPhoto: function() {
@@ -135,10 +139,9 @@ var UploadSightingView = Backbone.View.extend({
     var displayDate;
     var displayTime;
 
-    // Shows image preview
-    $('#previewHolder').removeClass('display-none');
-    $('#previewHolderDiv').removeClass('display-none');
-    $('#previewHolderButtonDiv').removeClass('display-none');
+    //Alert if improper photo is uploaded; This is the same warning that appears in the submitForm (following function) validation check
+    var $uploadWarning = $('<div id="alertRequired" class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Must be a photo in JPEG format </strong></div>');
+    var uploadWarningColor = '#FCF8E3';
 
     //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
     if ($('#locationMap')) {
@@ -153,6 +156,7 @@ var UploadSightingView = Backbone.View.extend({
     $('[name=hour]').prop('selectedIndex', 0);
     $('[name=minute]').prop('selectedIndex', 0);
     $("input[name='am-pm']").prop("checked", false);
+    $('#alertRequired').remove();
 
     //Uses Google Geocoder to convert lat/long into address; inputs address into form's location field
     function codeAddress(xLat, xLng) {
@@ -161,7 +165,6 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
-
     /* ----
       Receives exif data from getExifData() function below;
       Extracts/Converts lat/lng data & time
@@ -235,7 +238,6 @@ var UploadSightingView = Backbone.View.extend({
           $('#previewHolder').addClass('rotate270');
           break;
       }
-
       //Uses extracted exif-data time to autofill form's hour/minute/am-pm fields
       if (parseInt(displayTime[0]) > 12) {
 
@@ -277,12 +279,14 @@ var UploadSightingView = Backbone.View.extend({
         console.log(event);
         $imagePreview.attr('src', event.target.result);
         $('#upload-photo-div').remove();
-        //Shows image preview
+        // Shows image preview
         $imagePreview.removeClass('display-none');
+        $('#previewHolderDiv').removeClass('display-none');
+        $('#previewHolderButtonDiv').removeClass('display-none');
       };
       reader.readAsDataURL( image );
-    }
 
+    }
     //Reads exif data of image; passes exif data as argument into readerFromExif() function above
     function getExifData ( ){
       var image = $imageField[0].files[0];
@@ -293,8 +297,25 @@ var UploadSightingView = Backbone.View.extend({
       });
     }
 
-    getExifData();
-    previewImage( $imageField );
+    /* -------------------------------------------------------------------------
+      Checks if uploaded file is: a photo, and in JPEG format;
+      If not, extracting exif data and previewing image is blocked from running;
+    ---------------------------------------------------------------------------*/
+    var fileTypeArray = $imageField[0].files[0].type.toLowerCase();
+    console.log(fileTypeArray);
+    if (  (!(fileTypeArray.indexOf('image') >= 0 )) || (  !(fileTypeArray.indexOf('jpeg') >= 0 ) )   ) {
+      if (  $('#alertRequired').length ) {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+      }
+      else {
+        $('#upload-form').prepend($uploadWarning);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+      }
+    }
+    else {
+      getExifData();
+      previewImage( $imageField );
+    }
 
   },
 
@@ -304,6 +325,11 @@ var UploadSightingView = Backbone.View.extend({
     var self = this;
     console.log( 'this.lat/long=', self.lat, '/', self.lng);
     var requestObject = {};
+
+    //Dismissable Warning, which is used when:
+      //Required form fields are absent
+    var $uploadWarning = $('<div id="alertRequired" class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
+    var uploadWarningColor = '#FCF8E3';
 
     // If the initial form submittal is denied because of missing required fields, this resets the highlighted background colors
     $('#upload-form').children().not('button').css('background-color', 'transparent');
@@ -350,15 +376,29 @@ var UploadSightingView = Backbone.View.extend({
       }).toArray();
       requestObject.exifData = asyncParams.exifData;
 
+      // var formData = new FormData();
+      // formData.append('pet', '' + requestObject.imageUrl);
+      //
+      // $.ajax({
+      //   type: "POST",
+      //   url: "http://pets.vsapi01.com/api-search?apikey=fbe93f72-f325-4a1a-8dc1-65c0ff578414",
+      //   data: formData,
+      //   contentType: 'multipart/form-data',
+      //   success: function(result) {
+      //     console.log(result);
+      //   }
+      // });
+
       callback();
     }
 
     console.log(requestObject);
+
     //send it off
 
     function sendToServer () {
       /*  ----
-          Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied;
+          Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
       */
       var errorCount = 0;
 
@@ -369,9 +409,6 @@ var UploadSightingView = Backbone.View.extend({
         self.lat = 0;
         self.lng = 0;
       }
-      //If required fields are absent, this adds a dismissable warning popup at top of page and background color to form fields
-      var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
-      var uploadWarningColor = '#FCF8E3';
       //Check whether species if selected
       if (  $('#uploadSpecies').find(":selected").index() === 0   ) {
         errorCount += 1;

@@ -69,14 +69,14 @@ app.post('/pet', function(request, response) {
   // console.log('request.file =', request.file);
   // console.log('data.file =', request.body.data.file )
   var data = JSON.parse(request.body.data);
-  console.log('location: ', data.location);
+
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
 
   // uploader.upload( data.imageUrl, function (result)  {
     //console.log('return after upload: ', result);
 
-    data.imageUrl = result.url.replace(/upload/, 'upload/a_exif');;
+    // data.imageUrl = result.url.replace(/upload/, 'upload/a_exif');;
 
     // data.imageUrl.replace('')
     // console.log( data )
@@ -92,7 +92,6 @@ app.post('/pet', function(request, response) {
     //     console.log(err);
     //     response.send('Error Uploading Photo in Database');
     // });
-  // });
     response.send(true);
 });
 
