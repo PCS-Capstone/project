@@ -1,54 +1,39 @@
-// var Router = Backbone.Router.extend({
-// 	routes: {
-// 		'' : 'index',
-// 		'show/:id' : 'show',
-// 		'download/*random' : 'download',
-// 		'search/:query': 'search',
-// 		'*default': 'default'
-// 	},
-
-// 	index: function(){
-// 		$(document.body).append("Index route has been called..");
-// 	},
- 
-// 	show: function(id) {
-// 		$(document.body).append("Show route has been called..with id equals : ", id);
-// 	}, 
-
-// 	download: function(random) {
-// 		$(document.body).append("download route has been called.. with random equals : ", random);
-// 	},
-
-// 	search: function(query){
-// 		$(document.body).append("Search route has been called.. with query equals : ",   query);
-// 	},
-
-// 	default: function(def){
-// 		$(document.body).append("This route is not hanled.. you tried to access: ", def);
-
-// 	}
-// });
-
-// new Router();
-// Backbone.history.start();
-
 var Router = Backbone.Router.extend({
 	routes: {
 		'' : 'index',
 		'search' : 'search',
-		'sighting' : 'sighting'
+		'sighting' : 'sighting',
+		'results' : 'results',
+		'noResults' : 'noResults'
 	},
 
 	index: function() {
-		console.log('index')
+		console.log('index');
+		new HomePageView({});
 	},
 
 	search: function() {
-		console.log('search')
+		console.log('search');
+		new SearchFormView({parentView : null});
 	},
 
 	sighting: function() {
-		console.log('sighting')
+		console.log('sighting');
+		new UploadSightingView({ lat: 0, lng: 0, parentView : null});
+	},
+
+	results: function() {
+		console.log('results');
+		new ResultsView({collection : app.collection, parentView : null});
+	}, 
+
+	noResults: function() {
+		console.log('no results');
+		new NoResultsFound({parentView : null});
 	}
 });
 
+
+// make a global currentView property that sets the current view 
+// so every time a back button is pressed it removes the current view 
+// and renders new view from the route

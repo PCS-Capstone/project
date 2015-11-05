@@ -44,7 +44,8 @@ app.get('/pet', function (request, response) {
 	db.search('test', query)
 
 	.then(function(result) {
-		response.send(result.body.results);
+    console.log('result', result.body.results);
+    response.send(result.body.results);		
 	})
 	.fail(function(err){
 		console.log('error');

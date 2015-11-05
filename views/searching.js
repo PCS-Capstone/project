@@ -1,4 +1,3 @@
-
 /*========================================
             Lost a Pet Views
 =========================================*/
@@ -9,27 +8,27 @@ var SearchFormView = Backbone.View.extend({
     tagName: 'section',
   className: 'search',
    template: Handlebars.compile( $('#template-searchform').html() ),
-   location: {},
+   // location: {},
 
   prePopulate : function(){
     this.$el.html( this.template());
     $('#master').html(this.$el);
 
-    $("[name=animal-type]").val(this.searchParameters.animalType);
-    $("[name=address]").val(this.searchParameters.address);
-    $("[name=radius]").val(this.searchParameters.radius);
-    $("[name=start-date]").val(this.searchParameters.startDate);
-    $("[name=end-date]").val(this.searchParameters.endDate);
-    $("[name=color-group]").val(this.searchParameters.colors);
-    $("[value="+this.searchParameters.size+"]").prop("checked", true);
+    $("[name=animal-type]").val(app.searchParameters.animalType);
+    $("[name=address]").val(app.searchParameters.address);
+    $("[name=radius]").val(app.searchParameters.radius);
+    $("[name=start-date]").val(app.searchParameters.startDate);
+    $("[name=end-date]").val(app.searchParameters.endDate);
+    $("[name=color-group]").val(app.searchParameters.colors);
+    $("[value="+app.searchParameters.size+"]").prop("checked", true);
   },
 
   render: function(){
-    router.navigate('search')
-    console.log('searchParams', this.searchParameters)
-    console.log('self.location', self.location)
+    currentView = this;
+    console.log('searchParams', app.searchParameters)
+    // console.log('self.location', self.location)
 
-    if (this.searchParameters !== undefined) {
+    if (app.searchParameters !== undefined) {
       // console.log('edited search')
       this.prePopulate();
     } else {
@@ -60,8 +59,8 @@ var SearchFormView = Backbone.View.extend({
     function convertToLatLng (){
       //console.log( 'changed place' );
       place = autocomplete.getPlace();
-      self.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
-      console.log( 'location:', self.location );
+      app.searchParameters.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
+      console.log( 'location:', app.searchParameters.location );
       // self.location.lat = place.geometry.location.lat();
       // self.location.lng = place.geometry.location.lng();
       //      console.log( 'location:', self.location ); 
@@ -91,24 +90,20 @@ var SearchFormView = Backbone.View.extend({
     prettyEndDate = (month[(prettyEndDate[1]) -1] + " " + prettyEndDate[2] + 
       ', ' + prettyEndDate[0])
 
-    var searchParameters = {
+    app.searchParameters = {
         startDate : $('input[name="start-date"]').val(),
           endDate : $('input[name="end-date"]').val(),
   prettyStartDate : prettyStartDate,
     prettyEndDate : prettyEndDate,
           address : shortAddress,
+         location : JSON.stringify(app.searchParameters.location),
            radius : $('input[name="radius"]').val(),
        animalType : $('option:selected').val(),
            colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
     }
 
-    if (this.searchParameters) {
-      searchParameters.location = this.searchParameters.location
-    } else {
-      searchParameters.location = JSON.stringify(self.location)
-    }
-
     this.remove();
+    console.log('location', app.searchParameters.location)
     // console.log( 'searchForm on submit location:', self.location)
 
     // only works upon first try, does not work with edit because
@@ -116,17 +111,12 @@ var SearchFormView = Backbone.View.extend({
     // We want to use conditional prior to ResultsView being rendered
     // if there are no search results found
     // where do we put it?
-    app.collection.fetch({data : searchParameters, success: function()
-      { if (app.collection.length === 0) {
-        var nothing = new NoResultsFound({ searchParameters : searchParameters})
-      } else {
-        new ResultsView ({
-          collection : app.collection,
-          searchParameters : searchParameters
-        });
-      }
-
-      }});
+    app.collection.fetch({data : app.searchParameters, 
+      success: function(collection, response, options)
+      {console.log('success', response); router.navigate('results', {trigger: true})},
+      error: function(collection, response, options)
+      {console.log('error', response); router.navigate('noResults', {trigger: true})}
+    });
   }
 });
 
@@ -138,20 +128,24 @@ var ResultsView = Backbone.View.extend({
     tagName: 'div',
   className: 'results-view',
    template: Handlebars.compile( $('#template-results-list').html()),
-   mapView: {},
+    mapView: {},
 
   render: function() {
-    this.$el.html( this.template(this.searchParameters) )
+    console.log('resutls view')
+    currentView = this;
+    this.$el.html( this.template(app.searchParameters) )
     this.$el.prependTo('#master');
 
     var self = this;
+    
+    console.log(app.searchParameters);
+    console.log( 'searchParameters.location: ', app.searchParameters.location);
 
-
-    console.log( 'ResultsView.searchParamaters.location: ', this.searchParameters.location);
+    console.log('JSON PARSE', JSON.parse(app.searchParameters.location));
 
     self.mapView = new MapView({
       collection : this.collection,
-      center: this.searchParameters.location,
+      center: app.searchParameters.location,
       parent: self
     });
 
@@ -188,12 +182,10 @@ var ResultsView = Backbone.View.extend({
       this.collection.remove(model);
     }
 
+    app.searchParameters.location = JSON.parse(app.searchParameters.location);
+
     this.remove();
-    console.log('edit search location', this.searchParameters.location)
-    
-    var editSearch = new SearchFormView({
-      searchParameters : self.searchParameters
-    })
+    router.navigate('search', {trigger : true, replace: true})
 
   },
 
@@ -207,7 +199,7 @@ var ResultsView = Backbone.View.extend({
     self.mapView.map.setZoom(15);
     // console.log( self.searchParameters.location );
     // console.log( typeof self.searchParameters.location)
-    self.mapView.map.setCenter( JSON.parse(self.searchParameters.location) );
+    self.mapView.map.setCenter( JSON.parse(app.searchParameters.location) );
     self.mapView.markers.forEach( function(marker){
       marker.setMap(self.mapView.map);
     })
@@ -261,13 +253,7 @@ var TileView = Backbone.View.extend({
    template: Handlebars.compile($ ('#template-tile-view').html()),
 
   render: function() {
-
-    // console.log( this.model.get('value') );
-    // console.log( this.model.get('value').location );
-    // console.log( typeof this.model.get('value').location );
-
     this.$el.html( this.template(this.model.get('value')) );
-
   },
 
   initialize: function( options ) {
@@ -276,7 +262,6 @@ var TileView = Backbone.View.extend({
     this.listenTo(this.model, 'remove', this.selfDestruct)
 
     this.render();
-    // this.makeMap();
   },
 
   events: {
