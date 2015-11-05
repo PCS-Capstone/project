@@ -211,148 +211,152 @@
         </input>
       </div>
 
-      <div id="previewHolderButtonDiv" class="text-center display-none">
-        <button id="previewHolderButton" type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit " aria-hidden="true"></span> Change Photo </button>
-      </div>
+      <div id="reveal-form" class="display-none">
 
-      <div class="row">
-        <div class="col-sm-2 text-right">
-          <em>** Required Fields</em>
-        </div>
-      </div>
-
-
-      <div class="form-group">
-        <label for="uploadSpecies" class="col-sm-2 control-label">
-          ** Type of Animal:
-        </label>
-
-        <div class="col-sm-9 col-lg-8">
-          <select id="uploadSpecies" class="form-control" name="animal-type">
-            <option value="" disabled selected>"What kind of animal is it?"</option>
-            <option value="Dog"> Dog </option>
-            <option value="Cat"> Cat </option>
-            <option value="Bird"> Bird </option>
-            <option value="Small-Furry"> Small and Furry </option>
-            <option value="Scales-Fins"> Scales and Fins</option>
-            <option value="Barnyard"> Barnyard </option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="uploadLocation" class="col-sm-2 control-label">
-          ** Location:
-        </label>
-        <div class="col-sm-9 col-lg-8">
-          <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
-          <button type="button" id="uploadLocationButton" class="btn btn-info pull-left display-none"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Location</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="uploadDate" class="col-sm-2 control-label">
-          ** Date:
-        </label>
-
-        <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
-          <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="yyyy-mm-dd">
-          <span class="add-on"><i class="icon-th"></i></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="col-sm-2 control-label">
-          ** Time:
-        </label>
-
-        <div id="hour" class="col-sm-4 col-md-2 input-group pull-left">
-          <span class="input-group-addon">hr</span>
-          <select id="hour-select" class="form-control" name="hour">
-          </select>
+        <div id="previewHolderButtonDiv" class="text-center display-none">
+          <button id="previewHolderButton" type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit " aria-hidden="true"></span> Change Photo </button>
         </div>
 
-        <div id="minute" class="col-sm-5 col-md-3 input-group pull-left">
-          <span class="input-group-addon">minutes</span>
-          <select id="minute-select" class="form-control" name="minute">
-          </select>
+        <div class="row">
+          <div class="col-sm-2 text-right">
+            <em>** Required Fields</em>
+          </div>
         </div>
 
-        <div id="am-pm-div" class="radio col-sm-1 col-md-2 pull-left">
-          <label>
-            <input type="radio" name="am-pm" id="am" value="am">
-              am
+
+        <div class="form-group">
+          <label for="uploadSpecies" class="col-sm-2 control-label">
+            ** Type of Animal:
           </label>
-          <label>
-            <input type="radio" name="am-pm" id="pm" value="pm">
-              pm
+
+          <div class="col-sm-9 col-lg-8">
+            <select id="uploadSpecies" class="form-control" name="animal-type">
+              <option value="" disabled selected>"What kind of animal is it?"</option>
+              <option value="Dog"> Dog </option>
+              <option value="Cat"> Cat </option>
+              <option value="Bird"> Bird </option>
+              <option value="Small-Furry"> Small and Furry </option>
+              <option value="Scales-Fins"> Scales and Fins</option>
+              <option value="Barnyard"> Barnyard </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="uploadLocation" class="col-sm-2 control-label">
+            ** Location:
           </label>
+          <div class="col-sm-9 col-lg-8">
+            <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+            <button type="button" id="uploadLocationButton" class="btn btn-info pull-left display-none"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Location</button>
+          </div>
         </div>
 
-      </div>
+        <div class="form-group">
+          <label for="uploadDate" class="col-sm-2 control-label">
+            ** Date:
+          </label>
 
-      <div class="form-group">
-        <label class="col-sm-2 control-label">
-            Please select color:
-        </label>
-
-        <fieldset>
-          <div id="white" class="col-sm-3 col-md-2 pull-left">
-            <input id="uploadWhite" type="checkbox" name="color-group" value="White" aria-label="uploadWhite">
-            <label for="uploadWhite">
-              White
-            </label>
+          <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
+            <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="yyyy-mm-dd">
+            <span class="add-on"><i class="icon-th"></i></span>
           </div>
-
-          <div id="black" class="col-sm-3 col-md-2 pull-left">
-            <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
-            <label for="uploadBlack">
-              Black
-            </label>
-          </div>
-
-          <div id="brown" class="col-sm-3 col-md-2 pull-left">
-            <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
-            <label for="uploadBrown">
-              Brown
-            </label>
-          </div>
-
-          <div id="orange" class="col-sm-3 col-md-2 pull-left">
-            <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
-            <label for="uploadOrange">
-              Orange
-            </label>
-          </div>
-
-          <div id="yellow" class="col-sm-3 col-md-2 pull-left">
-            <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
-            <label for="uploadYellow">
-              Yellow
-            </label>
-          </div>
-
-          <div id="gray" class="col-sm-3 col-md-2 pull-left">
-            <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
-            <label for="uploadGray">
-              Gray
-            </label>
-          </div>
-        </fieldset>
-
-      </div>
-
-      <div class="form-group">
-        <label for="uploadDescription" class="col-sm-2  control-label">
-          Enter description:
-        </label>
-
-        <div class="col-sm-9 col-md-9 col-lg-8">
-          <textarea id="uploadDescription" name="description" class="form-control col-sm-10 col-md-9 col-lg-8"></textarea>
         </div>
-      </div>
 
-      <button type="submit" class="btn btn-primary btn-lg center-block"> Submit </button>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">
+            ** Time:
+          </label>
+
+          <div id="hour" class="col-sm-4 col-md-2 input-group pull-left">
+            <span class="input-group-addon">hr</span>
+            <select id="hour-select" class="form-control" name="hour">
+            </select>
+          </div>
+
+          <div id="minute" class="col-sm-5 col-md-3 input-group pull-left">
+            <span class="input-group-addon">minutes</span>
+            <select id="minute-select" class="form-control" name="minute">
+            </select>
+          </div>
+
+          <div id="am-pm-div" class="radio col-sm-1 col-md-2 pull-left">
+            <label>
+              <input type="radio" name="am-pm" id="am" value="am">
+                am
+            </label>
+            <label>
+              <input type="radio" name="am-pm" id="pm" value="pm">
+                pm
+            </label>
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">
+              Please select color:
+          </label>
+
+          <fieldset>
+            <div id="white" class="col-sm-3 col-md-2 pull-left">
+              <input id="uploadWhite" type="checkbox" name="color-group" value="White" aria-label="uploadWhite">
+              <label for="uploadWhite">
+                White
+              </label>
+            </div>
+
+            <div id="black" class="col-sm-3 col-md-2 pull-left">
+              <input id="uploadBlack" type="checkbox" name="color-group" value="Black">
+              <label for="uploadBlack">
+                Black
+              </label>
+            </div>
+
+            <div id="brown" class="col-sm-3 col-md-2 pull-left">
+              <input id="uploadBrown" type="checkbox" name="color-group" value="Brown">
+              <label for="uploadBrown">
+                Brown
+              </label>
+            </div>
+
+            <div id="orange" class="col-sm-3 col-md-2 pull-left">
+              <input id="uploadOrange" type="checkbox" name="color-group" value="Orange">
+              <label for="uploadOrange">
+                Orange
+              </label>
+            </div>
+
+            <div id="yellow" class="col-sm-3 col-md-2 pull-left">
+              <input id="uploadYellow" type="checkbox" name="color-group" value="Yellow">
+              <label for="uploadYellow">
+                Yellow
+              </label>
+            </div>
+
+            <div id="gray" class="col-sm-3 col-md-2 pull-left">
+              <input id="uploadGray" type="checkbox" name="color-group" value="Gray">
+              <label for="uploadGray">
+                Gray
+              </label>
+            </div>
+          </fieldset>
+
+        </div>
+
+        <div class="form-group">
+          <label for="uploadDescription" class="col-sm-2  control-label">
+            Enter description:
+          </label>
+
+          <div class="col-sm-9 col-md-9 col-lg-8">
+            <textarea id="uploadDescription" name="description" class="form-control col-sm-10 col-md-9 col-lg-8"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg center-block"> Submit </button>
+
+      <div>
 
     </form>
 
@@ -362,7 +366,7 @@
       <div class="row">
         <div class="panel panel-heading panel-success">
           <div class="panel-heading">
-            Successful Submission!
+            <h3> Successful Submission! </h3>
           </div>
           <div class="panel-body">
             Some general guidance about finding missing pets.
@@ -421,7 +425,6 @@
 
   <script>
     function initMap() {
-      console.log("There's no basement in the Alamo!")
     }
   </script>
 

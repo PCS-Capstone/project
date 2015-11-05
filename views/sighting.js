@@ -91,11 +91,12 @@ var UploadSightingView = Backbone.View.extend({
     var infoWindow;
     var marker;
 
+    //Shows entire new successful submission view,  and appends google map
+    $('#successfulSubmission').removeClass('display-none').appendTo(this.$el);
+
     //Removes sighting form
     $('#upload-form').remove();
 
-    //Shows entire new successful submission view,  and appends google map
-    $('#successfulSubmission').removeClass('display-none').appendTo(this.$el);
     $('#map').appendTo('#map-submit-container').removeClass('display-none');
 
     //Creates new Goole Map
@@ -187,6 +188,8 @@ var UploadSightingView = Backbone.View.extend({
       //If geolocation exif data is abset, googleAutocomplete is called - which:
         //Adds google autocomplete feature to location field;
         //Attaches map
+      $('#reveal-form').removeClass('display-none');
+
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
       }
