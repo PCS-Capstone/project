@@ -75,20 +75,30 @@ var UploadSightingView = Backbone.View.extend({
   datepickerForm: function() {
     $('#uploadDateDiv').datepicker('show')
       .on('changeDate', function(ev){
-        console.log(ev.date);
         $('#uploadDateDiv').datepicker('hide');
       });
   },
 
   google: function(xLat, xLng) {
-    $('#map').removeClass('display-none').addClass('col-xs-12');
-
+  /* --------------------------------------------------------
+     Google() is run following successful sighting submission;
+      It displays local animal services agencies in google map; and
+      Gives general guidance from the humane society/animal services should the animal be in person's possession
+  ----------------------------------------------------------*/
     var map;
     var request;
     var place;
     var infoWindow;
     var marker;
 
+    //Removes sighting form
+    $('#upload-form').remove();
+
+    //Shows entire new successful submission view,  and appends google map
+    $('#successfulSubmission').removeClass('display-none').appendTo(this.$el);
+    $('#map').appendTo('#map-submit-container').removeClass('display-none');
+
+    //Creates new Goole Map
     (function () {
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: xLat, lng: xLng},
@@ -98,26 +108,30 @@ var UploadSightingView = Backbone.View.extend({
       callback();
     })();
 
+    //Sets options of Google Places Request;
+      //For each result, a marker is made
     function callback() {
       request = {
-        location: new google.maps.LatLng(45.522337,-122.676865),
-        radius: '1000',
-        keyword: ['animal shelter']
+        location: new google.maps.LatLng(xLat, xLng),
+        radius: '100',
+        query: ['animal services', 'humane society']
       };
 
+    //Creates markers and attaches event listener to load infowindow upon marker click
     function createMarker(place) {
       marker = new google.maps.Marker({
         map: map,
         position: place.geometry.location
       });
-
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(place.name);
         infowindow.open(map, this);
       });
     }
 
+    //Creates markers for each result returned by the Google Places request declared below
     function getResults(results, status) {
+      console.log(results);
       if (status == google.maps.places.PlacesServiceStatus.OK) {
         for (var i = 0; i < results.length; i++) {
           createMarker(results[i]);
@@ -125,7 +139,7 @@ var UploadSightingView = Backbone.View.extend({
       }
     }
     service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(request, getResults);
+    service.textSearch(request, getResults);
     }
   },
 
@@ -276,7 +290,6 @@ var UploadSightingView = Backbone.View.extend({
       var reader = new FileReader();
 
       reader.onload = function(event) {
-        console.log(event);
         $imagePreview.attr('src', event.target.result);
         $('#upload-photo-div').remove();
         // Shows image preview
@@ -302,7 +315,6 @@ var UploadSightingView = Backbone.View.extend({
       If not, extracting exif data and previewing image is blocked from running;
     ---------------------------------------------------------------------------*/
     var fileTypeArray = $imageField[0].files[0].type.toLowerCase();
-    console.log(fileTypeArray);
     if (  (!(fileTypeArray.indexOf('image') >= 0 )) || (  !(fileTypeArray.indexOf('jpeg') >= 0 ) )   ) {
       if (  $('#alertRequired').length ) {
         $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -376,26 +388,12 @@ var UploadSightingView = Backbone.View.extend({
       }).toArray();
       requestObject.exifData = asyncParams.exifData;
 
-      // var formData = new FormData();
-      // formData.append('pet', '' + requestObject.imageUrl);
-      //
-      // $.ajax({
-      //   type: "POST",
-      //   url: "http://pets.vsapi01.com/api-search?apikey=fbe93f72-f325-4a1a-8dc1-65c0ff578414",
-      //   data: formData,
-      //   contentType: 'multipart/form-data',
-      //   success: function(result) {
-      //     console.log(result);
-      //   }
-      // });
-
       callback();
     }
 
-    console.log(requestObject);
+    console.log('request object: ' + requestObject);
 
     //send it off
-
     function sendToServer () {
       /*  ----
           Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
@@ -440,21 +438,29 @@ var UploadSightingView = Backbone.View.extend({
         $("html, body").animate({ scrollTop: 0 }, "slow");
       }
       else {
-        $.ajax({
-          method: "POST",
-          url: "/pet",
-          data: { data : JSON.stringify(requestObject) },
-          success: function(data) {
-            if (data === true) {
-              $('#upload-form').remove();
-              $('#previewHolder').remove();
-              self.google(self.lat, self.lng);
-            }
-            else {
-              alert('error with submission');
-            }
+      //While waiting for server response, this adds a rotating refresh icon and hides form
+        $('#upload-form').children().hide();
+        $refresh = $('<i id="refresh" class="glyphicon glyphicon-refresh gly-spin"></i>');
+        $refresh.appendTo('#upload-form');
+
+      //Sends Form:
+        //If successful:
+          //receives "true" response from server
+          //Runs self.google, which runs successful submission response and removes #upload-form
+      $.ajax({
+        method: "POST",
+        url: "/pet",
+        data: { data : JSON.stringify(requestObject) },
+        success: function(data) {
+          if (data === true) {
+            self.google(self.lat, self.lng);
           }
-        });
+          else {
+            alert('error with submission');
+          }
+        }
+      });
+
       }
       console.log('missing required fields: ' + errorCount);
     }
