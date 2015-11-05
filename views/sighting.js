@@ -138,6 +138,11 @@ var UploadSightingView = Backbone.View.extend({
     var displayDate;
     var displayTime;
 
+    // Shows image preview
+    $('#previewHolder').removeClass('display-none');
+    $('#previewHolderDiv').removeClass('display-none');
+    $('#previewHolderButtonDiv').removeClass('display-none');
+
     //In case someone uploads a non-geotagged photo and then swaps it  for one with geotagged data, this clears the map
     if ($('#locationMap')) {
       $('#locationMap').remove();
@@ -145,6 +150,8 @@ var UploadSightingView = Backbone.View.extend({
     }
     //Clears data fields each time new photo is uploaded
     $('#uploadDate').val(' ');
+    self.lat = 0;
+    self.lng = 0; 
     $('#uploadLocation').val(' ');
     $('[name=hour]').prop('selectedIndex', 0);
     $('[name=minute]').prop('selectedIndex', 0);
@@ -157,11 +164,8 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
-    //
-    // Shows image preview
-    $('#previewHolder').removeClass('display-none');
-    $('#previewHolderDiv').removeClass('display-none');
-    $('#previewHolderButtonDiv').removeClass('display-none');
+
+
 
     function readFromExif ( exifData ) {
       var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -245,7 +249,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#hour-select').val(hour);
         $('#minute-select').val(minute);
         displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm";
-        
+
         if (displayTime[0][0] === 0) {
           displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
         }
@@ -289,7 +293,7 @@ var UploadSightingView = Backbone.View.extend({
     }
 
     getExifData();
-    previewImage( $imageField );    
+    previewImage( $imageField );
 
   },
 
@@ -364,6 +368,7 @@ var UploadSightingView = Backbone.View.extend({
         self.lat = 0;
         self.lng = 0;
       }
+
       $('#upload-form').children().not('button').css('background-color', 'transparent');
 
       var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
@@ -374,16 +379,19 @@ var UploadSightingView = Backbone.View.extend({
         $('#uploadSpecies').css('background-color', uploadWarningColor );
         console.log('Form Validation Failed: No Animal Selected');
       }
+
       if ( (self.lat === 0) || (self.lng === 0)  ) {
         errorCount += 1;
         $('#uploadLocation').css('background-color', uploadWarningColor);
         console.log('Form Validation Failed: No Latitude or Longitude Set; Incorrect Location');
       }
+
       if ( $('#hour-select').find(":selected").index() === 0   ) {
         errorCount += 1;
         $('#hour-select').css('background-color', uploadWarningColor);
         console.log('Form Validation Failed: No Hour Selected');
       }
+
       if ( !$('#am').prop('checked') ) {
         if (  !$('#pm').prop('checked')   ) {
           errorCount += 1;
@@ -396,6 +404,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#upload-form').prepend($uploadWarning);
         $("html, body").animate({ scrollTop: 0 }, "slow");
       }
+
       else {
         $.ajax({
           method: "POST",

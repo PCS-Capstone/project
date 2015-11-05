@@ -109,23 +109,29 @@
         <label for="address" class="control-label col-xs-2">*Starting Address</label>
         <div class="col-xs-10">
           <input type="text" id="address-bar" name="address" placeholder="Address">
-          <input type="text" name="radius" placeholder="Radius ( in miles )">
+          <input type="number" name="radius" placeholder="Radius ( in miles )">
         </div>
       </div>
 
       <div class="form-group">
         <label for="date" class="control-label col-xs-2">Search From: </label>
-        <div class="col-xs-10">
-          <input type="date" name="start-date" placeholder="Start Date">
+        <div class="col-xs-10 input-append date" id='start-date-div' data-date="" data-date-format="yyyy-mm-dd">
+          <input type="text" name="start-date" placeholder="Start Date" id="start-date" class="span2" value="" maxlength="10" placeholder="yyyy-mm-dd">
+          <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
 
+
+
       <div class="form-group">
         <label for="date" class="control-label col-xs-2">Search To: </label>
-        <div class="col-xs-10">
-          <input type="date" name="end-date" placeholder="End Date">
+        <div class="col-xs-10 input-append date" id="end-date-div" data-date="" data-date-format="yyyy-mm-dd">
+          <input type="text" name="end-date" placeholder="yyyy-mm-dd" id="end-date" class="span2" value="" maxlength="10">
+          <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
+
+
 
       <div class="form-group">
         <label for="color-group" class="control-label col-xs-2">Colors</label>
