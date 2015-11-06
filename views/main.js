@@ -7,6 +7,7 @@ var HomePageView = Backbone.View.extend({
   className: 'home',
   render: function(){
     // var $title       = $('<h1>').html('Lost a Pet?');
+    currentView = this;
     var $foundButton = $('<button id="found-button" class="btn btn-default btn-lg">').html( 'Found a Pet' );
     var $lostButton  = $('<button id="lost-button" class="btn btn-default btn-lg">').html( 'Lost a Pet' );
 

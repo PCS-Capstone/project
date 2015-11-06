@@ -8,6 +8,7 @@ var Error = Backbone.View.extend({
    template: Handlebars.compile( $('#template-upload-error').html()),
 
   render: function() {
+    currentView = this;
     this.$el.html( this.template() )
     this.$el.prependTo('#master');
   },

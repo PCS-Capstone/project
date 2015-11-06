@@ -33,11 +33,11 @@ app.get('/pet', function (request, response) {
 
   search.location = JSON.parse(search.location);
 
-  var query = "value.animalType: (" + search.animalType + ")" + 
+  var query = "value.animalType: (" + search.animalType + ")" +
   "AND value.location:NEAR:{latitude:" + search.location.lat +
   " longitude:" + search.location.lng + " radius:" + search.radius + "mi" + "}" +
   "AND value.dateTime: [" + search.startDate  + " TO " + search.endDate + "]"
-   
+
   if (search.colors) {
     query += "AND value.colors: (" + search.colors + ")"
   }
@@ -46,7 +46,7 @@ app.get('/pet', function (request, response) {
 
 	.then(function(result) {
     console.log('result', result.body.results);
-    response.send(result.body.results);		
+    response.send(result.body.results);
 	})
 	.fail(function(err){
 		console.log('error');
@@ -58,14 +58,14 @@ app.post('/pet', function(request, response) {
   // console.log('request.file =', request.file);
   // console.log('data.file =', request.body.data.file )
   var data = JSON.parse(request.body.data);
-  console.log('location: ', data.location);
+
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
 
   // uploader.upload( data.imageUrl, function (result)  {
     //console.log('return after upload: ', result);
 
-    data.imageUrl = result.url.replace(/upload/, 'upload/a_exif');;
+    // data.imageUrl = result.url.replace(/upload/, 'upload/a_exif');;
 
     // data.imageUrl.replace('')
     // console.log( data )
@@ -81,7 +81,6 @@ app.post('/pet', function(request, response) {
     //     console.log(err);
     //     response.send('Error Uploading Photo in Database');
     // });
-  // });
     response.send(true);
 });
 

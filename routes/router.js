@@ -1,10 +1,12 @@
 var Router = Backbone.Router.extend({
 	routes: {
-		'' : 'index',
+		      '' : 'index',
 		'search' : 'search',
-		'sighting' : 'sighting',
-		'results' : 'results',
-		'noResults' : 'noResults'
+	  'sighting' : 'sighting',
+	   'results' : 'results',
+	 'noResults' : 'noResults',
+	   'success' : 'success',
+		 'error' : 'error'
 	},
 
 	index: function() {
@@ -14,26 +16,36 @@ var Router = Backbone.Router.extend({
 
 	search: function() {
 		console.log('search');
-		new SearchFormView({parentView : null});
+		new SearchFormView({});
 	},
 
 	sighting: function() {
 		console.log('sighting');
-		new UploadSightingView({ lat: 0, lng: 0, parentView : null});
+		new UploadSightingView({});
 	},
 
 	results: function() {
 		console.log('results');
-		new ResultsView({collection : app.collection, parentView : null});
-	}, 
+		new ResultsView({collection : app.collection});
+	},
 
 	noResults: function() {
 		console.log('no results');
-		new NoResultsFound({parentView : null});
+		new NoResultsFound({});
+	}, 
+
+	error: function() {
+		console.log('error');
+		new Error({});
+	},
+
+	success: function(){
+		console.log('success');
+		new SuccessfulSubmission({});
 	}
 });
 
 
-// make a global currentView property that sets the current view 
-// so every time a back button is pressed it removes the current view 
+// make a global currentView property that sets the current view
+// so every time a back button is pressed it removes the current view
 // and renders new view from the route
