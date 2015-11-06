@@ -7,7 +7,6 @@ var UploadSightingView = Backbone.View.extend({
    template: Handlebars.compile( $('#template-upload-sighting').html() ),
 
   render: function() {
-    router.navigate('sighting');
     currentView = this;
     this.$el.html( this.template() );
     $('#master').append(this.$el);
@@ -93,70 +92,6 @@ var UploadSightingView = Backbone.View.extend({
       });
   },
 
-  google: function(xLat, xLng) {
-  /* --------------------------------------------------------
-     Google() is run following successful sighting submission;
-      It displays local animal services agencies in google map; and
-      Gives general guidance from the humane society/animal services should the animal be in person's possession
-  ----------------------------------------------------------*/
-    var map;
-    var request;
-    var place;
-    var infoWindow;
-    var marker;
-
-    //Shows entire new successful submission view,  and appends google map
-    $('#successfulSubmission').removeClass('display-none').appendTo(this.$el);
-    //Removes sighting form
-    $('#upload-form').remove();
-    //Adds Google Map of Animal Services/Shelters
-    $('#map').appendTo('#map-submit-container').removeClass('display-none');
-
-    //Creates new Goole Map
-    (function () {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: xLat, lng: xLng},
-        zoom: 12
-      });
-      infowindow = new google.maps.InfoWindow();
-      callback();
-    })();
-
-    //Sets options of Google Places Request;
-      //For each result, a marker is made
-    function callback() {
-      request = {
-        location: new google.maps.LatLng(xLat, xLng),
-        radius: '100',
-        query: ['animal services', 'humane society']
-      };
-
-    //Creates markers and attaches event listener to load infowindow upon marker click
-    function createMarker(place) {
-      marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(place.name);
-        infowindow.open(map, this);
-      });
-    }
-
-    //Creates markers for each result returned by the Google Places request declared below
-    function getResults(results, status) {
-      console.log(results);
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i++) {
-          createMarker(results[i]);
-        }
-      }
-    }
-    service = new google.maps.places.PlacesService(map);
-    service.textSearch(request, getResults);
-    }
-  },
-
   populateFields : function() {
 
     var $imageField = $('#upload-photo');
@@ -178,8 +113,8 @@ var UploadSightingView = Backbone.View.extend({
     }
     //Clears data fields and any previously-stored lat/long data each time new photo is uploaded
     $('#uploadDate').val(' ');
-    self.lat = 0;
-    self.lng = 0;
+    app.lat = 0;
+    app.lng = 0;
     $('#uploadLocation').val(' ');
     $('[name=hour]').prop('selectedIndex', 0);
     $('[name=minute]').prop('selectedIndex', 0);
@@ -193,7 +128,7 @@ var UploadSightingView = Backbone.View.extend({
     function codeAddress() {
       // console.log('code address running');
       geocoder = new google.maps.Geocoder;
-      geocoder.geocode( { 'location': {lat: self.lat, lng: self.lng}}, function(results, status) {
+      geocoder.geocode( { 'location': {lat: app.lat, lng: app.lng}}, function(results, status) {
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
@@ -234,11 +169,11 @@ var UploadSightingView = Backbone.View.extend({
           var lngDecimal = degToDec(exifData.GPSLongitude);
         }
         //Passes exif lat/lng to this view's lat/lng properties (which are declared when this view is initially created)
-        self.lat = latDecimal;
-        self.lng = lngDecimal;
+        app.lat = latDecimal;
+        app.lng = lngDecimal;
         //Run codeAddress() to display street address in form's location input field
         codeAddress();
-        console.log('lat/lng from exif prior to pretty address', self.lat, self.lng)
+        console.log('lat/lng from exif prior to pretty address', app.lat, app.lng)
       }
 
       //Reads and converts exif data's timestamp into usable format
@@ -401,8 +336,8 @@ var UploadSightingView = Backbone.View.extend({
       // console.log('sighting address', shortAddress)
       requestObject.imageUrl = $('#previewHolder').attr('src');
       requestObject.location = {
-        lat: self.lat,
-        lng: self.lng
+        lat: app.lat,
+        lng: app.lng
       };
       requestObject.address = $('#uploadLocation').val()
       requestObject.displayDate = $('#uploadDate').val();
@@ -424,7 +359,7 @@ var UploadSightingView = Backbone.View.extend({
       /*  ----
           Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
       */
-      console.log(self.lat);
+      console.log(app.lat);
       console.log($('#uploadLocation').val());
 
       var errorCount = 0;
@@ -433,8 +368,8 @@ var UploadSightingView = Backbone.View.extend({
         $('.alert').remove();
       }
       if (  !($('#uploadLocation').val() )) {
-        self.lat = 0;
-        self.lng = 0;
+        app.lat = 0;
+        app.lng = 0;
       }
 
       $('#upload-form').children().not('button').css('background-color', 'transparent');
@@ -449,7 +384,7 @@ var UploadSightingView = Backbone.View.extend({
         console.log('Form Validation Failed: No Animal Selected');
       }
       //Check location
-      if ( (self.lat === 0) || (self.lng === 0)  ) {
+      if ( (app.lat === 0) || (app.lng === 0)  ) {
         errorCount += 1;
         $('#uploadLocation').css('background-color', uploadWarningColor);
         console.log('Form Validation Failed: No Latitude or Longitude Set; Incorrect Location');
@@ -490,10 +425,12 @@ var UploadSightingView = Backbone.View.extend({
         data: { data : JSON.stringify(requestObject) },
         success: function(data) {
           if (data === true) {
-            self.google(self.lat, self.lng);
+            currentView.remove();
+            router.navigate('success', {trigger : true})
           }
           else {
-            alert('error with submission');
+            currentView.remove();
+            router.navigate('error', {trigger : true})
           }
         }
       });
@@ -546,8 +483,8 @@ var UploadSightingView = Backbone.View.extend({
     //This function is triggered as a listener on the autocomplete, which is declared immediately after codeAddress() function below
     function fillInAddress() {
       place = autocomplete.getPlace();
-      self.lat = place.geometry.location.lat();
-      self.lng = place.geometry.location.lng();
+      app.lat = place.geometry.location.lat();
+      app.lng = place.geometry.location.lng();
       createMarker();
     }
     //Creates new markers
@@ -559,27 +496,27 @@ var UploadSightingView = Backbone.View.extend({
       //Builds and Appends Marker
       marker = new google.maps.Marker({
         map: map,
-        position: {lat: self.lat, lng: self.lng},
+        position: {lat: app.lat, lng: app.lng},
         animation: google.maps.Animation.DROP,
         draggable:true
       });
       //Provides drag functionality to marker; Sets marker creation and captures lat/long when drag is complete
       google.maps.event.addListener(marker,'dragend',function(event) {
-        self.lat = event.latLng.lat();
-        self.lng = event.latLng.lng();
+        app.lat = event.latLng.lat();
+        app.lng = event.latLng.lng();
         codeAddress();
       });
       codeAddress();
       map.setZoom(12);
-      map.setCenter({lat: self.lat, lng: self.lng});
+      map.setCenter({lat: app.lat, lng: app.lng});
     }
 
     //Uses Geocoder to convert lat/long into Street Address to display in location input field
       //Geocoder sends a request using lat/long;
       //Takes first (formatted address) result and sets location input form field to value
     function codeAddress() {
-      console.log('code address lat/lng', self.lat, self.lng)
-      geocoder.geocode( { 'location': {lat: self.lat, lng: self.lng}}, function(results, status) {
+      console.log('code address lat/lng', app.lat, app.lng)
+      geocoder.geocode( { 'location': {lat: app.lat, lng: app.lng}}, function(results, status) {
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
@@ -624,8 +561,8 @@ var UploadSightingView = Backbone.View.extend({
         map.addListener('click', function(mapClickEvent) {
           // location.lat = mapClickEvent.latLng.lat();
           // location.lng = mapClickEvent.latLng.lng();
-          self.lat = mapClickEvent.latLng.lat();
-          self.lng = mapClickEvent.latLng.lng();
+          app.lat = mapClickEvent.latLng.lat();
+          app.lng = mapClickEvent.latLng.lng();
           createMarker(mapClickEvent);
         });
         //Creates Google Geocoder, which is needed by the codeAddress() function:
@@ -635,5 +572,7 @@ var UploadSightingView = Backbone.View.extend({
 
     })();
   }
+
+  
 
 });

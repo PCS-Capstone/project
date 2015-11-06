@@ -8,6 +8,7 @@ var NoResultsFound = Backbone.View.extend({
    template: Handlebars.compile( $('#template-no-results').html()),
 
   render: function() {
+    currentView = this;
     this.$el.html( this.template() )
     this.$el.prependTo('#master');
   },

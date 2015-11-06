@@ -8,7 +8,6 @@ var SearchFormView = Backbone.View.extend({
     tagName: 'section',
   className: 'search',
    template: Handlebars.compile( $('#template-searchform').html() ),
-   // location: {},
 
   prePopulate : function(){
     this.$el.html( this.template());
@@ -20,7 +19,6 @@ var SearchFormView = Backbone.View.extend({
     $("[name=start-date]").val(app.searchParameters.startDate);
     $("[name=end-date]").val(app.searchParameters.endDate);
     $("[name=color-group]").val(app.searchParameters.colors);
-    $("[value="+app.searchParameters.size+"]").prop("checked", true);
   },
 
   render: function(){
@@ -29,10 +27,10 @@ var SearchFormView = Backbone.View.extend({
     // console.log('self.location', self.location)
 
     if (app.searchParameters !== undefined) {
-      // console.log('edited search')
+      console.log('edited search')
       this.prePopulate();
     } else {
-      // console.log('new search')
+      console.log('new search')
       this.$el.html( this.template() );
       $('#master').html(this.$el);
     }
@@ -46,12 +44,10 @@ var SearchFormView = Backbone.View.extend({
 
     var options = {
         types: 'geocode',
-        componentRestrictions: {
-          country: 'USA'
-        }
+        componentRestrictions: {country: 'USA'}
       };
 
-    autocomplete = new google.maps.places.Autocomplete(
+    var autocomplete = new google.maps.places.Autocomplete(
       ( document.getElementById('address-bar') ), options);
 
     autocomplete.addListener('place_changed', convertToLatLng);
@@ -61,9 +57,6 @@ var SearchFormView = Backbone.View.extend({
       place = autocomplete.getPlace();
       app.searchParameters.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
       console.log( 'location:', app.searchParameters.location );
-      // self.location.lat = place.geometry.location.lat();
-      // self.location.lng = place.geometry.location.lng();
-      //      console.log( 'location:', self.location );
     }
   },
 
