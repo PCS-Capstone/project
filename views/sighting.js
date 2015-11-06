@@ -61,13 +61,24 @@ var UploadSightingView = Backbone.View.extend({
     'click #upload-photo-div button' : 'uploadPhoto',
     'click #previewHolderButton' : 'uploadPhoto',
     'click #uploadLocationButton' : 'googleAutocomplete',
-    'click .alert' : 'removeAlert'
+    'click .alert' : 'removeAlert',
+    'click .animal-photo-div' : 'breedType',
   },
+
+  breedType: function(event) {
+    //Each animal photo DIV is set with a #ID of the animal type;
+    //This is saved to a global app.sighting.breed variable
+      //Which is used to populate the form's animal type field (  in populateFields() )
+    app.sighting = { breed : event.target.id.toString() };
+    console.log(app.sighting.breed);
+    $('#upload-photo').trigger('click');
+  },
+
   removeAlert: function(event) {
     $('#' + event.target.id).remove();
   },
 
-  uploadPhoto: function() {
+  uploadPhoto: function(event) {
   //When the upload photo button is clicked, this triggers a click on a separate, HIDDEN input (type=file) field
     $('#upload-photo').trigger('click');
   },
@@ -172,6 +183,9 @@ var UploadSightingView = Backbone.View.extend({
     $('[name=minute]').prop('selectedIndex', 0);
     $("input[name='am-pm']").prop("checked", false);
     $('#alertRequired').remove();
+
+    //Pre-selects animal type using global -- app.sighting.breed -- variable, which is set on initial photo upload
+    $('#uploadSpecies').val(app.sighting.breed);
 
     //Uses Google Geocoder to convert lat/long into address; inputs address into form's location field
     function codeAddress() {
