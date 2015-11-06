@@ -93,10 +93,9 @@ var UploadSightingView = Backbone.View.extend({
 
     //Shows entire new successful submission view,  and appends google map
     $('#successfulSubmission').removeClass('display-none').appendTo(this.$el);
-
     //Removes sighting form
     $('#upload-form').remove();
-
+    //Adds Google Map of Animal Services/Shelters
     $('#map').appendTo('#map-submit-container').removeClass('display-none');
 
     //Creates new Goole Map
