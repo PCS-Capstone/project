@@ -66,9 +66,11 @@ var UploadSightingView = Backbone.View.extend({
   },
 
   breedType: function(event) {
-    //Each animal photo DIV is set with a #ID of the animal type;
-    //This is saved to a global app.sighting.breed variable
-      //Which is used to populate the form's animal type field (  in populateFields() )
+  /*  ----
+    Each animal photo DIV is set with a #ID of the animal type;
+    This captures the div's ID, which is saved to a global app.sighting.breed variable
+    Variable is used to populate the form's animal type field (  in populateFields() )
+  */
     app.sighting = { breed : event.target.id.toString() };
     console.log(app.sighting.breed);
     $('#upload-photo').trigger('click');

@@ -244,7 +244,6 @@ textarea {
   height: 100%;
   width: 100%;
   text-align: center;
-  background-image: url('http://blogs.psychcentral.com/life-goals/files/2014/09/cute-dog-pup.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -256,4 +255,24 @@ textarea {
   position: relative;
   top: 175px;
   color: white;
+}
+.upload
+#Dog {
+  background-image: url('http://blogs.psychcentral.com/life-goals/files/2014/09/cute-dog-pup.jpg');
+}
+.upload
+#Cat {
+  background-image: url('http://dreamatico.com/data_images/cat/cat-6.jpg')
+}
+.upload
+#Bird {
+  background-image: url('http://www.usapetconnect.com/article-images/pet-birds.jpg')
+}
+.upload
+#Small-Furry{
+  bacbkround-image:url('http://images.sodahead.com/polls/002838879/4510255634_27309404_xlarge.jpeg')
+}
+.upload
+#Scales-Fins {
+  background-image: url('http://petful.supercopyeditors.netdna-cdn.com/wp-content/uploads/2011/11/pet-snake-skin-problems.png')
 }
