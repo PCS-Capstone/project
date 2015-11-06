@@ -7,7 +7,8 @@ var UploadSightingView = Backbone.View.extend({
    template: Handlebars.compile( $('#template-upload-sighting').html() ),
 
   render: function() {
-    router.navigate('sighting')
+    router.navigate('sighting');
+    currentView = this;
     this.$el.html( this.template() );
     $('#master').append(this.$el);
 
@@ -173,9 +174,10 @@ var UploadSightingView = Backbone.View.extend({
     $('#alertRequired').remove();
 
     //Uses Google Geocoder to convert lat/long into address; inputs address into form's location field
-    function codeAddress(xLat, xLng) {
+    function codeAddress() {
+      // console.log('code address running');
       geocoder = new google.maps.Geocoder;
-      geocoder.geocode( { 'location': {lat: xLat, lng: xLng } }, function(results, status) {
+      geocoder.geocode( { 'location': {lat: self.lat, lng: self.lng}}, function(results, status) {
         $('#uploadLocation').val(results[0].formatted_address);
       });
     }
@@ -188,6 +190,9 @@ var UploadSightingView = Backbone.View.extend({
         //Adds google autocomplete feature to location field;
         //Attaches map
       $('#reveal-form').removeClass('display-none');
+
+      var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                  'August', 'September', 'October', 'November', 'December'];
 
       if ( !(exifData.GPSLatitude) || !(exifData.GPSLongitude) ) {
         self.googleAutocomplete();
@@ -216,22 +221,23 @@ var UploadSightingView = Backbone.View.extend({
         self.lat = latDecimal;
         self.lng = lngDecimal;
         //Run codeAddress() to display street address in form's location input field
-        codeAddress(self.lat, self.lng);
+        codeAddress();
+        console.log('lat/lng from exif prior to pretty address', self.lat, self.lng)
       }
 
       //Reads and converts exif data's timestamp into usable format
       if (exifData.DateTime) {
         displayDate = exifData.DateTime.split(' ')[0];
         displayTime = exifData.DateTime.split(' ')[1];
-        console.log('displayTime = ' + displayTime);
-        console.log('displayDate = ' + displayDate);
 
         displayDate = (displayDate.split(':'));
-        displayDate = displayDate[0] + "-" + displayDate[2] + "-" + displayDate[1];
+        displayDate = (month[(displayDate[1]) -1] + " " + displayDate[2] +
+        ', ' + displayDate[0])
 
         displayTime = (displayTime.split(':'));
 
       }
+
       // This rotates the image correctly based on exif data's noted orientation;
       // Rotation classes are also removed each time a new photo is uploaded
       if (  $('#previewHolder').hasClass('rotate90')  ) {
@@ -273,7 +279,6 @@ var UploadSightingView = Backbone.View.extend({
           displayTime = displayTime[0] + ":" + displayTime[1];
         }
       }
-
       else if (displayTime[0][0] === 0) {
         displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
       }
@@ -365,7 +370,6 @@ var UploadSightingView = Backbone.View.extend({
     // get all the values from the search form
     // save them as properties on the requestObject
     function buildDataForServer ( asyncParams, callback ) {
-          console.log('send to server function running');
 
       if(asyncParams.exifData.DateTime) {
         var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-');
@@ -375,12 +379,16 @@ var UploadSightingView = Backbone.View.extend({
         requestObject.dateTime = $('#uploadDate').val();
       }
 
+      // var shortAddress = $('#uploadLocation').val().split(',')
+      // shortAddress.splice((shortAddress.length)-1)
+
+      // console.log('sighting address', shortAddress)
       requestObject.imageUrl = $('#previewHolder').attr('src');
       requestObject.location = {
         lat: self.lat,
         lng: self.lng
       };
-      requestObject.address = $('#uploadLocation').val();
+      requestObject.address = $('#uploadLocation').val()
       requestObject.displayDate = $('#uploadDate').val();
       requestObject.displayTime = '' + $('#hour-select').val() + ':' + $('#minute-select').val() + ' ' + $('input[name="am-pm"]:checked').val();
       requestObject.animalType = $("#uploadSpecies option:selected").val();
@@ -400,15 +408,24 @@ var UploadSightingView = Backbone.View.extend({
       /*  ----
           Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
       */
+      console.log(self.lat);
+      console.log($('#uploadLocation').val());
+
       var errorCount = 0;
 
       if (  $('.alert').length  ) {
         $('.alert').remove();
       }
-      if (  !$('#uploadLocation').val() ) {
+      if (  !($('#uploadLocation').val() )) {
         self.lat = 0;
         self.lng = 0;
       }
+
+      $('#upload-form').children().not('button').css('background-color', 'transparent');
+
+      var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
+      var uploadWarningColor = '#FCF8E3';
+
       //Check whether species if selected
       if (  $('#uploadSpecies').find(":selected").index() === 0   ) {
         errorCount += 1;
@@ -427,6 +444,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#hour-select').css('background-color', uploadWarningColor);
         console.log('Form Validation Failed: No Hour Selected');
       }
+
       if ( !$('#am').prop('checked') ) {
         if (  !$('#pm').prop('checked')   ) {
           errorCount += 1;
@@ -439,6 +457,7 @@ var UploadSightingView = Backbone.View.extend({
         $('#upload-form').prepend($uploadWarning);
         $("html, body").animate({ scrollTop: 0 }, "slow");
       }
+
       else {
       //While waiting for server response, this adds a rotating refresh icon and hides form
         $('#upload-form').children().hide();
@@ -543,6 +562,7 @@ var UploadSightingView = Backbone.View.extend({
       //Geocoder sends a request using lat/long;
       //Takes first (formatted address) result and sets location input form field to value
     function codeAddress() {
+      console.log('code address lat/lng', self.lat, self.lng)
       geocoder.geocode( { 'location': {lat: self.lat, lng: self.lng}}, function(results, status) {
         $('#uploadLocation').val(results[0].formatted_address);
       });
