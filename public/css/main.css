@@ -1,14 +1,27 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 .display-none {
   display: none;
 }
 
 header {
-  background: #000;
-  color: white;
-  text-align: center;
   width: 100%;
+  height: 75px;
+  box-shadow: 0 4px 2px -2px gray;
+  background-color: white;
+  color: black;
+  text-align: center;
   position: absolute;
   top: 0;
+  position: fixed;
+  z-index: 99;
+  opacity: .8;
+}
+
+#master {
+  margin-top: 75px;
 }
 
 footer {
@@ -89,7 +102,7 @@ div.lost-pet {
 }
 
 #upload-photo-div {
-  height: 260px;
+  height: 200px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -121,7 +134,7 @@ div.lost-pet {
 }
 
 #previewHolderDiv {
-  /*max-height: 260px;*/
+  /*max-height: 200px;*/
   /*background-color: rgba(53,62,79,.8);*/
   text-align: center;
   margin-bottom: 50px;
@@ -130,7 +143,7 @@ div.lost-pet {
 
 #previewHolder {
   max-width: 100%;
-  max-height: 260px;
+  max-height: 200px;
   box-shadow: 0 1px 1px 2px rgba(53,62,79,.8), 0 1px 1px 2px rgba(53,62,79,.8);
 }
 
@@ -154,7 +167,7 @@ div.lost-pet {
       -ms-transform: rotate(90deg);
           transform: rotate(90deg);
 
-  max-height: 260px;
+  max-height: 200px;
   width: auto;
 }
 #previewHolder.rotate180 {
@@ -164,7 +177,7 @@ div.lost-pet {
        -o-transform: rotate(180deg);
           transform: rotate(180deg);
 
-  max-height: 260px;
+  max-height: 200px;
   width: auto;
 }
 #previewHolder.rotate270 {
@@ -174,7 +187,7 @@ div.lost-pet {
        -o-transform: rotate(270deg);
           transform: rotate(270deg);
 
-  max-height: 260px;
+  max-height: 200px;
   width: auto;
 }
 
@@ -270,9 +283,13 @@ textarea {
 }
 .upload
 #Small-Furry{
-  bacbkround-image:url('http://images.sodahead.com/polls/002838879/4510255634_27309404_xlarge.jpeg')
+  background-image: url('http://images.sodahead.com/polls/002838879/4510255634_27309404_xlarge.jpeg')
 }
 .upload
 #Scales-Fins {
   background-image: url('http://petful.supercopyeditors.netdna-cdn.com/wp-content/uploads/2011/11/pet-snake-skin-problems.png')
+}
+.upload
+#Barnyard {
+  background-image: url('http://www.spcacanterbury.org.nz/assets/Images/horse.jpg')
 }

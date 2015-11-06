@@ -352,7 +352,7 @@ var UploadSightingView = Backbone.View.extend({
       callback();
     }
 
-    console.log('request object: ' + requestObject);
+    console.log('request object: ' + requestObject.displayDate);
 
     //send it off
     function sendToServer () {
