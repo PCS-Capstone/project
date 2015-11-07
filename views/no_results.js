@@ -9,7 +9,7 @@ var NoResultsFound = Backbone.View.extend({
 
   render: function() {
     currentView = this;
-    this.$el.html( this.template() )
+    this.$el.html( this.template({}) )
     this.$el.prependTo('#master');
   },
 

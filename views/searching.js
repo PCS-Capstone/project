@@ -43,7 +43,7 @@ var SearchFormView = Backbone.View.extend({
     this.render();
 
     var options = {
-        types: 'geocode',
+        types: ['geocode'],
         componentRestrictions: {country: 'USA'}
       };
 
@@ -85,14 +85,14 @@ var SearchFormView = Backbone.View.extend({
     var shortAddress = $('input[name="address"]').val().split(',')
     shortAddress.splice((shortAddress.length)-1)
 
-    var prettyStartDate = $('input[name="start-date"]').val().split('-');
-    prettyStartDate = (month[(prettyStartDate[1]) -1] + " " + prettyStartDate[2] +
-      ', ' + prettyStartDate[0])
-    console.log('pretty date', prettyStartDate)
+    // var prettyStartDate = $('input[name="start-date"]').val().split('-');
+    // prettyStartDate = (month[(prettyStartDate[1]) -1] + " " + prettyStartDate[2] +
+    //   ', ' + prettyStartDate[0])
+    // console.log('pretty date', prettyStartDate)
 
-    var prettyEndDate = $('input[name="end-date"]').val().split('-');
-    prettyEndDate = (month[(prettyEndDate[1]) -1] + " " + prettyEndDate[2] +
-      ', ' + prettyEndDate[0])
+    // var prettyEndDate = $('input[name="end-date"]').val().split('-');
+    // prettyEndDate = (month[(prettyEndDate[1]) -1] + " " + prettyEndDate[2] +
+    //   ', ' + prettyEndDate[0])
 
     app.searchParameters = {
         startDate : $('input[name="start-date"]').val(),

@@ -5,7 +5,7 @@ var Router = Backbone.Router.extend({
 	  'sighting' : 'sighting',
 	   'results' : 'results',
 	 'noResults' : 'noResults',
-	   'success' : 'success',
+	'successful' : 'successful',
 		 'error' : 'error'
 	},
 
@@ -39,7 +39,7 @@ var Router = Backbone.Router.extend({
 		new Error({});
 	},
 
-	success: function(){
+	successful: function(){
 		console.log('success');
 		new SuccessfulSubmission({});
 	}
