@@ -32,14 +32,14 @@ var Router = Backbone.Router.extend({
 	noResults: function() {
 		console.log('no results');
 		new NoResultsFound({});
-	}, 
+	},
 
 	error: function() {
 		console.log('error');
 		new Error({});
 	},
 
-	success: function(){
+	success: function() {
 		console.log('success');
 		new SuccessfulSubmission({});
 	}

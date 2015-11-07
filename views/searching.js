@@ -43,7 +43,7 @@ var SearchFormView = Backbone.View.extend({
     this.render();
 
     var options = {
-        types: 'geocode',
+        types: ['geocode'],
         componentRestrictions: {country: 'USA'}
       };
 

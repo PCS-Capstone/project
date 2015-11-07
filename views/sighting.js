@@ -466,7 +466,7 @@ var UploadSightingView = Backbone.View.extend({
     //Sets options for Google Autocomplete F
     (function() {
       var options = {
-        types: 'geocode',
+        types: ['geocode'],
         componentRestrictions: {
           country: 'USA'
         }
@@ -573,6 +573,6 @@ var UploadSightingView = Backbone.View.extend({
     })();
   }
 
-  
+
 
 });
