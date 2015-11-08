@@ -88,14 +88,14 @@
     <h1>{{ name }}</h1>
     <form class="form-horizontal">
       <div class="form-group">
-        <label class="control-label col-xs-2 required"> *Required fields</label>
+        <label class="control-label col-xs-2 required"> **Required fields</label>
       </div>
 
       <div class="form-group">
-        <label for="animal-type" class="control-label col-xs-2">*Animal Type</label>
+        <label for="animal-type" class="control-label col-xs-2">**Animal Type</label>
         <div class="col-xs-10">
 
-          <select name="animal-type" class="form-control" id="animal-type">
+          <select name="animal-type" class="form-control" id="animal-type" aria-required="true" required>
             <option value="" disabled selected>"What kind of animal are you looking for?"</option>
             <option value="Dog"> Dog </option>
             <option value="Cat"> Cat </option>
@@ -108,17 +108,17 @@
       </div>
 
       <div class="form-group">
-        <label for="address" class="control-label col-xs-2">*Starting Address</label>
+        <label for="address" class="control-label col-xs-2">**Starting Address</label>
         <div class="col-xs-10">
-          <input type="text" id="address-bar" name="address" placeholder="Address">
-          <input type="number" name="radius" placeholder="Radius ( in miles )">
+          <input type="text" id="address-bar" name="address" placeholder="Address"  aria-required="true" required>
+          <input type="number" name="radius" placeholder="Radius ( in miles )"  aria-required="true" required>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="date" class="control-label col-xs-2">Search From: </label>
+        <label for="date" class="control-label col-xs-2">**Search From: </label>
         <div class="col-xs-10 input-append date" id='start-date-div' data-date="" data-date-format="yyyy-mm-dd">
-          <input type="text" name="start-date" placeholder="Start Date" id="start-date" class="span2" value="" maxlength="10" placeholder="yyyy-mm-dd">
+          <input type="text" name="start-date" placeholder="Start Date" id="start-date" class="span2" value="" maxlength="10" placeholder="yyyy-mm-dd" aria-required="true" required>
           <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
@@ -126,9 +126,9 @@
 
 
       <div class="form-group">
-        <label for="date" class="control-label col-xs-2">Search To: </label>
+        <label for="date" class="control-label col-xs-2">**Search To: </label>
         <div class="col-xs-10 input-append date" id="end-date-div" data-date="" data-date-format="yyyy-mm-dd">
-          <input type="text" name="end-date" placeholder="yyyy-mm-dd" id="end-date" class="span2" value="" maxlength="10">
+          <input type="text" name="end-date" placeholder="End Date" id="end-date" class="span2" value="" maxlength="10" aria-required="true" required>
           <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
@@ -255,7 +255,7 @@
           </label>
 
           <div class="col-sm-9 col-lg-8">
-            <select id="uploadSpecies" class="form-control" name="animal-type">
+            <select id="uploadSpecies" class="form-control" name="animal-type" aria-required="true" required>
               <option value="" disabled selected>"What kind of animal is it?"</option>
               <option value="Dog"> Dog </option>
               <option value="Cat"> Cat </option>
@@ -272,7 +272,7 @@
             ** Location:
           </label>
           <div class="col-sm-9 col-lg-8">
-            <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location">
+            <input id="uploadLocation" class="form-control" type="text" name="address" placeholder="Location" aria-required="true" required>
             <button type="button" id="uploadLocationButton" class="btn btn-info pull-left display-none"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit Location</button>
           </div>
         </div>
@@ -283,7 +283,7 @@
           </label>
 
           <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
-            <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="yyyy-mm-dd">
+            <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="Date" aria-required="true" required>
             <span class="add-on"><i class="icon-th"></i></span>
           </div>
         </div>
@@ -295,23 +295,23 @@
 
           <div id="hour" class="col-sm-4 col-md-2 input-group pull-left">
             <span class="input-group-addon">hr</span>
-            <select id="hour-select" class="form-control" name="hour">
+            <select id="hour-select" class="form-control" name="hour" aria-required="true" required>
             </select>
           </div>
 
           <div id="minute" class="col-sm-5 col-md-3 input-group pull-left">
             <span class="input-group-addon">minutes</span>
-            <select id="minute-select" class="form-control" name="minute">
+            <select id="minute-select" class="form-control" name="minute" aria-required="true" required>
             </select>
           </div>
 
           <div id="am-pm-div" class="radio col-sm-1 col-md-2 pull-left">
             <label>
-              <input type="radio" name="am-pm" id="am" value="am">
+              <input type="radio" name="am-pm" id="am" value="am" aria-required="true" required>
                 am
             </label>
             <label>
-              <input type="radio" name="am-pm" id="pm" value="pm">
+              <input type="radio" name="am-pm" id="pm" value="pm" aria-required="true" required>
                 pm
             </label>
           </div>

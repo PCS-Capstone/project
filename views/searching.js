@@ -115,6 +115,8 @@ var SearchFormView = Backbone.View.extend({
            colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
     };
 
+    if(app.searchParameters)
+
     this.remove();
     console.log('location', app.searchParameters.location)
     // console.log( 'searchForm on submit location:', self.location)
@@ -150,9 +152,9 @@ var ResultsView = Backbone.View.extend({
     mapView: {},
 
   render: function() {
-    console.log('resutls view')
+    console.log('results view');
     currentView = this;
-    this.$el.html( this.template(app.searchParameters) )
+    this.$el.html( this.template(app.searchParameters) );
     this.$el.prependTo('#master');
 
     var self = this;
