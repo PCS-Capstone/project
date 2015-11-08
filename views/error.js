@@ -9,7 +9,7 @@ var Error = Backbone.View.extend({
 
   render: function() {
     currentView = this;
-    this.$el.html( this.template() )
+    this.$el.html( this.template({}) )
     this.$el.prependTo('#master');
   },
 
@@ -24,10 +24,8 @@ var Error = Backbone.View.extend({
 
   reTry: function(){
     this.remove();
-    var uploadForm = new UploadSightingView({
-      lat: 0,
-      lng: 0
-    });
+    router.navigate('sighting')
+    $("#reveal-form").show();
   }
 	
 })

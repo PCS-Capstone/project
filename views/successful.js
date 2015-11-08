@@ -10,15 +10,21 @@ var SuccessfulSubmission = Backbone.View.extend({
   render: function() {
     currentView = this;
     this.$el.html( this.template() );
-    this.$el.prependTo('#master');
+    this.$el.appendTo('#master');
   },
 
   initialize: function( options ) {
-  	_.extend(this, options)
+    console.log('success init');
+    console.log('lat', app.lat);
+    console.log('lng', app.lng);
+  	_.extend(this, options);
   	this.render();
+    this.google(app.lat, app.lng)
   },
 
   google: function(xLat, xLng) {
+    console.log('google')
+    console.log('lat and lng', xLat, xLng)
   /* --------------------------------------------------------
      Google() is run following successful sighting submission;
       It displays local animal services agencies in google map; and
@@ -30,10 +36,6 @@ var SuccessfulSubmission = Backbone.View.extend({
     var infoWindow;
     var marker;
 
-    //Shows entire new successful submission view,  and appends google map
-    $('#successfulSubmission').removeClass('display-none').appendTo(this.$el);
-    //Removes sighting form
-    $('#upload-form').remove();
     //Adds Google Map of Animal Services/Shelters
     $('#map').appendTo('#map-submit-container').removeClass('display-none');
 
@@ -57,28 +59,32 @@ var SuccessfulSubmission = Backbone.View.extend({
       };
 
     //Creates markers and attaches event listener to load infowindow upon marker click
-    function createMarker(place) {
-      marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(place.name);
-        infowindow.open(map, this);
-      });
+      function createMarker(place) {
+        marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(place.name);
+          infowindow.open(map, this);
+        });
+      };
+
+      //Creates markers for each result returned by the Google Places request declared below
+      function getResults(results, status) {
+        console.log(results);
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          for (var i = 0; i < results.length; i++) {
+            createMarker(results[i]);
+          }
+        }
+      };
+
+      service = new google.maps.places.PlacesService(map);
+      service.textSearch(request, getResults);
+      
     }
 
-    //Creates markers for each result returned by the Google Places request declared below
-    function getResults(results, status) {
-      console.log(results);
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        for (var i = 0; i < results.length; i++) {
-          createMarker(results[i]);
-        }
-      }
-    }
-    service = new google.maps.places.PlacesService(map);
-    service.textSearch(request, getResults);
-    }
   }
 });
+
