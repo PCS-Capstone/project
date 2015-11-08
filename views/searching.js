@@ -85,18 +85,27 @@ var SearchFormView = Backbone.View.extend({
     var shortAddress = $('input[name="address"]').val().split(',')
     shortAddress.splice((shortAddress.length)-1)
 
-    // var prettyStartDate = $('input[name="start-date"]').val().split('-');
-    // prettyStartDate = (month[(prettyStartDate[1]) -1] + " " + prettyStartDate[2] +
-    //   ', ' + prettyStartDate[0])
-    // console.log('pretty date', prettyStartDate)
+    var prettyStartDate = $('input[name="start-date"]').val().split('/');
+    prettyStartDate = (month[(prettyStartDate[0]) -1] + " " + prettyStartDate[1] +
+      ', ' + prettyStartDate[2])
+    console.log('pretty date', prettyStartDate)
 
-    // var prettyEndDate = $('input[name="end-date"]').val().split('-');
-    // prettyEndDate = (month[(prettyEndDate[1]) -1] + " " + prettyEndDate[2] +
-    //   ', ' + prettyEndDate[0])
+    var prettyEndDate = $('input[name="end-date"]').val().split('/');
+    prettyEndDate = (month[(prettyEndDate[0]) -1] + " " + prettyEndDate[1] +
+      ', ' + prettyEndDate[2])
+    console.log('pretty date', prettyEndDate)
+
+    var startDate = $('input[name="start-date"]').val().split('/');
+    startDate = startDate[2] + '-' + startDate[0] + '-' + startDate[1];
+    console.log('db start date', startDate);
+
+    var endDate = $('input[name="end-date"]').val().split('/');
+    endDate = endDate[2] + '-' + endDate[0] + '-' + endDate[1];
+    console.log('db end date', endDate);
 
     app.searchParameters = {
-        startDate : $('input[name="start-date"]').val(),
-          endDate : $('input[name="end-date"]').val(),
+        startDate : startDate,
+          endDate : endDate,
   prettyStartDate : prettyStartDate,
     prettyEndDate : prettyEndDate,
           address : shortAddress,
