@@ -415,7 +415,7 @@ var UploadSightingView = Backbone.View.extend({
       }
 
       else {
-      //While waiting for server response, this adds a rotating refresh icon and hides form
+      // //While waiting for server response, this adds a rotating refresh icon and hides form
         $('#upload-form').children().hide();
         $refresh = $('<i id="refresh" class="glyphicon glyphicon-refresh gly-spin"></i>');
         $refresh.appendTo('#upload-form');
@@ -434,9 +434,12 @@ var UploadSightingView = Backbone.View.extend({
             router.navigate('successful', {trigger : true})
           }
           else {
-            currentView.remove();
+            // currentView.remove();
+            $("#reveal-form").hide();
             router.navigate('error', {trigger : true})
           }
+            // $("#reveal-form").hide();
+            // router.navigate('error', {trigger : true})
         }
       });
 
