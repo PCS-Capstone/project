@@ -58,7 +58,6 @@ app.post('/pet', function(request, response) {
   // console.log('request.file =', request.file);
   // console.log('data.file =', request.body.data.file )
   var data = JSON.parse(request.body.data);
-
   // console.log( typeof data)
   // console.log( 'image url=', data.imageUrl );
 
