@@ -26,12 +26,12 @@ var HomePageView = Backbone.View.extend({
   },
 
   renderUploadPage: function(){
-    this.remove();
+    currentView.remove();
     router.navigate('sighting', {trigger: true});
   },
 
   renderSearchForm: function(){
-    this.remove();
+    currentView.remove();
     router.navigate('search', {trigger: true});
   }
 });

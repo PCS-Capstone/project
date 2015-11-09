@@ -91,9 +91,8 @@
   </script>
 
   <script type="template-x-handlebars" id="template-searchform">
-    <h1>{{ name }}</h1>
     <form class="form-horizontal">
-      <div class="form-group">
+      <div class="form-group" id="search-form">
         <label class="control-label col-xs-2 required"> **Required fields</label>
       </div>
 
@@ -117,14 +116,14 @@
         <label for="address" class="control-label col-xs-2">**Starting Address</label>
         <div class="col-xs-10">
           <input type="text" id="address-bar" name="address" placeholder="Address"  aria-required="true" required>
-          <input type="number" name="radius" placeholder="Radius ( in miles )"  aria-required="true" required>
+          <input type="number" id="radius-bar" name="radius" placeholder="Radius ( in miles )"  aria-required="true" required>
         </div>
       </div>
 
       <div class="form-group">
         <label for="date" class="control-label col-xs-2">**Search From: </label>
         <div class="col-xs-10 input-append date" id='start-date-div' data-date="" data-date-format="yyyy-mm-dd">
-          <input type="text" name="start-date" placeholder="Start Date" id="start-date" class="span2" value="" maxlength="10" placeholder="yyyy-mm-dd" aria-required="true" required>
+          <input type="text" readonly="readonly" name="start-date" placeholder="Start Date" id="start-date" class="span2" value="" maxlength="10" placeholder="yyyy-mm-dd" aria-required="true" required>
           <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
@@ -134,7 +133,7 @@
       <div class="form-group">
         <label for="date" class="control-label col-xs-2">**Search To: </label>
         <div class="col-xs-10 input-append date" id="end-date-div" data-date="" data-date-format="yyyy-mm-dd">
-          <input type="text" name="end-date" placeholder="End Date" id="end-date" class="span2" value="" maxlength="10" aria-required="true" required>
+          <input type="text" readonly="readonly" name="end-date" placeholder="End Date" id="end-date" class="span2" value="" maxlength="10" aria-required="true" required>
           <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
@@ -287,7 +286,7 @@
           </label>
 
           <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
-            <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="Date" aria-required="true" required>
+            <input id="uploadDate" class="form-control span2" type="text" readonly="readonly" name="date" value="" maxlength="10" placeholder="Date" aria-required="true" required>
 
             <span class="add-on"><i class="icon-th"></i></span>
           </div>

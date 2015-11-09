@@ -402,10 +402,10 @@ var UploadSightingView = Backbone.View.extend({
 
       // requestObject.exifData = asyncParams.exifData;
 
-      callback();
-    }
+      // callback();
+    
 
-    sendToServer();
+      sendToServer();
 
 
     //send it off
@@ -479,18 +479,15 @@ var UploadSightingView = Backbone.View.extend({
         url: "/pet",
         data: { data : JSON.stringify(requestObject) },
         success: function(data) {
-          // if (data === true) {
-          //   currentView.remove();
-          //   router.navigate('successful', {trigger : true})
-          // }
-          // else {
-          //   // currentView.remove();
-          //   $("#reveal-form").hide();
-          //   router.navigate('error', {trigger : true})
-          // }
+          if (data === true) {
+            currentView.remove();
+            router.navigate('successful', {trigger : true})
+          }
+          else {
             $("#refresh").remove();
             $("#reveal-form").hide();
             router.navigate('error', {trigger : true})
+          }
         }
       });
 
