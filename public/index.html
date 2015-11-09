@@ -13,7 +13,8 @@
 
   <link rel="stylesheet" href="public/css/datepicker.css">
 
-  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700,300italic,400italic,500italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,500,500italic,700,700italic,400italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic' rel='stylesheet' type='text/css'>
 
   <!-- CDN SCRIPTS -->
   <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -29,7 +30,12 @@
     <h1>Fetch</h1>
   </header>
 
-  <section id="master" class="container"></section>
+  <section id="master" class="container">
+  </section>
+
+
+  <footer>
+  </footer>
 
   <!-- TEMPLATES -->
   <script type="template-x-handlebars" id="template-results-list">
@@ -165,11 +171,10 @@
         </div>
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
-      <span class="help-block">We'll show you results with your exact specifications, and 
-      then make some guesses on your behalf. This ensures you don't miss some useful similar 
+      <span class="help-block"> We'll show you results with your exact specifications, and
+      then make some guesses on your behalf. This ensures you don't miss some useful similar
       search results.</span>
     </form>
-
 
   </script>
 
@@ -226,7 +231,6 @@
                 <h3> Barnyard </h3>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -284,6 +288,7 @@
 
           <div class="col-sm-9 col-md-4  input-append date" id="uploadDateDiv" data-date="" data-date-format="yyyy-mm-dd">
             <input id="uploadDate" class="form-control span2" type="text" name="date" value="" maxlength="10" placeholder="Date" aria-required="true" required>
+
             <span class="add-on"><i class="icon-th"></i></span>
           </div>
         </div>
@@ -425,14 +430,13 @@
     {{/if }}
   </script>
 
-
   <script type="template-x-handlebars" id="template-successful-submission">
     <h1>SUCCESS</h1>
       <p>Your sighting was uploaded succesfully!  Thank you for taking the time to share
       this information with your community.  Your contribution may help reconnect a pet owner
       to their lost pet!</p>
 
-      <p>If you happen to have the animal in your possesion, here is some advice on what 
+      <p>If you happen to have the animal in your possesion, here is some advice on what
       to do next:</p>
 
       <p>1. Contact local animal shelters/rescues in your area.  They can give you advice on
@@ -442,16 +446,16 @@
       <p>2. Contact your local police department to report the missing animal.  The owner may
       contact the police department asking if anyone has reported having found a lost animal.</p>
 
-      <p>3. Contact a local veterinary clinic to see if they have the capabilities to scan the 
+      <p>3. Contact a local veterinary clinic to see if they have the capabilities to scan the
       animal for an identification chip.  Some pet owners have identifing chips surgically placed
-      in their animal that contain their contact information, and some veterinary offices have the 
+      in their animal that contain their contact information, and some veterinary offices have the
       ability to scan the animal to check for these chips and they can help contact the owner.</p>
 
   </script>
 
   <script type="template-x-handlebars" id="template-upload-error">
     <h1>Uh Oh...</h1>
-    <p>Sorry, it looks like something went wrong.  Do not worry, we still have all the information 
+    <p>Sorry, it looks like something went wrong.  Do not worry, we still have all the information
     you entered...</p>
     <button type ="button" id="error">Try again?</button>
 
@@ -475,19 +479,17 @@
   <script src="../views/error.js"></script>
   <script src="../routes/router.js"></script>
 
-
   <script src="public/js/main.js"></script>
 
   <!-- Datepicker -->
   <script src="../public/js/plugins/datepicker/bootstrap-datepicker.js"></script>
 
   <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap"> //Uncaught TypeError: window.initMap is not a function
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCI3j4h95OGMqH6Akyj6a9x4dJnnYrWL4U&libraries=places&callback=initMap">
   </script>
 
   <script>
     function initMap() {
-      console.log("There's no basement at the Alamo!")
     }
   </script>
 

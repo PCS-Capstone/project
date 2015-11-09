@@ -1,35 +1,40 @@
-* {
-  font-family: 'Roboto', sans-serif;
-}
-
 .display-none {
   display: none;
 }
 
+/*
+********************
+Global CSS Styles
+********************
+*/
+* {
+  font-family: 'Muli', sans-serif;
+}
+html {
+  position: relative;
+  min-height: 100%;
+}
+#master {
+  margin-top: 15px;
+  margin-bottom: 60px;
+  padding-top: 69px;
+  padding-bottom: 15px;
+}
 header {
-  width: 100%;
   height: 75px;
-  box-shadow: 0 4px 2px -2px gray;
-  background-color: white;
-  color: black;
-  text-align: center;
+  width: 100%;
   position: absolute;
   top: 0;
-  position: fixed;
-  z-index: 99;
-  opacity: .8;
-}
-
-#master {
-  margin-top: 75px;
-}
-
-footer {
-  background: #000;
+  letter-spacing: .1em;
   color: white;
   text-align: center;
-  width: 100%;
+  background-color: #009688;
+  box-shadow: 0 0 5px gray;
 }
+/*
+END GLOBAL STYLES
+--------------------
+*/
 
 .home {
   min-height: 80 vh;
@@ -42,11 +47,9 @@ footer {
 .home .btn {
   width: 150px;
   margin: 50px;
+
 }
 
-#master {
-  padding-top: 69px;
-}
 
 .required {
   color: red;
@@ -97,6 +100,11 @@ div.lost-pet {
   position: relative;
 }
 
+/*
+********************
+Sighting.js
+********************
+*/
 #hour, #minute {
   padding: 5px 15px;
 }
@@ -122,7 +130,7 @@ div.lost-pet {
           border-radius: 50%;
 
   opacity: .8;
-  z-index: 99;
+  /*z-index: 99;*/
   font-size: 1.2em;
 }
 
@@ -195,10 +203,7 @@ textarea {
   resize: none;
 }
 
-
-/* ----
-  Rotating Refresh Icon for Waiting
-*/
+/* Rotating Refresh Icon for Waiting */
 .gly-spin {
   -webkit-animation: spin 2s infinite linear;
   -moz-animation: spin 2s infinite linear;
@@ -245,7 +250,7 @@ textarea {
     transform: rotate(359deg);
   }
 }
-  /* ---- */
+
 
 .upload
 .animal-photo-div {
@@ -293,3 +298,8 @@ textarea {
 #Barnyard {
   background-image: url('http://www.spcacanterbury.org.nz/assets/Images/horse.jpg')
 }
+
+/*
+END SIGHTING
+--------------------
+*/
