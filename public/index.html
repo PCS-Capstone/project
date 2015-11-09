@@ -7,8 +7,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-
   <!-- STYLESHEETS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="public/css/main.css">
@@ -173,9 +171,10 @@
         </div>
       </div>
       <button type="submit" class="btn btn-success">Submit</button>
-      <span class="help-block">We'll show you results with your exact specifications, and then make some guesses on your behalf. This ensures you don't miss some useful similar search results.</span>
+      <span class="help-block"> We'll show you results with your exact specifications, and
+      then make some guesses on your behalf. This ensures you don't miss some useful similar
+      search results.</span>
     </form>
-
 
   </script>
 
@@ -390,7 +389,6 @@
 
     </form>
 
-
     <div id="successfulSubmission" class="col-lg-offset-1 col-lg-10 display-none">
 
       <div class="row">
@@ -432,15 +430,40 @@
   </script>
 
   <script type="template-x-handlebars" id="template-successful-submission">
-  <h1>SUCCESS</h1>
+    <h1>SUCCESS</h1>
+      <p>Your sighting was uploaded succesfully!  Thank you for taking the time to share
+      this information with your community.  Your contribution may help reconnect a pet owner
+      to their lost pet!</p>
+
+      <p>If you happen to have the animal in your possesion, here is some advice on what
+      to do next:</p>
+
+      <p>1. Contact local animal shelters/rescues in your area.  They can give you advice on
+      what to do with the animal.  In some cases, they may arrange to come pick up the animal
+      to keep in their care why they look for the owner.</p>
+
+      <p>2. Contact your local police department to report the missing animal.  The owner may
+      contact the police department asking if anyone has reported having found a lost animal.</p>
+
+      <p>3. Contact a local veterinary clinic to see if they have the capabilities to scan the
+      animal for an identification chip.  Some pet owners have identifing chips surgically placed
+      in their animal that contain their contact information, and some veterinary offices have the
+      ability to scan the animal to check for these chips and they can help contact the owner.</p>
+
   </script>
 
   <script type="template-x-handlebars" id="template-upload-error">
-  <h1>ERROR</h1>
+    <h1>Uh Oh...</h1>
+    <p>Sorry, it looks like something went wrong.  Do not worry, we still have all the information
+    you entered...</p>
+    <button type ="button" id="error">Try again?</button>
+
   </script>
 
   <script type="template-x-handlebars" id="template-no-results">
-  <h1>NO RESULTS FOUND</h1>
+    <h1>No Results Found</h1>
+    <p>Sorry, no pet sightings match your search criteria...</p>
+    <button type="button" id="no-results">Search again?</button>
   </script>
 
   <!-- MAIN SCRIPTS -->

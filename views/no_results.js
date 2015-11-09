@@ -9,8 +9,8 @@ var NoResultsFound = Backbone.View.extend({
 
   render: function() {
     currentView = this;
-    this.$el.html( this.template() )
-    this.$el.prependTo('#master');
+    this.$el.html( this.template({}) )
+    this.$el.appendTo('#master');
   },
 
   initialize: function( options ) {
@@ -26,8 +26,7 @@ var NoResultsFound = Backbone.View.extend({
   	var self = this;
 
   	this.remove();
-  	var editSearch = new SearchFormView({
-    	searchParameters : self.searchParameters
-    })
+    router.navigate('search', {trigger : true});
+
   }
 })

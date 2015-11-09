@@ -390,6 +390,10 @@ var UploadSightingView = Backbone.View.extend({
       /*  ----
           Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
       */
+      console.log('request Object', requestObject);
+      console.log(app.lat);
+      console.log($('#uploadLocation').val());
+
       var errorCount = 0;
 
       if (  $('.alert').length  ) {
@@ -438,30 +442,34 @@ var UploadSightingView = Backbone.View.extend({
         $("html, body").animate({ scrollTop: 0 }, "slow");
       }
       else {
-      //While waiting for server response, this adds a rotating refresh icon and hides form
+      // //While waiting for server response, this adds a rotating refresh icon and hides form
         $('#upload-form').children().hide();
         $refresh = $('<i id="refresh" class="glyphicon glyphicon-refresh gly-spin"></i>');
         $refresh.appendTo('#upload-form');
 
-        //Sends Form:
-          //If successful:
-            //receives "true" response from server
-            //Runs self.google, which runs successful submission response and removes #upload-form)
-        $.ajax({
-          method: "POST",
-          url: "/pet",
-          data: { data : JSON.stringify(requestObject) },
-          success: function(data) {
-            if (data === true) {
-              currentView.remove();
-              router.navigate('success', {trigger : true})
-            }
-            else {
-              currentView.remove();
-              router.navigate('error', {trigger : true})
-            }
+      //Sends Form:
+        //If successful:
+          //receives "true" response from server
+          //Runs self.google, which runs successful submission response and removes #upload-form
+      $.ajax({
+        method: "POST",
+        url: "/pet",
+        data: { data : JSON.stringify(requestObject) },
+        success: function(data) {
+          if (data === true) {
+            currentView.remove();
+            router.navigate('successful', {trigger : true})
           }
-        });
+          else {
+            // currentView.remove();
+            $("#reveal-form").hide();
+            router.navigate('error', {trigger : true})
+          }
+            // $("#reveal-form").hide();
+            // router.navigate('error', {trigger : true})
+        }
+      });
+
       }
       console.log('missing required fields: ' + errorCount);
     }
