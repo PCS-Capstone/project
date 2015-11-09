@@ -12,6 +12,8 @@ $(document).ready( function(){
 });
 
 window.addEventListener('popstate', function(e) {
+	if(e.state){
 	currentView.remove();
     router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
+	}
 });
