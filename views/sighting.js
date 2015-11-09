@@ -320,26 +320,32 @@ var UploadSightingView = Backbone.View.extend({
 
     // get all the values from the search form
     // save them as properties on the requestObject
-    function buildDataForServer ( asyncParams, callback ) {
+    function buildDataForServer ( asyncParams, callback ) { 
 
       if(asyncParams.exifData.DateTime) {
+        console.log('i have exif date')
         var dateTime = asyncParams.exifData.DateTime.split(' ')[0].split(':').join('-');
-        requestObject.dateTime = dateTime;
+
+        $('#uploadDate').val(dateTime);
+
         console.log('dateTime = ' + dateTime);
-      } else {
-        requestObject.dateTime = $('#uploadDate').val();
+      // } else {
+      //   console.log('i do not have exif')
+      //   requestObject.dateTime = $('#uploadDate').val();
+
       }
 
-      // var shortAddress = $('#uploadLocation').val().split(',')
-      // shortAddress.splice((shortAddress.length)-1)
+      var shortAddress = $('#uploadLocation').val().split(',')
+      shortAddress.splice((shortAddress.length)-1)
 
-      // console.log('sighting address', shortAddress)
+      console.log('sighting address', shortAddress)
       requestObject.imageUrl = $('#previewHolder').attr('src');
       requestObject.location = {
         lat: app.lat,
         lng: app.lng
       };
-      requestObject.address = $('#uploadLocation').val()
+      requestObject.address = $('#uploadLocation').val();
+      requestObject.dateTime = $('#uploadDate').val();
       requestObject.displayDate = $('#uploadDate').val();
       requestObject.displayTime = '' + $('#hour-select').val() + ':' + $('#minute-select').val() + ' ' + $('input[name="am-pm"]:checked').val();
       requestObject.animalType = $("#uploadSpecies option:selected").val();
@@ -352,13 +358,12 @@ var UploadSightingView = Backbone.View.extend({
       callback();
     }
 
-    console.log('request object: ' + requestObject.displayDate);
-
     //send it off
     function sendToServer () {
       /*  ----
           Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
       */
+      console.log('request Object', requestObject);
       console.log(app.lat);
       console.log($('#uploadLocation').val());
 
@@ -410,7 +415,7 @@ var UploadSightingView = Backbone.View.extend({
       }
 
       else {
-      //While waiting for server response, this adds a rotating refresh icon and hides form
+      // //While waiting for server response, this adds a rotating refresh icon and hides form
         $('#upload-form').children().hide();
         $refresh = $('<i id="refresh" class="glyphicon glyphicon-refresh gly-spin"></i>');
         $refresh.appendTo('#upload-form');
@@ -426,12 +431,15 @@ var UploadSightingView = Backbone.View.extend({
         success: function(data) {
           if (data === true) {
             currentView.remove();
-            router.navigate('success', {trigger : true})
+            router.navigate('successful', {trigger : true})
           }
           else {
-            currentView.remove();
+            // currentView.remove();
+            $("#reveal-form").hide();
             router.navigate('error', {trigger : true})
           }
+            // $("#reveal-form").hide();
+            // router.navigate('error', {trigger : true})
         }
       });
 

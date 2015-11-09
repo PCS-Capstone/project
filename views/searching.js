@@ -26,7 +26,7 @@ var SearchFormView = Backbone.View.extend({
     console.log('searchParams', app.searchParameters)
     // console.log('self.location', self.location)
 
-    if (app.searchParameters !== undefined) {
+    if (app.searchParameters.animalType !== undefined) {
       console.log('edited search')
       this.prePopulate();
     } else {
@@ -82,21 +82,30 @@ var SearchFormView = Backbone.View.extend({
 
     event.preventDefault();
 
-    var shortAddress = $('input[name="address"]').val().split(',')
-    shortAddress.splice((shortAddress.length)-1)
+    var shortAddress = $('input[name="address"]').val().split(',');
+    shortAddress.splice((shortAddress.length)-1);
 
-    var prettyStartDate = $('input[name="start-date"]').val().split('-');
-    prettyStartDate = (month[(prettyStartDate[1]) -1] + " " + prettyStartDate[2] +
-      ', ' + prettyStartDate[0])
-    console.log('pretty date', prettyStartDate)
+    var prettyStartDate = $('input[name="start-date"]').val().split('/');
+    prettyStartDate = (month[(prettyStartDate[0]) -1] + " " + prettyStartDate[1] +
+      ', ' + prettyStartDate[2]);
+    console.log('pretty start date', prettyStartDate);
 
-    var prettyEndDate = $('input[name="end-date"]').val().split('-');
-    prettyEndDate = (month[(prettyEndDate[1]) -1] + " " + prettyEndDate[2] +
-      ', ' + prettyEndDate[0])
+    var prettyEndDate = $('input[name="end-date"]').val().split('/');
+    prettyEndDate = (month[(prettyEndDate[0]) -1] + " " + prettyEndDate[1] +
+      ', ' + prettyEndDate[2]);
+    console.log('pretty end date', prettyEndDate);
+
+    var startDate = $('input[name="start-date"]').val().split('/');
+    startDate = startDate[2] + '-' + startDate[0] + '-' + startDate[1];
+    console.log('db start date', startDate);
+
+    var endDate = $('input[name="end-date"]').val().split('/');
+    endDate = endDate[2] + '-' + endDate[0] + '-' + endDate[1];
+    console.log('db end date', endDate);
 
     app.searchParameters = {
-        startDate : $('input[name="start-date"]').val(),
-          endDate : $('input[name="end-date"]').val(),
+        startDate : startDate,
+          endDate : endDate,
   prettyStartDate : prettyStartDate,
     prettyEndDate : prettyEndDate,
           address : shortAddress,
@@ -104,7 +113,7 @@ var SearchFormView = Backbone.View.extend({
            radius : $('input[name="radius"]').val(),
        animalType : $('option:selected').val(),
            colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
-    }
+    };
 
     this.remove();
     console.log('location', app.searchParameters.location)
@@ -117,9 +126,15 @@ var SearchFormView = Backbone.View.extend({
     // where do we put it?
     app.collection.fetch({data : app.searchParameters,
       success: function(collection, response, options)
-      {console.log('success', response); router.navigate('results', {trigger: true})},
-      error: function(collection, response, options)
-      {console.log('error', response); router.navigate('noResults', {trigger: true})}
+      {console.log('success', response); 
+        if (response[0] === undefined) {
+          router.navigate('noResults', {trigger: true});
+        } else {
+          router.navigate('results', {trigger: true});
+        }
+      }
+      // error: function(collection, response, options)
+      // {console.log('error', response); router.navigate('noResults', {trigger: true})}
     });
   }
 });
