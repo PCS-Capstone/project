@@ -10,6 +10,7 @@
 ========================================*/
 
 var UploadSightingView = Backbone.View.extend({
+
     tagName: 'div',
   className: 'upload',
    template: Handlebars.compile( $('#template-upload-sighting').html() ),
@@ -18,7 +19,6 @@ var UploadSightingView = Backbone.View.extend({
     currentView = this;
     this.$el.html( this.template() );
     $('#master').append(this.$el);
-
     /*  -----
       For the form's hours and minutes, this creates the options of 1-12(hour) and 0-59(minute)
     ----- */
@@ -122,6 +122,17 @@ var UploadSightingView = Backbone.View.extend({
     $("input[name='am-pm']").prop("checked", false);
     $('#alertRequired').remove();
 
+    //Clears image preview rotation classes each time new photo is uploaded
+    if (  $('#previewHolder').hasClass('rotate90')  ) {
+      $('#previewHolder').removeClass('rotate90');
+    }
+    if (  $('#previewHolder').hasClass('rotate180') ) {
+      $('#previewHolder').removeClass('rotate180');
+    }
+    if (  $('#previewHolder').hasClass('rotate270') ) {
+      $('#previewHolder').removeClass('rotate270');
+    }
+
     //Pre-selects animal type using global -- app.breed -- variable, which is set on initial photo upload
     $('#uploadSpecies').val(app.breed);
 
@@ -155,17 +166,10 @@ var UploadSightingView = Backbone.View.extend({
       }
       //Runs if geolocation data exists
       else {
+        console.log('read form exif running');
         // This rotates the image correctly based on exif data's noted orientation;
         // Rotation classes are also removed each time a new photo is uploaded
-        if (  $('#previewHolder').hasClass('rotate90')  ) {
-          $('#previewHolder').removeClass('rotate90');
-        }
-        if (  $('#previewHolder').hasClass('rotate180') ) {
-          $('#previewHolder').removeClass('rotate180');
-        }
-        if (  $('#previewHolder').hasClass('rotate270') ) {
-          $('#previewHolder').removeClass('rotate270');
-        }
+
         switch (  parseInt(exifData.Orientation)  ) {
           case 3:
             $('#previewHolder').addClass('rotate180');
@@ -229,34 +233,34 @@ var UploadSightingView = Backbone.View.extend({
 
         displayTime = (displayTime.split(':'));
 
-      }
 
-      //Uses extracted exif-data time to autofill form's hour/minute/am-pm fields
-      if (parseInt(displayTime[0]) > 12) {
+        //Uses extracted exif-data time to autofill form's hour/minute/am-pm fields
+        if (parseInt(displayTime[0]) > 12) {
 
-        $("#pm").prop("checked", true);
+          $("#pm").prop("checked", true);
 
-        var hour = displayTime[0] - 12;
-        var minute = displayTime[1];
+          var hour = displayTime[0] - 12;
+          var minute = displayTime[1];
 
-        $('#hour-select').val(hour);
-        $('#minute-select').val(minute);
-        displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm";
+          $('#hour-select').val(hour);
+          $('#minute-select').val(minute);
+          displayTime = (displayTime[0] - 12) + ":" + displayTime[1] + "pm";
 
-        if (displayTime[0][0] === 0) {
+          if (displayTime[0][0] === 0) {
+            displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
+          }
+          else {
+            displayTime = displayTime[0] + ":" + displayTime[1];
+          }
+        }
+        else if (displayTime[0][0] === 0) {
           displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
         }
         else {
           displayTime = displayTime[0] + ":" + displayTime[1];
         }
-      }
-      else if (displayTime[0][0] === 0) {
-        displayTime = (displayTime[0][1]) + ":" + displayTime[1] + "am";
-      }
-      else {
-        displayTime = displayTime[0] + ":" + displayTime[1];
-      }
 
+      }
     }
     /* ---- */
 
@@ -283,9 +287,7 @@ var UploadSightingView = Backbone.View.extend({
 
       EXIF.getData(image, function() {
         var xf = EXIF( this ).EXIFwrapped.exifdata;
-
         app.xf = xf;
-
         readFromExif(xf);
       });
     }
@@ -316,6 +318,7 @@ var UploadSightingView = Backbone.View.extend({
 
     var self = this;
     var requestObject = {};
+
     //Dismissable Warning - used when required form fields are absent
     var $uploadWarning = $('<div id="alertRequired" class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
     var uploadWarningColor = '#FCF8E3';
@@ -329,7 +332,15 @@ var UploadSightingView = Backbone.View.extend({
       lng: app.lng
     };
     requestObject.address = $('#uploadLocation').val();
-    requestObject.dateTime = $('#uploadDate').val();
+
+    (function() {
+      var date = $('#uploadDate').val().split('-');
+      var month = date[0];
+      var day = date[1];
+      var year = date[2];
+
+      requestObject.dateTime = year + "-" + month + "-" + day;
+    })();
 
     (function() {
       var date = $('#uploadDate').val();
