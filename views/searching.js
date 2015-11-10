@@ -220,11 +220,8 @@ var ResultsView = Backbone.View.extend({
     // console.log( typeof self.searchParameters.location)
     self.mapView.map.setCenter( JSON.parse(app.searchParameters.location) );
     
+    // http://stackoverflow.com/questions/19304574/center-set-zoom-of-map-to-cover-all-markers-visible-markers
     var bounds = new google.maps.LatLngBounds();
-    
-    // for(i=0;i<self.mapView.markers.length;i++) {
-    //    bounds.extend(self.mapView.markers[i].getPosition());
-    // }
 
     self.mapView.markers.forEach( function(marker){
       marker.setMap(self.mapView.map);
