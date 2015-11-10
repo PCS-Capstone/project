@@ -271,7 +271,7 @@ textarea {
   display: block;
   background-color: #3A3938;
   position: relative;
-  top: 175px;
+  top: 170px;
   color: white;
 }
 .upload
@@ -317,20 +317,25 @@ textarea {
   padding: 15px 0;
   position: relative;
   top: 30px;
+  font-size: 1em;
 }
 
 .upload
 #upload-animals {
   padding-top: 20px;
   padding-bottom: 20px;
-  border: 1px solid #009688;
+  border: 1px solid rgba(0, 150, 136, 0.23);
   margin-bottom: 20px;
 }
 
 .upload
 #upload-animals h3 {
-  background: whitesmoke;
-  color: #009688;
+  background: rgba(0, 0, 0, 0.6);;
+  color: #FFFFFF;
+  font-weight: lighter;
+  box-shadow: 1px 1px 1px #1D9490;
+  font-size: 1.25em;
+  padding: 5px;
 }
 
 /*
