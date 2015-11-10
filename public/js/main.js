@@ -5,7 +5,7 @@ var currentView;
 
 var counter = 0;
 
-$(document).ready( function(){
+$(document).ready( function() {
   Backbone.history.start({pushState: true});
   router.navigate('', {trigger: true});
 
@@ -14,15 +14,19 @@ $(document).ready( function(){
 });
 
 window.addEventListener('popstate', function(e) {
-  if (counter != 0) {
-    counter += 1;
-    currentView.remove();
-    router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
-  }
-  else {
-    counter += 1;
-    router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
-  }
-});
+	console.log(e)
+	console.log("location " + document.location + ", state: " + JSON.stringify(e.state));
 
-counter += 1;
+	if( counter === 0 ){
+		console.log('counter', counter);
+		// currentView.remove();
+		counter += 1;
+    	router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
+
+	} else {
+		console.log('counter', counter)
+		currentView.remove();
+		counter += 1;
+		router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
+	}
+});

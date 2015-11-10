@@ -24,7 +24,7 @@ var SearchFormView = Backbone.View.extend({
   render: function(){
     currentView = this;
     console.log('searchParams', app.searchParameters)
-    // console.log('self.location', self.location)
+    console.log('self.location', self.location)
 
     if (app.searchParameters.animalType !== undefined) {
       console.log('edited search')
@@ -52,8 +52,7 @@ var SearchFormView = Backbone.View.extend({
 
     autocomplete.addListener('place_changed', convertToLatLng);
 
-    function convertToLatLng (){
-      //console.log( 'changed place' );
+    function convertToLatLng () {
       place = autocomplete.getPlace();
       app.searchParameters.location = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }
       console.log( 'location:', app.searchParameters.location );
@@ -75,7 +74,36 @@ var SearchFormView = Backbone.View.extend({
       });
   },
 
+  validate: function() {
+    var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
+    var uploadWarningColor = '#FCF8E3';
+
+    if (app.searchParameters.location === undefined) {
+        $('#address-bar').css('background-color', uploadWarningColor );
+        $('#search-form').prepend($uploadWarning);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        console.log('Form Validation Failed: No Address Selected');
+    } else {
+      currentView.remove();
+
+      app.collection.fetch({data : app.searchParameters,
+        success: function(collection, response, options)
+          {console.log('success', response); 
+            if (response[0] === undefined) {
+              router.navigate('noResults', {trigger: true});
+            } else {
+              router.navigate('results', {trigger: true});
+            } 
+          }
+      // error: function(collection, response, options)
+      // {console.log('error', response); router.navigate('noResults', {trigger: true})}
+      });
+    }
+
+  },
+
   renderSearchResults: function(event){
+    console.log('address length',  $("[name=address]").val().split(','))
     var self = this;
     var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                   'August', 'September', 'October', 'November', 'December'];
@@ -115,8 +143,14 @@ var SearchFormView = Backbone.View.extend({
            colors : $('input[name="color-group"]:checked').map( function(){ return this.value } ).toArray()
     };
 
-    this.remove();
-    console.log('location', app.searchParameters.location)
+    this.validate();
+
+    // if(app.searchParameters)
+
+    // this.remove();
+    // console.log('location', app.searchParameters.location)
+
+
     // console.log( 'searchForm on submit location:', self.location)
 
     // only works upon first try, does not work with edit because
@@ -124,18 +158,7 @@ var SearchFormView = Backbone.View.extend({
     // We want to use conditional prior to ResultsView being rendered
     // if there are no search results found
     // where do we put it?
-    app.collection.fetch({data : app.searchParameters,
-      success: function(collection, response, options)
-      {console.log('success', response); 
-        if (response[0] === undefined) {
-          router.navigate('noResults', {trigger: true});
-        } else {
-          router.navigate('results', {trigger: true});
-        }
-      }
-      // error: function(collection, response, options)
-      // {console.log('error', response); router.navigate('noResults', {trigger: true})}
-    });
+
   }
 });
 
@@ -150,9 +173,9 @@ var ResultsView = Backbone.View.extend({
     mapView: {},
 
   render: function() {
-    console.log('resutls view')
+    console.log('results view');
     currentView = this;
-    this.$el.html( this.template(app.searchParameters) )
+    this.$el.html( this.template(app.searchParameters) );
     this.$el.prependTo('#master');
 
     var self = this;
@@ -203,7 +226,7 @@ var ResultsView = Backbone.View.extend({
 
     app.searchParameters.location = JSON.parse(app.searchParameters.location);
 
-    this.remove();
+    currentView.remove();
     router.navigate('search', {trigger : true, replace: true})
 
   },
@@ -216,12 +239,22 @@ var ResultsView = Backbone.View.extend({
     google.maps.event.trigger(self.mapView.map, 'resize'); //magically fixes window resize problem http://stackoverflow.com/questions/13059034/how-to-use-google-maps-event-triggermap-resize
 
     self.mapView.map.setZoom(15);
-    // console.log( self.searchParameters.location );
+    // console.log( app.searchParameters.location );
     // console.log( typeof self.searchParameters.location)
     self.mapView.map.setCenter( JSON.parse(app.searchParameters.location) );
+    
+    // http://stackoverflow.com/questions/19304574/center-set-zoom-of-map-to-cover-all-markers-visible-markers
+    var bounds = new google.maps.LatLngBounds();
+
     self.mapView.markers.forEach( function(marker){
       marker.setMap(self.mapView.map);
-    })
+      bounds.extend(marker.getPosition());
+    });
+
+    self.mapView.map.setCenter(bounds.getCenter());
+    self.mapView.map.fitBounds(bounds);
+    self.mapView.map.setZoom(self.mapView.map.getZoom()-1);
+
   //   console.log('ResultsView.showMapView()')
   //   // console.log( 'searchParams:', this.searchParameters );
   //   // console.log( 'searchParams.location:', this.searchParameters.location );
@@ -289,19 +322,53 @@ var TileView = Backbone.View.extend({
   },
 
   selfDestruct: function() {
-    // console.log('self destruct tile view')
     this.remove();
   },
 
   showMiniMap : function() {
     var self = this;
-    //console.log( this.mapView.map );
-    // if ( $('#map').css('display') === 'none' ){
-      $('#map').show()
-    // }
+
+    var string = '<div class="modal"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div></div></div>';
+    var $modal = $(string);
+    var $map = $('#map');
+
+    function moveMapToModal () {
+      $('#master').find('.modal').remove();
+      $modal.appendTo('#master');
+      $modal.find('.modal-content').append($map);
+    };
+
+    function showModal () {
+      $modal.find('.modal-content').css({
+        'height':'50%',
+        'width':'90%'
+      });
+      $modal.css({
+        'display':'flex',
+        'justify-content':'center',
+        'padding-top':'2em',
+        'background':'rgba(0,0,0,0.6)',
+        'height':'100%'
+      });
+      $map.show();
+    };
+
+    function hideModal () {
+      $modal.css({
+        'display':'none'
+      });
+      $map.remove();
+      $map.hide();
+      $map.appendTo('.results-view');
+    };
+
+    moveMapToModal();
+    showModal();
+    $modal.find('button').click(hideModal);
+
     google.maps.event.trigger(self.mapView.map, 'resize');
     this.mapView.map.setCenter(this.model.get('value').location);
-    this.mapView.map.setZoom(20);
+    this.mapView.map.setZoom(18);
     this.mapView.markers.forEach( function(marker){
 
       // console.log( marker.modelId );

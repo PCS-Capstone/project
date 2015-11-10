@@ -1,12 +1,12 @@
 var Router = Backbone.Router.extend({
 	routes: {
-		      '' : 'index',
-		'search' : 'search',
+		        '' : 'index',
+     	'search' : 'search',
 	  'sighting' : 'sighting',
 	   'results' : 'results',
 	 'noResults' : 'noResults',
 	'successful' : 'successful',
-		 'error' : 'error'
+		   'error' : 'error'
 	},
 
 	index: function() {
@@ -21,7 +21,7 @@ var Router = Backbone.Router.extend({
 
 	sighting: function() {
 		console.log('sighting');
-		new UploadSightingView({});
+		new UploadSightingView({location : {lat : null, lng : null}, exif: null });
 	},
 
 	results: function() {
