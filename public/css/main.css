@@ -50,6 +50,9 @@ END GLOBAL STYLES
 
 }
 
+#radius-bar {
+  background-color: white;
+}
 
 .required {
   color: red;
