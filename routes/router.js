@@ -21,7 +21,7 @@ var Router = Backbone.Router.extend({
 
 	sighting: function() {
 		console.log('sighting');
-		new UploadSightingView({location : {lat : null, lng : null} });
+		new UploadSightingView({location : {lat : null, lng : null}, exif: null });
 	},
 
 	results: function() {
