@@ -13,7 +13,6 @@ $(document).ready( function() {
 });
 
 window.addEventListener('popstate', function(e) {
-
 	console.log(e)
 	console.log("location " + document.location + ", state: " + JSON.stringify(e.state));
 
@@ -28,6 +27,5 @@ window.addEventListener('popstate', function(e) {
 		currentView.remove();
 		counter += 1;
 		router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
-		
 	}
 });

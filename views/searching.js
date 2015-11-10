@@ -239,12 +239,22 @@ var ResultsView = Backbone.View.extend({
     google.maps.event.trigger(self.mapView.map, 'resize'); //magically fixes window resize problem http://stackoverflow.com/questions/13059034/how-to-use-google-maps-event-triggermap-resize
 
     self.mapView.map.setZoom(15);
-    // console.log( self.searchParameters.location );
+    // console.log( app.searchParameters.location );
     // console.log( typeof self.searchParameters.location)
     self.mapView.map.setCenter( JSON.parse(app.searchParameters.location) );
+    
+    // http://stackoverflow.com/questions/19304574/center-set-zoom-of-map-to-cover-all-markers-visible-markers
+    var bounds = new google.maps.LatLngBounds();
+
     self.mapView.markers.forEach( function(marker){
       marker.setMap(self.mapView.map);
-    })
+      bounds.extend(marker.getPosition());
+    });
+
+    self.mapView.map.setCenter(bounds.getCenter());
+    self.mapView.map.fitBounds(bounds);
+    self.mapView.map.setZoom(self.mapView.map.getZoom()-1);
+
   //   console.log('ResultsView.showMapView()')
   //   // console.log( 'searchParams:', this.searchParameters );
   //   // console.log( 'searchParams.location:', this.searchParameters.location );
@@ -312,19 +322,53 @@ var TileView = Backbone.View.extend({
   },
 
   selfDestruct: function() {
-    // console.log('self destruct tile view')
     this.remove();
   },
 
   showMiniMap : function() {
     var self = this;
-    //console.log( this.mapView.map );
-    // if ( $('#map').css('display') === 'none' ){
-      $('#map').show()
-    // }
+
+    var string = '<div class="modal"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div></div></div>';
+    var $modal = $(string);
+    var $map = $('#map');
+
+    function moveMapToModal () {
+      $('#master').find('.modal').remove();
+      $modal.appendTo('#master');
+      $modal.find('.modal-content').append($map);
+    };
+
+    function showModal () {
+      $modal.find('.modal-content').css({
+        'height':'50%',
+        'width':'90%'
+      });
+      $modal.css({
+        'display':'flex',
+        'justify-content':'center',
+        'padding-top':'2em',
+        'background':'rgba(0,0,0,0.6)',
+        'height':'100%'
+      });
+      $map.show();
+    };
+
+    function hideModal () {
+      $modal.css({
+        'display':'none'
+      });
+      $map.remove();
+      $map.hide();
+      $map.appendTo('.results-view');
+    };
+
+    moveMapToModal();
+    showModal();
+    $modal.find('button').click(hideModal);
+
     google.maps.event.trigger(self.mapView.map, 'resize');
     this.mapView.map.setCenter(this.model.get('value').location);
-    this.mapView.map.setZoom(20);
+    this.mapView.map.setZoom(18);
     this.mapView.markers.forEach( function(marker){
 
       // console.log( marker.modelId );
