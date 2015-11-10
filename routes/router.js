@@ -1,12 +1,12 @@
 var Router = Backbone.Router.extend({
 	routes: {
-		      '' : 'index',
-		'search' : 'search',
+		        '' : 'index',
+     	'search' : 'search',
 	  'sighting' : 'sighting',
 	   'results' : 'results',
 	 'noResults' : 'noResults',
 	'successful' : 'successful',
-		 'error' : 'error'
+		   'error' : 'error'
 	},
 
 	index: function() {
