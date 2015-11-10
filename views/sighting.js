@@ -99,8 +99,8 @@ var UploadSightingView = Backbone.View.extend({
 
   populateFields : function() {
     //Resets lat/lng each time photo is uploaded
-    app.lat = 0;
-    app.lng = 0;
+    // self.location.lat = null;
+    // self.location.lng = null;
 
     var $imageField = $('#upload-photo');
     var $imagePreview = $('#previewHolder');
@@ -379,91 +379,33 @@ var UploadSightingView = Backbone.View.extend({
       console.log('xDay is: ' + xDay);
 
       requestObject.displayDate = xMonth + ' ' + xDay + ', ' + xYear;
-    })();
+      })();
 
-    requestObject.displayTime = '' + $('#hour-select').val() + ':' + $('#minute-select').val() + ' ' + $('input[name="am-pm"]:checked').val();
-    requestObject.colors = $('input[name="color-group"]:checked').map(function() {
-      return this.value;
-    }).toArray();
-    requestObject.description = $('#uploadDescription').val();
-    requestObject.imageUrl = $('#previewHolder').attr('src');
-    requestObject.exifData = app.xf
-
-      console.log('sighting address', shortAddress)
-     
-      // requestObject.location = {
-      //   lat: self.location.lat,
-      //   lng: self.location.lng
-      // };
-      // requestObject.address = $('#uploadLocation').val();
-      // requestObject.dateTime = $('#uploadDate').val();
-      
-      // requestObject.animalType = $("#uploadSpecies option:selected").val();
-
-      // requestObject.exifData = asyncParams.exifData;
-
-      // callback();
-    
+      requestObject.displayTime = '' + $('#hour-select').val() + ':' + $('#minute-select').val() + ' ' + $('input[name="am-pm"]:checked').val();
+      requestObject.colors = $('input[name="color-group"]:checked').map(function() {
+        return this.value;
+      }).toArray();
+      requestObject.description = $('#uploadDescription').val();
+      requestObject.imageUrl = $('#previewHolder').attr('src');
+      requestObject.exifData = app.xf
 
       sendToServer();
 
 
     //send it off
     function sendToServer () {
-      /*  ----
-          Form Validation Checks to ensure data is present/properly formatted; if not, submittal is denied
-      */
-      console.log('request Object', requestObject);
-      console.log(self.location.lat);
-      console.log($('#uploadLocation').val());
-
-      var errorCount = 0;
-
-      if (  $('.alert').length  ) {
-        $('.alert').remove();
-      }
-      if (  !($('#uploadLocation').val() )) {
-        self.location.lat = 0;
-        self.location.lng = 0;
-      }
-
-      $('#upload-form').children().not('button').css('background-color', 'transparent');
 
       var $uploadWarning = $('<div class="alert alert-warning alert-dismissible col-sm-9 col-sm-offset-2 col-lg-8 col-lg-offset-2" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong> Missing Required Fields </strong></div>');
       var uploadWarningColor = '#FCF8E3';
 
-      //Check whether species if selected
-      if (  $('#uploadSpecies').find(":selected").index() === 0   ) {
-        errorCount += 1;
-        $('#uploadSpecies').css('background-color', uploadWarningColor );
-        console.log('Form Validation Failed: No Animal Selected');
-      }
-      //Check location
-      if ( (self.location.lat === 0) || (self.location.lng === 0)  ) {
-        errorCount += 1;
+      if ( self.location.lat === null) {
+        // errorCount += 1;
+        $('#upload-form').prepend($uploadWarning);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
         $('#uploadLocation').css('background-color', uploadWarningColor);
         console.log('Form Validation Failed: No Latitude or Longitude Set; Incorrect Location');
       }
-      //Check Time/HR/Minutes/AM-PM
-      if ( $('#hour-select').find(":selected").index() === 0   ) {
-        errorCount += 1;
-        $('#hour-select').css('background-color', uploadWarningColor);
-        console.log('Form Validation Failed: No Hour Selected');
-      }
 
-      if ( !$('#am').prop('checked') ) {
-        if (  !$('#pm').prop('checked')   ) {
-          errorCount += 1;
-          $('#am-pm-div').css('background-color', uploadWarningColor);
-          console.log('Required Field: Please Select AM/PM');
-        }
-      }
-
-      //Checks to see if there are any errors; If not, sends form
-      if (errorCount > 0) {
-        $('#upload-form').prepend($uploadWarning);
-        $("html, body").animate({ scrollTop: 0 }, "slow");
-      }
       else {
       // //While waiting for server response, this adds a rotating refresh icon and hides form
         $('#upload-form').children().hide();
@@ -474,27 +416,26 @@ var UploadSightingView = Backbone.View.extend({
         //If successful:
           //receives "true" response from server
           //Runs self.google, which runs successful submission response and removes #upload-form
-      $.ajax({
-        method: "POST",
-        url: "/pet",
-        data: { data : JSON.stringify(requestObject) },
-        success: function(data) {
-          if (data === true) {
-            currentView.remove();
-            router.navigate('successful', {trigger : true})
+        $.ajax({
+          method: "POST",
+          url: "/pet",
+          data: { data : JSON.stringify(requestObject) },
+          success: function(data) {
+            if (data === true) {
+              currentView.remove();
+              router.navigate('successful', {trigger : true})
+            }
+            else {
+              $("#refresh").remove();
+              $("#reveal-form").hide();
+              router.navigate('error', {trigger : true})
+            }
           }
-          else {
-            $("#refresh").remove();
-            $("#reveal-form").hide();
-            router.navigate('error', {trigger : true})
-          }
-        }
-      });
+        });
 
       }
-      console.log('missing required fields: ' + errorCount);
     }
-    /*  ----  */
+
   },
 
   googleAutocomplete: function() {

@@ -5,7 +5,7 @@
 var SuccessfulSubmission = Backbone.View.extend({
 	tagName: 'section',
   className: 'success',
-  // template: Handlebars.compile( $('#template-successful-submission').html()),
+  template: Handlebars.compile( $('#template-successful-submission').html()),
 
   render: function() {
     currentView = this;
