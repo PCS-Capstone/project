@@ -1,11 +1,10 @@
 .display-none {
   display: none;
 }
-
 /*
-********************
+--------------------
 Global CSS Styles
-********************
+--------------------
 */
 * {
   font-family: 'Muli', sans-serif;
@@ -29,7 +28,10 @@ header {
   color: white;
   text-align: center;
   background-color: #009688;
+
   box-shadow: 0 0 5px gray;
+  -webkit-box-shadow: 0 0 5px gray;
+  -moz-box-shadow: 0 0 5px gray;
 }
 /*
 END GLOBAL STYLES
@@ -104,9 +106,9 @@ div.lost-pet {
 }
 
 /*
-********************
+---------------------
 Sighting.js
-********************
+--------------------
 */
 #hour, #minute {
   padding: 5px 15px;
@@ -133,7 +135,6 @@ Sighting.js
           border-radius: 50%;
 
   opacity: .8;
-  /*z-index: 99;*/
   font-size: 1.2em;
 }
 
@@ -145,8 +146,6 @@ Sighting.js
 }
 
 #previewHolderDiv {
-  /*max-height: 200px;*/
-  /*background-color: rgba(53,62,79,.8);*/
   text-align: center;
   margin-bottom: 50px;
   margin-top: 50px;
@@ -156,6 +155,8 @@ Sighting.js
   max-width: 100%;
   max-height: 200px;
   box-shadow: 0 1px 1px 2px rgba(53,62,79,.8), 0 1px 1px 2px rgba(53,62,79,.8);
+  -webkit-box-shadow: 0 1px 1px 2px rgba(53,62,79,.8), 0 1px 1px 2px rgba(53,62,79,.8);
+  -moz-box-shadow: 0 1px 1px 2px rgba(53,62,79,.8), 0 1px 1px 2px rgba(53,62,79,.8);
 }
 
 #previewHolderButton  {
@@ -253,6 +254,7 @@ textarea {
     transform: rotate(359deg);
   }
 }
+/* -------------------- */
 
 .upload
 .animal-photo-div {
@@ -277,6 +279,7 @@ textarea {
   top: 170px;
   color: white;
 }
+
 .upload
 #Dog {
   background-image: url('../../public/img/dog.jpg');
@@ -291,11 +294,11 @@ textarea {
 }
 .upload
 #Small-Furry{
-  background-image: url('http://images.sodahead.com/polls/002838879/4510255634_27309404_xlarge.jpeg')
+  background-image: url('../../public/img/furry.jpg')
 }
 .upload
 #Scales-Fins {
-  background-image: url('http://petful.supercopyeditors.netdna-cdn.com/wp-content/uploads/2011/11/pet-snake-skin-problems.png')
+  background-image: url('../../public/img/reptile.jpg')
 }
 .upload
 #Barnyard {
@@ -333,12 +336,30 @@ textarea {
 
 .upload
 #upload-animals h3 {
-  background: rgba(0, 0, 0, 0.6);;
+  background: rgba(119, 118, 117, 0.86);
   color: #FFFFFF;
   font-weight: lighter;
   box-shadow: 1px 1px 1px #1D9490;
   font-size: 1.25em;
   padding: 5px;
+}
+
+.upload
+#upload-animals .glyphicon {
+  font-size: 4em;
+  color: #009688;
+  opacity: 0;
+  transition: all 0.5s ease;
+  text-align: center;
+  margin: 0 auto;
+}
+.upload
+#upload-animals .glyphicon:hover {
+  opacity: 1;
+}
+.upload
+#upload-animals .glyphicon:active {
+  color: white;
 }
 
 /*

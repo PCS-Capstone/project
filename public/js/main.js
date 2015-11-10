@@ -5,6 +5,7 @@ var currentView;
 
 var counter = 0;
 
+
 $(document).ready( function() {
   Backbone.history.start({pushState: true});
   router.navigate('', {trigger: true});
@@ -12,6 +13,13 @@ $(document).ready( function() {
   app.collection = new lostPetsCollection();
 
 });
+
+// window.addEventListener('popstate', function(e) {
+// 	console.log(e)
+// 	console.log("location " + document.location + ", state: " + JSON.stringify(e.state));
+//   currentView.remove();
+//   router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
+// });
 
 window.addEventListener('popstate', function(e) {
 	console.log(e)
@@ -30,3 +38,5 @@ window.addEventListener('popstate', function(e) {
 		router.navigate(Backbone.history.getFragment(), {trigger: true, replace: true});
 	}
 });
+
+counter += 1;
