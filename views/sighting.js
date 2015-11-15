@@ -68,7 +68,7 @@ var UploadSightingView = Backbone.View.extend({
     'click #previewHolderButton' : 'uploadPhoto',
     'click #uploadLocationButton' : 'googleAutocomplete',
     'click .alert' : 'removeAlert',
-    'click .animal-photo-div' : 'breedType',
+    'click .animal-photo-div div' : 'breedType'
   },
 
   /* -----
@@ -77,8 +77,14 @@ var UploadSightingView = Backbone.View.extend({
     Variable is used to populate the form's animal type field (  in populateFields() )
   ----- */
   breedType: function(event) {
-    app.breed = event.target.id.toString() ;
-    console.log(app.breed);
+    console.log(event);
+    if (!(event.target.id)) {
+      app.breed = event.target.parentElement.id;
+    }
+    else {
+      app.breed = event.target.id;
+    }
+    console.log(app.breed)
     $('#upload-photo').trigger('click');
   },
 
